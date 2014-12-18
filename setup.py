@@ -90,4 +90,7 @@ setup(
             'sample=sample:main',
         ],
     },
+
+    # Make the tests be testable
+    test_suite="tests",
 )
