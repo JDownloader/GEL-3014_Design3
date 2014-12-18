@@ -9,9 +9,13 @@ Usage
 -----
 Setup your virtualenv before touching anything::
 
-    $ cd <your-envs-folder>
-    $ virtualenv  --no-site-packages virtualEnv
-    $ source virtualEnv/bin/activate
+    $ cd <the-projet-folder>
+    $ virtualenv  --no-site-packages env
+    $ //On mac or linux
+    $ source env/bin/activate
+    $ //On windows
+    $ env/bin/activate.bat
+    
 
 Usage
 -----
