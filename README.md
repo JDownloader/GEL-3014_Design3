@@ -14,7 +14,7 @@ Setup your virtualenv before touching anything:
     $ //On mac or linux
     $ source env/bin/activate
     $ //On windows
-    $ env/bin/activate.bat
+    $ env/Scripts/activate.bat
     
     for more information, refer here: http://docs.python-guide.org/en/latest/dev/virtualenvs/
     
