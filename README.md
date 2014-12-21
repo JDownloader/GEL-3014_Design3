@@ -5,9 +5,9 @@ Description
 -----------
 ...
 
-Usage
+Setup
 -----
-Setup your virtualenv before touching anything::
+Setup your virtualenv before touching anything:
 
     $ cd <the-projet-folder>
     $ virtualenv  --no-site-packages env
@@ -15,6 +15,8 @@ Setup your virtualenv before touching anything::
     $ source env/bin/activate
     $ //On windows
     $ env/bin/activate.bat
+    
+    for more information, refer here: http://docs.python-guide.org/en/latest/dev/virtualenvs/
     
 
 Usage
