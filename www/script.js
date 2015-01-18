@@ -1,27 +1,5 @@
 (function() {
-		var getJSON = function(url) {
-			return new Promise(function(resolve, reject) {
-				var xhr = new XMLHttpRequest();
-				xhr.open('get', url, true);
-				xhr.responseType = 'json';
-				xhr.onload = function() {
-					var status = xhr.status;
-					if (status == 200) {
-						resolve(xhr.response);
-					} else {
-						reject(status);
-					}
-				};
-				xhr.send();
-			});
-		};
 
-		getJSON('http://127.0.0.1:8000/position').then(function(data) {
-				setRobotPosition(data.left, data.top);
-		}, function(status) { //error detection....
-			alert('Something went wrong.');
-		});
-		
 	var canvas = this.__canvas = new fabric.Canvas('myCanvas');
 	fabric.Object.prototype.transparentCorners = false;
 
@@ -43,7 +21,10 @@
 	document.getElementById("btn1").addEventListener("click", moveRobot);
 
 	function moveRobot(){
-		setRobotPosition(10,10);
+		//setRobotPosition(10,10);
+		getJSON('http://127.0.0.1:8000/position').then(function(data) {
+				setRobotPosition(data.left, data.top);
+		});
 	}
 
 	function setRobotPosition(left, top) {
@@ -62,4 +43,19 @@
 
 	function onChange(options) {
 	}
+
+	//Refresh part
+
+	setInterval(refreshInterface, 250);
+
+	function refreshInterface(){
+		$.getJSON('http://127.0.0.1:8000/position').then(function(data) {
+			setRobotPosition(data.left, data.top);
+			document.getElementById("baseConnectionErrorMessage").innerHTML = "";
+		}, function(status) { //error detection....
+			console.log( "Request Failed: " + status );
+			document.getElementById("baseConnectionErrorMessage").innerHTML = "Can't contact base server.";
+		});
+	}
+
 })();

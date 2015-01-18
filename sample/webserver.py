@@ -3,6 +3,7 @@ from BaseHTTPServer import BaseHTTPRequestHandler
 import SimpleHTTPServer
 import json
 import SocketServer
+import random
 
 PORT = 8000
 
@@ -12,7 +13,8 @@ class WebServer:
 
         def do_GET(self) :
             if self.path == "/position" :
-                me = {  "top": 30, "left": 305}
+                poxY = random.randrange(0, 400, 1)
+                me = {  "top": 30, "left": poxY}
                 #send response code:
                 self.send_response(200)
                 #send headers:
