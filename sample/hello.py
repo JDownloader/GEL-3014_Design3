@@ -1,5 +1,4 @@
 import os
-import nltk
 
 """
 Open additional data files using the absolute path,
@@ -14,7 +13,4 @@ class Hello:
         return None
 
     def say_hello(self):
-        nltk.download("punkt")
-        sentence = "Which country has Paris as its capital?"
-        tokens = nltk.word_tokenize(sentence)
-        print tokens
+        print "Hello, World!"
