@@ -12,9 +12,12 @@ class WebServer:
     class MyRequestHandler (SimpleHTTPServer.SimpleHTTPRequestHandler) :
 
         def do_GET(self) :
-            if self.path == "/position" :
+            if self.path == "/status" :
                 poxY = random.randrange(0, 400, 1)
-                me = {  "top": 30, "left": poxY}
+                me = {  "top": 30,
+                        "left": poxY,
+                        "chrono":"chrono: 00m00s",
+                        "robotIP":"0.0.0.0",}
                 #send response code:
                 self.send_response(200)
                 #send headers:

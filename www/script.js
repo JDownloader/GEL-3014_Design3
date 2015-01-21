@@ -46,16 +46,59 @@
 
 	//Refresh part
 
+	var robotStatusHandler = new RobotStatusHandler();
 	setInterval(refreshInterface, 250);
 
 	function refreshInterface(){
-		$.getJSON('http://127.0.0.1:8000/position').then(function(data) {
+		$.getJSON('http://127.0.0.1:8000/status').then(function(data) {
 			setRobotPosition(data.left, data.top);
+			setStatus(data);
 			document.getElementById("baseConnectionErrorMessage").innerHTML = "";
 		}, function(status) { //error detection....
 			console.log( "Request Failed: " + status );
 			document.getElementById("baseConnectionErrorMessage").innerHTML = "Can't contact base server.";
 		});
+	}
+
+	function setStatus(data){
+		document.getElementById("chrono").innerHTML = data.chrono;
+		robotStatusHandler.updateStatus(data);
+	}
+
+	//classes
+
+	//Yeah, this is a class
+	function RobotStatusHandler () {
+		this.valid = null;
+		this.updateStatus = function(data) {
+			newValid = false;
+			if(data.robotIP === "0.0.0.0"){
+				newValid = false;
+			} else{
+				newValid = true;
+			}
+			if(this.valid != newValid){
+				this.valid = newValid;
+				this.refresh(data.robotIP)
+			}
+		};
+		this.refresh = function(robotIP){
+			if(this.valid) {
+				this.refreshValid(robotIP);
+			} else{
+				this.refreshInvalid(robotIP);
+			}
+		}
+		this.refreshValid = function(robotIP) {
+			document.getElementById("robotConnectionErrorMessage").innerHTML = "";
+			document.getElementById("robotIP").innerHTML = "The IP of your robot is " + data.robotIP;
+			document.getElementById("startButton").disabled = false;
+		}
+		this.refreshInvalid = function(robotIP) {
+			document.getElementById("robotConnectionErrorMessage").innerHTML = "Can't contact robot.";
+			document.getElementById("robotIP").innerHTML = "";
+			document.getElementById("startButton").disabled = true;
+		}
 	}
 
 })();
