@@ -18,8 +18,6 @@
 		hasControls: false,
 	});
 
-	document.getElementById("btn1").addEventListener("click", moveRobot);
-
 	function moveRobot(){
 		//setRobotPosition(10,10);
 		getJSON('http://127.0.0.1:8000/position').then(function(data) {
@@ -44,13 +42,22 @@
 	function onChange(options) {
 	}
 
+	document.getElementById("btn1").addEventListener("click", startRun);
+	function startRun(){
+		$.getJSON('/start').then(function(data) {
+			console.log( "Data: " + data );
+		}, function(status) { //error detection....
+			console.log( "Request Failed: " + status );
+		});
+	}
+
 	//Refresh part
 
 	var robotStatusHandler = new RobotStatusHandler();
 	setInterval(refreshInterface, 250);
 
 	function refreshInterface(){
-		$.getJSON('http://127.0.0.1:8000/status').then(function(data) {
+		$.getJSON('/status').then(function(data) {
 			setRobotPosition(data.left, data.top);
 			setStatus(data);
 			document.getElementById("baseConnectionErrorMessage").innerHTML = "";
