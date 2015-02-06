@@ -1,9 +1,17 @@
 
 import os.path, random
 from flask import Flask, redirect, url_for, jsonify
+from time import gmtime, strftime
 
+from runLoop import RunLoop
 
-app = Flask(__name__)
+class MyServer(Flask):
+
+    def __init__(self, *args, **kwargs):
+        super(MyServer, self).__init__(*args, **kwargs)
+        self.runLoop = RunLoop()
+
+app = MyServer(__name__)
 app.config.from_object(__name__)
 # since it will only be use by software engineer, debug on is ok
 app.debug = True
@@ -15,16 +23,21 @@ def root_dir():  # pragma: no cover
 def hello():
     return redirect(url_for('static', filename='index.html'))
 
+@app.route('/start')
+def start():
+    app.runLoop.start()
+    return "ok"
+
 @app.route('/status')
 def status():
     poxY = random.randrange(0, 400, 1)
-    time = 0
+    runTime = app.runLoop.getTime()
     # if self.runLoop is not None:
     #     time = self.runLoop.getTime()
     #     print "hello"
     me = {  "top": 30,
             "left": poxY,
-            "chrono":"chrono: 00m00s" + str(time),
+            "chrono": strftime("%Mm%Ss",gmtime(runTime)),
             "robotIP":"0.0.0.0",}
     return jsonify(me)
 

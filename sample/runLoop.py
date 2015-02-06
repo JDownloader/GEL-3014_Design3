@@ -10,4 +10,6 @@ class RunLoop:
         self.startTime = time.time()
 
     def getTime(self):
+        if self.startTime is None:
+            return 0
         return time.time()-self.startTime;
