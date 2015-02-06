@@ -20,7 +20,7 @@
 
 	function moveRobot(){
 		//setRobotPosition(10,10);
-		getJSON('http://127.0.0.1:8000/position').then(function(data) {
+		getJSON('/position').then(function(data) {
 				setRobotPosition(data.left, data.top);
 		});
 	}
