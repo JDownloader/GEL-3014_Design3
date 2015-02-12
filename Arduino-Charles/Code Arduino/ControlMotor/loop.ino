@@ -5,7 +5,7 @@ void loop()
   
   if (Serial.available()== 4) 
   {
-    FuncSerie();    
+    Serie();    
    }
 }
 

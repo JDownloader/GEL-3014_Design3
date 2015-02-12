@@ -11,10 +11,10 @@ void setup()
   pinMode(CCW4, OUTPUT), digitalWrite(CCW4, LOW);
   
   // PWM
-  pinMode(SortieVitesse1, OUTPUT), digitalWrite(SortieVitesse1, 0);
-  pinMode(SortieVitesse2, OUTPUT), digitalWrite(SortieVitesse2, 0);
-  pinMode(SortieVitesse3, OUTPUT), digitalWrite(SortieVitesse3, 0);
-  pinMode(SortieVitesse4, OUTPUT), digitalWrite(SortieVitesse4, 0);
+  pinMode(Pin_PWM1, OUTPUT), digitalWrite(Pin_PWM1, 0);
+  pinMode(Pin_PWM2, OUTPUT), digitalWrite(Pin_PWM2, 0);
+  pinMode(Pin_PWM3, OUTPUT), digitalWrite(Pin_PWM3, 0);
+  pinMode(Pin_PWM4, OUTPUT), digitalWrite(Pin_PWM4, 0);
   
   attachInterrupt(CapteurHall_1, Interrupt_Motor1, RISING);
   attachInterrupt(CapteurHall_2, Interrupt_Motor2, RISING);
