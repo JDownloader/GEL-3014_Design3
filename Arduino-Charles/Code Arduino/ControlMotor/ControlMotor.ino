@@ -42,6 +42,7 @@
   byte Vitesse       = 0;
   
 // Gestion du temps!
+  unsigned long previousMillis  = 0;
   unsigned long previousMillis1 = 0;
   unsigned long previousMillis2 = 0;
   unsigned long previousMillis3 = 0;

@@ -20,24 +20,56 @@ void Serie()
   {
     case 1:
       // DROIT DEVANT !
+      FermetureGenerale();
       digitalWrite(CW1, true);
-      digitalWrite(CCW1, false);
       analogWrite(Pin_PWM1,Vitesse);
       
-      digitalWrite(CW1, false);
       digitalWrite(CCW3, true);
       analogWrite(Pin_PWM3,Vitesse);
 
       break;
     case 2:
       // TRIBORD TOUTE (droite) !
+      FermetureGenerale();
       digitalWrite(CW2, true);
-      digitalWrite(CCW2, false);
       analogWrite(Pin_PWM2,Vitesse);
       
-      digitalWrite(CW4, false);
       digitalWrite(CCW4, true);
       analogWrite(Pin_PWM4,Vitesse);
+      
+      break;
+    case 3:
+      // On se replis !!
+      FermetureGenerale();
+      digitalWrite(CCW1, true);
+      analogWrite(Pin_PWM1,Vitesse);
+      
+      digitalWrite(CW3, true);
+      analogWrite(Pin_PWM3,Vitesse);
+
+      break;
+    case 4:
+      // Mouissallions à babord !!
+      FermetureGenerale();
+      digitalWrite(CW2, true);
+      analogWrite(Pin_PWM2,Vitesse);
+      
+      digitalWrite(CCW4, true);
+      analogWrite(Pin_PWM4,Vitesse);
+
+      break;
+    case 101:
+      // DANGERRRRRRR !!
+      FermetureGenerale();
+      digitalWrite(CW1, true);
+      analogWrite(Pin_PWM1,Vitesse);
+      digitalWrite(CW2, true);
+      analogWrite(Pin_PWM2,Vitesse);
+      digitalWrite(CW3, true);
+      analogWrite(Pin_PWM3,Vitesse);
+      digitalWrite(CW4, true);
+      analogWrite(Pin_PWM4,Vitesse);
+
       break;
     default:
       // Code
