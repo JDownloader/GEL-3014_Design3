@@ -1,12 +1,16 @@
-int previousMillis = 0;
-
+// Gestion du temps!
+unsigned long previousMillis1 = 0;
+unsigned long previousMillis2 = 0;
+unsigned long previousMillis3 = 0;
+unsigned long previousMillis4 = 0;
+unsigned long currentMillis = 0;
 // Descriptiond des pins!
 
   // outputs
-  byte Speed1 = 0; // Vitesse Moteur #1
-  byte Speed2 = 0; // Vitesse Moteur #2
-  byte Speed3 = 0; // Vitesse Moteur #3
-  byte Speed4 = 0; // Vitesse Moteur #4
+  int Out_PWM_moteur_1  = 10;
+  int Out_PWM_moteur_2  = 11;
+  int Out_PWM_moteur_3  = 12;
+  int Out_PWM_moteur_4  = 13;
   
   int CW1    = 46;  //Moteur #1 pin ClockWise  
   int CCW1   = 47;  //Moteur #1 pin CounterClockWise  
@@ -16,6 +20,12 @@ int previousMillis = 0;
   int CCW3   = 51;  //Moteur #3 pin CounterClockWise  
   int CW4    = 52;  //Moteur #4 pin ClockWise  
   int CCW4   = 53;  //Moteur #4 pin CounterClockWise  
+  
+  // Vitesse de fonctionnement
+  byte Speed1 = 0; // Vitesse Moteur #1
+  byte Speed2 = 0; // Vitesse Moteur #2
+  byte Speed3 = 0; // Vitesse Moteur #3
+  byte Speed4 = 0; // Vitesse Moteur #4
   
   //Inputs
   int CapteurHall_1   = 42;  // Capteur Hall Moteur #1
@@ -29,33 +39,12 @@ int previousMillis = 0;
   unsigned int counted3 = 0;
   unsigned int counted4 = 0;
 
+  // Constante la communication serial
+  byte Commande      = 0;
+  byte NumeroMoteur  = 0;
+  byte Direction     = 0;
+  byte Vitesse         = 0;
+  
 
-void setup() 
-{
-  // Déclaration des pins
-  pinMode(CW1, OUTPUT), digitalWrite(CW1, LOW);
-  pinMode(CW2, OUTPUT), digitalWrite(CW2, LOW);
-  pinMode(CW3, OUTPUT), digitalWrite(CW3, LOW);
-  pinMode(CW4, OUTPUT), digitalWrite(CW4, LOW);
-  pinMode(CCW1, OUTPUT), digitalWrite(CCW1, LOW);
-  pinMode(CCW2, OUTPUT), digitalWrite(CCW2, LOW);
-  pinMode(CCW3, OUTPUT), digitalWrite(CCW3, LOW);
-  pinMode(CCW4, OUTPUT), digitalWrite(CCW4, LOW);
   
-  pinMode(13, OUTPUT);
-  pinMode(12, OUTPUT);
-  pinMode(11, OUTPUT);
-  pinMode(10, OUTPUT);
-  
-  attachInterrupt(CapteurHall_1, Interrupt_Motor1, RISING);
-  attachInterrupt(CapteurHall_2, Interrupt_Motor2, RISING);
-  attachInterrupt(CapteurHall_3, Interrupt_Motor3, RISING);
-  attachInterrupt(CapteurHall_4, Interrupt_Motor4, RISING);
-  
-  // Ouverture du port série
-  Serial.begin(9600);
-  
-}
-
-
 
