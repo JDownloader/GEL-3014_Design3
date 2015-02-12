@@ -3,10 +3,10 @@ int previousMillis = 0;
 // Descriptiond des pins!
 
   // outputs
-  byte Speed1 = 0; // Vitesse Moteur #1
-  byte Speed2 = 0; // Vitesse Moteur #2
-  byte Speed3 = 0; // Vitesse Moteur #3
-  byte Speed4 = 0; // Vitesse Moteur #4
+  unsigned int Speed1 = 0; // Vitesse Moteur #1
+  unsigned int Speed2 = 0; // Vitesse Moteur #2
+  unsigned int Speed3 = 0; // Vitesse Moteur #3
+  unsigned int Speed4 = 0; // Vitesse Moteur #4
   
   int CW1    = 46;  //Moteur #1 pin ClockWise  
   int CCW1   = 47;  //Moteur #1 pin CounterClockWise  
@@ -18,20 +18,15 @@ int previousMillis = 0;
   int CCW4   = 53;  //Moteur #4 pin CounterClockWise  
   
   //Inputs
-  int CapteurHall_1   = 42;  // Capteur Hall Moteur #1
-  int CapteurHall_2    = 43;  // Capteur Hall Moteur #2
-  int CapteurHall_3    = 44;  // Capteur Hall Moteur #3
-  int CapteurHall_4    = 45;  // Capteur Hall Moteur #4
+  int Position1    = 42;  // Capteur Hall Moteur #1
+  int Position2    = 43;  // Capteur Hall Moteur #2
+  int Position3    = 44;  // Capteur Hall Moteur #3
+  int Position4    = 45;  // Capteur Hall Moteur #4
   
-  // Compteurs de distance
-  unsigned int counted1 = 0;
-  unsigned int counted2 = 0;
-  unsigned int counted3 = 0;
-  unsigned int counted4 = 0;
-
-
 void setup() 
 {
+  Serial.begin(9600);
+  
   // Déclaration des pins
   pinMode(CW1, OUTPUT), digitalWrite(CW1, LOW);
   pinMode(CW2, OUTPUT), digitalWrite(CW2, LOW);
@@ -47,15 +42,34 @@ void setup()
   pinMode(11, OUTPUT);
   pinMode(10, OUTPUT);
   
-  attachInterrupt(CapteurHall_1, Interrupt_Motor1, RISING);
-  attachInterrupt(CapteurHall_2, Interrupt_Motor2, RISING);
-  attachInterrupt(CapteurHall_3, Interrupt_Motor3, RISING);
-  attachInterrupt(CapteurHall_4, Interrupt_Motor4, RISING);
+  attachInterrupt(Position1, Motor1, RISING);
+  attachInterrupt(Position2, Motor2, RISING);
+  attachInterrupt(Position3, Motor3, RISING);
+  attachInterrupt(Position4, Motor4, RISING);
   
-  // Ouverture du port série
-  Serial.begin(9600);
   
 }
 
+void loop() 
+{
+  // put your main code here, to run repeatedly:
+  unsigned long currentMillis = millis();
 
+}
 
+void Motor1()
+{
+  counted++;
+}
+void Motor2()
+{
+  counted2++;
+}
+void Motor3()
+{
+  counted++;
+}
+void Motor4()
+{
+  counted2++;
+}
