@@ -7,6 +7,8 @@ Description
 
 Setup
 -----
+Be sure to have openCv 2.4.7 and numpy, also all this repository is tested with fedora 20 and nothing else
+    $ yum install numpy opencv*
 Setup your virtualenv before touching anything:
 
     $ cd <the-projet-folder>
