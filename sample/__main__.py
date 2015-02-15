@@ -1,15 +1,20 @@
-
 import os.path, random
 from flask import Flask, redirect, url_for, jsonify
 from time import gmtime, strftime
+from robotFinder import RobotFinder
 
 from runLoop import RunLoop
 
 class MyServer(Flask):
-
+    robotIpAddress = RobotFinder.IP_NOT_FOUND
     def __init__(self, *args, **kwargs):
         super(MyServer, self).__init__(*args, **kwargs)
         self.runLoop = RunLoop()
+        threadRobotFinder = RobotFinder(self.setBaseIpAdress)
+        threadRobotFinder.start()
+
+    def setBaseIpAdress(self, ip):
+        self.robotIpAddress = ip
 
 app = MyServer(__name__)
 app.config.from_object(__name__)
@@ -38,8 +43,8 @@ def status():
     me = {  "top": 30,
             "left": poxY,
             "chrono": strftime("%Mm%Ss",gmtime(runTime)),
-            "robotIP":"0.0.0.0",}
+            "robotIP":app.robotIpAddress,}
     return jsonify(me)
 
 if __name__ == '__main__':  # pragma: no cover
-    app.run(port=8000)
+    app.run(port=8001)
