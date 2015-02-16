@@ -72,9 +72,8 @@
 		robotStatusHandler.updateStatus(data);
 	}
 
-	//classes
+	//Classes
 
-	//Yeah, this is a class
 	function RobotStatusHandler () {
 		this.valid = null;
 		this.updateStatus = function(data) {
