@@ -21,7 +21,7 @@ app.config.from_object(__name__)
 # since it will only be use by software engineer, debug on is ok
 app.debug = True
 
-def root_dir():  # pragma: no cover
+def root_dir():
     return os.path.abspath(os.path.dirname(__file__))
 
 @app.route('/')
@@ -37,9 +37,6 @@ def start():
 def status():
     poxY = random.randrange(0, 400, 1)
     runTime = app.runLoop.getTime()
-    # if self.runLoop is not None:
-    #     time = self.runLoop.getTime()
-    #     print "hello"
     me = {  "top": 30,
             "left": poxY,
             "chrono": strftime("%Mm%Ss",gmtime(runTime)),
@@ -47,4 +44,4 @@ def status():
     return jsonify(me)
 
 if __name__ == '__main__':  # pragma: no cover
-    app.run(port=8001)
+    app.run(port=8000)

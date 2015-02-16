@@ -26,5 +26,4 @@ class RobotFinder(Thread):
                 if(len(foundMac) > 0) and (len(foundIp) > 0):
                     if foundMac[0].lower() == self.ROBOT_MAC.lower():
                         ipAddress = foundIp[0]
-            print(ipAddress)
         self.callback(ipAddress)
