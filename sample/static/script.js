@@ -97,7 +97,7 @@
 		}
 		this.refreshValid = function(robotIP) {
 			document.getElementById("robotConnectionErrorMessage").innerHTML = "";
-			document.getElementById("robotIP").innerHTML = "The IP of your robot is " + data.robotIP;
+			document.getElementById("robotIP").innerHTML = "The IP of your robot is " + robotIP;
 			document.getElementById("startButton").disabled = false;
 		}
 		this.refreshInvalid = function(robotIP) {
