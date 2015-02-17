@@ -18,8 +18,8 @@ class Kinect():
 
     def __init__(self):
         self.angle = -22.75*math.pi/180
-        self.transX = 0.135
-        self.transZ = -0.545
+        self.transX = 0.105
+        self.transZ = -0.535
         self.capt_obj = cv2.VideoCapture(cv2.cv.CV_CAP_OPENNI)
 
         flags, img = self.capt_obj.read()
@@ -63,7 +63,7 @@ class Kinect():
             x = int(moments['m10']/moments['m00'])
             y = int(moments['m01']/moments['m00'])
 
-        centre = tuple(x, y)
+        centre = (x, y)
 
         return centre
 
@@ -94,7 +94,7 @@ if __name__ == "__main__":
         img_seg = vision.get_color_object_bleu(mask)
 
         cv2.imshow('BGR', image_rgb)
-        cv2.imshow('ouverture', image_hsv)
+        cv2.imshow('ouverture', mask)
 
 
         key = cv2.waitKey(5) & 0xFF
@@ -105,7 +105,7 @@ if __name__ == "__main__":
 
     point_centre = ma_kinect.get_centre_object(mask)
 
-    pixel_cloud = img_cloud_map[point_centre(1), point_centre(0)]
+    pixel_cloud = img_cloud_map[point_centre[1], point_centre[0]]
 
     point1Ref = [[-pixel_cloud[0]], [pixel_cloud[2]], [1]]
     pointMonde = np.mat(point1Ref)
@@ -117,9 +117,3 @@ if __name__ == "__main__":
     print pixel_cloud[0]
     print pixel_cloud[2]
     print position
-
-
-
-
-
-
