@@ -1,7 +1,10 @@
 (function() {
 
-	var canvas = this.__canvas = new fabric.Canvas('myCanvas');
+	var planCanvas = new fabric.Canvas('planCanvas');
+	var flagCanvas = new fabric.Canvas('flagCanvas');
 	fabric.Object.prototype.transparentCorners = false;
+
+	//planCanvas
 
 	var robot = new fabric.Rect({
 		width: 50, height: 50, left: 150, top: 100, angle: 45,
@@ -10,7 +13,7 @@
 		hasControls: false,
 	});
 
-	var rect2 = new fabric.Rect({
+	var greenLines = new fabric.Rect({
 		width: 320, height: 220, left: 30, top: 330, angle: 0,
 		stroke: '#AEEBAC', strokeWidth: 10,
 		fill:'transparent',
@@ -18,22 +21,15 @@
 		hasControls: false,
 	});
 
-	function moveRobot(){
-		//setRobotPosition(10,10);
-		getJSON('/position').then(function(data) {
-				setRobotPosition(data.left, data.top);
-		});
-	}
-
 	function setRobotPosition(left, top) {
 		robot.set('left', left);
 		robot.set('top', top);
-		canvas.calcOffset();
-		canvas.renderAll();
+		planCanvas.calcOffset();
+		planCanvas.renderAll();
 	}
 
-	canvas.add(robot, rect2);
-	canvas.on({
+	planCanvas.add(robot, greenLines);
+	planCanvas.on({
 		'object:moving': onChange,
 		'object:scaling': onChange,
 		'object:rotating': onChange,
@@ -42,8 +38,28 @@
 	function onChange(options) {
 	}
 
+	//flagCanvas
+
+	var flagCubes = new Array();
+	for (y = 0; y < 3; y++){
+		for (x = 0; x < 3; x++){
+			var cube = new fabric.Rect({
+				width: 50, height: 50, left: x*60+10, top: y*60+10, angle: 0,
+				fill: 'rgba(0,0,200,0.5)',
+				hasControls: false,
+			});
+			flagCanvas.add(cube);
+			flagCubes[x + y*3] = cube;
+		}
+	}
+
+	//Events
+
 	document.getElementById("btn1").addEventListener("click", startRun);
 	function startRun(){
+		flagCubes[1].fill = 'rgba(255,0,200,1)';
+		flagCanvas.calcOffset();
+		flagCanvas.renderAll();
 		$.getJSON('/start').then(function(data) {
 			console.log( "Data: " + data );
 		}, function(status) { //error detection....
