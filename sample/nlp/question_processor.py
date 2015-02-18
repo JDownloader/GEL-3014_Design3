@@ -1,10 +1,13 @@
 __author__ = 'Tea'
 
+import json
+
 import nltk.corpus # 'maxent_treebank_pos_tagger', 'punkt' are attually used
+
 from query_builder import QueryBuilder
 from bidictionnary import Bidict
 import elastic_search_client
-import json
+
 
 class QuestionProcessor :
 

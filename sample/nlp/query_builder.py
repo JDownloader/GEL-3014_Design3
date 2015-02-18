@@ -1,6 +1,8 @@
 __author__ = 'Tea'
 import json
+
 from factbook_mapping_query_types import StringQuery, NestedQuery
+
 
 class QueryBuilder:
 
