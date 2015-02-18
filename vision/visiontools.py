@@ -52,8 +52,8 @@ class VisionTools:
 
     def get_color_object_bleu(self, mask):
         kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
-        image_erode = cv2.erode(mask, kernel, iterations=3)
-        image_dilate = cv2.dilate(mask, kernel, iterations=3)
+        image_erode = cv2.erode(mask, kernel, iterations=2)
+        image_dilate = cv2.dilate(image_erode, kernel, iterations=6)
 
         return image_dilate
 
