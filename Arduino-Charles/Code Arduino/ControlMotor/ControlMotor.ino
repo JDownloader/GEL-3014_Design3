@@ -41,13 +41,17 @@
   byte Direction     = 0;
   byte Vitesse       = 0;
   
+// Variable d'état
+  bool ident = false;
+  int  identSTEP = 0;
+
 // Gestion du temps!
   unsigned long previousMillis  = 0;
   unsigned long previousMillis1 = 0;
   unsigned long previousMillis2 = 0;
   unsigned long previousMillis3 = 0;
   unsigned long previousMillis4 = 0;
+  unsigned long previousMillisIdent = 0;
   unsigned long currentMillis = 0;
 
-  
 

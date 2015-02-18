@@ -71,6 +71,13 @@ void Serie()
       analogWrite(Pin_PWM4,Vitesse);
 
       break;
+    case 102:
+      // Identification !!
+      FermetureGenerale();
+      ident = true;
+      previousMillisIdent = currentMillis;
+      break;
+      
     default:
       // Code
       break;

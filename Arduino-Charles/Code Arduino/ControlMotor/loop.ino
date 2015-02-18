@@ -8,8 +8,10 @@ void loop()
     Serie();    
   }
   
-  if (currentMillis - previousMillis >= 100)
+  if (currentMillis - previousMillis >= 50)
     {
+      Serial.print(Vitesse);
+      Serial.print(',');
       Serial.print(counted1);  
       Serial.print(',');
       Serial.print(counted2);  
@@ -26,6 +28,10 @@ void loop()
       previousMillis = currentMillis;
     }
 
+  if (ident = true)
+  {
+    Identification(); 
+  }
 }
 
 
