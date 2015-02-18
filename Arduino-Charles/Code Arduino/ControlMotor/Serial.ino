@@ -75,6 +75,7 @@ void Serie()
       // Identification !!
       FermetureGenerale();
       ident = true;
+      identSTEP = 0;
       previousMillisIdent = currentMillis;
       break;
       
