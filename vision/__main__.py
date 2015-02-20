@@ -1,5 +1,4 @@
-from kinect import Kinect
-import numpy as np
+from kinect import Kinect, NoKinectDetectedException
 import cv2
 from cube import Cube
 import math
@@ -24,19 +23,19 @@ if __name__ == "__main__":
     # calculate_calibration_values(124.88, 414.59, 765.0, 1581.0)
     # calculate_calibration_values(124.88, 414.59, 775.0, 1591.0)
     # calculate_calibration_values(-150.0, 770.0, 330.0, 1000.0)
-
+    visionReady = True
     vision = VisionTools()
     cv2.namedWindow('BGR', cv2.WINDOW_AUTOSIZE)
     cv2.namedWindow('blue_layer', cv2.WINDOW_AUTOSIZE)
     cv2.namedWindow('red_layer', cv2.WINDOW_AUTOSIZE)
-    ma_kinect = Kinect()
+    try:
+        ma_kinect = Kinect()
+    except NoKinectDetectedException as e:
+        print "No kinect detected"
+        visionReady = False
 
-    while True:
-
+    while visionReady:
         ma_kinect.grab_new_image()
-
-        img_cloud_map = ma_kinect.get_img_cloud_map()
-
         image_rgb = vision.get_image_rgb(ma_kinect.capt_obj)
         image_hsv = vision.get_hsv_image(image_rgb)
 
@@ -57,33 +56,16 @@ if __name__ == "__main__":
 
     cv2.destroyAllWindows()
 
-    point_centre = ma_kinect._get_centre_object(mask_blue)
-
-    pixel_cloud = img_cloud_map[point_centre[1], point_centre[0]]
-
-    point1Ref = [[-pixel_cloud[0]], [pixel_cloud[2]], [1]]
-    blue_in_world = np.mat(point1Ref)
-    matrix = ma_kinect._apply_matrix_transformation(blue_in_world)
-
-    # position_blue = ma_kinect.get_position_object(matrix)
-    position_blue = blue_in_world
+    position_blue = blue_cube.find_position(image_hsv, ma_kinect)
 
     # print pixel_cloud
     print "blue" + str(position_blue)
 
-    point_centre = ma_kinect._get_centre_object(mask_red)
-
-    pixel_cloud = img_cloud_map[point_centre[1], point_centre[0]]
-
-    point1Ref = [[-pixel_cloud[0]], [pixel_cloud[2]], [1]]
-    red_in_world = np.mat(point1Ref)
-    matrix = ma_kinect._apply_matrix_transformation(red_in_world)
+    position_red = red_cube.find_position(image_hsv, ma_kinect)
 
 
     # print pixel_cloud
-    position_red = red_in_world
     print "red" + str(position_red)
-    print calculate_calibration_values(position_red[0], position_red[1], blue_in_world[0], blue_in_world[1])
-
-    position_red = matrix[0], matrix[1]
-    print "red" + str(position_red)
+    blue_in_world = blue_cube._find_position_in_world(image_hsv, ma_kinect)
+    red_in_world = red_cube._find_position_in_world(image_hsv, ma_kinect)
+    print calculate_calibration_values(red_in_world[0], red_in_world[1], blue_in_world[0], blue_in_world[1])

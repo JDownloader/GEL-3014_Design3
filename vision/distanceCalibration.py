@@ -3,9 +3,6 @@ import numpy as np
 
 class CalibrationValues:
     def __init__(self, angle, transX, transZ):
-        # self.angle = -22.75/180*math.pi
-        # self.transX = 0.105
-        # self.transZ = -0.535
         self.angle = angle
         self.transX = transX
         self.transZ = transZ
@@ -17,7 +14,10 @@ class CalibrationValues:
 
 class DistanceCalibration:
     def __init__(self):
-        self.calibration_value = CalibrationValues(-0.3621, 0.1623, -0.4582)
+        #self.calibration_value = CalibrationValues(-22.75/180*math.pi, 0.105, -0.535)
+        #self.calibration_value = CalibrationValues(-0.3621, 0.1623, -0.4582)
+        self.calibration_value = CalibrationValues(-0.3970, 0.1623, -0.4582)
+
 
     def apply_matrix_transformation(self, point_in_world):
         trans_rot = self.calibration_value.get_rotation_matrix()

@@ -44,5 +44,13 @@ class Cube:
         img_mask = self.form_filter.apply(img_mask)
         return img_mask
 
-    def find_position(self, img_hvg):
+    def find_position(self, img_hvg, kinect):
+        position_in_world = self._find_position_in_world(img_hvg, kinect)
+        return kinect._apply_matrix_transformation(position_in_world)
+
+    def _find_position_in_world(self, img_hvg, kinect):
         img_mask = self.apply_filters(img_hvg)
+        point_centre = kinect._get_centre_object(img_mask)
+        pixel_cloud = kinect.get_img_cloud_map()[point_centre[1], point_centre[0]]
+        point1_ref = [[-pixel_cloud[0]], [pixel_cloud[2]], [1]]
+        return np.mat(point1_ref)

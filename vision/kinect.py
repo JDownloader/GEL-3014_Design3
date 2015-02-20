@@ -1,9 +1,10 @@
 import sys
-import numpy as np
-import math
 import cv2
 from distanceCalibration import DistanceCalibration
 
+class NoKinectDetectedException(Exception):
+    def __init__(self):
+        pass
 
 class Kinect():
 
@@ -11,9 +12,8 @@ class Kinect():
         self.capt_obj = cv2.VideoCapture(cv2.cv.CV_CAP_OPENNI)
         self.distanceCalibration = DistanceCalibration()
         flags, img = self.capt_obj.read()
-        if flags == False:
-            print >> sys.stderr, "Error with the capture of video"
-            return None
+        if flags is False:
+            raise NoKinectDetectedException()
 
     def get_cube_position(self, img, cube):
         pass
@@ -32,12 +32,9 @@ class Kinect():
         moments = cv2.moments(img_mask)
         area = moments['m00']
         x, y = 0, 0
-
-        if area < 2000000 and moments['m00'] != 0:
-
-            #Centre de l'objet, x, y del objeto
-            x = int(moments['m10']/moments['m00'])
-            y = int(moments['m01']/moments['m00'])
+        if area < 2000000 and area != 0:
+            x = int(moments['m10']/area)
+            y = int(moments['m01']/area)
 
         centre = (x, y)
 
