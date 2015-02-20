@@ -5,14 +5,6 @@ import cv2
 from distanceCalibration import DistanceCalibration
 
 
-RANGES = {'red': ([165, 80, 80], [175, 255, 255]),
-          'green': ([30, 100, 100], [50, 255, 255]),
-          'blue': ([100, 80, 80], [115, 255, 255]),
-          'yellow': ([20, 60, 190], [30, 255, 255]),
-          'white': ([0, 0, 0], [0, 0, 0]),
-          'black':([90, 60, 30], [110, 255, 255])}
-
-
 class Kinect():
 
     def __init__(self):

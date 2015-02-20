@@ -28,7 +28,6 @@ class VisionTools:
             return None
         return img
 
-
     def new_rgb_image(self, width, height):
         image = np.zeros((height, width, 3), np.uint8)
         return image
@@ -37,10 +36,9 @@ class VisionTools:
         hsv_image = cv2.cvtColor(image_rgb, cv2.COLOR_BGR2HSV)
         return hsv_image
 
-    def get_mask(self, image_hsv, lower_color, upper_color):
-        mask = cv2.inRange(image_hsv, lower_color, upper_color)
-        return mask
-
+    # def get_mask(self, image_hsv, lower_color, upper_color):
+    #     mask = cv2.inRange(image_hsv, lower_color, upper_color)
+    #     return mask
 
     def find_contours(self, img):
         contours, hierarchy = cv2.findContours(img, mode=cv2.RETR_TREE, method=cv2.CHAIN_APPROX_SIMPLE)
@@ -50,44 +48,9 @@ class VisionTools:
         if event == cv2.EVENT_LBUTTONDBLCLK:
             print "Click at %d, %d" % (x, y)
 
-    def get_color_object_bleu(self, mask):
-        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
-        image_erode = cv2.erode(mask, kernel, iterations=2)
-        image_dilate = cv2.dilate(image_erode, kernel, iterations=6)
-
-        return image_dilate
-
-
-
-
-
-    def get_color_object_red(self, image_rgb, lower_color, upper_color):
-        image_hsv = cv2.cvtColor(image_rgb, cv2.COLOR_BGR2HSV)
-        mask = cv2.inRange(image_hsv, lower_color, upper_color)
-
-        kernelErode = cv2.getStructuringElement(cv2.MORPH_ERODE, (3, 3))
-        kernelDilate = cv2.getStructuringElement(cv2.MORPH_DILATE, (3, 3))
-
-        image_erode = cv2.erode(mask, kernelErode, iterations=2)
-        image_dilate = cv2.dilate(mask, kernelDilate, iterations=2)
-
-        return image_dilate
-
-
-    def get_color_object_green(self, image_rgb, lower_color, upper_color):
-        image_hsv = cv2.cvtColor(image_rgb, cv2.COLOR_BGR2HSV)
-        mask = cv2.inRange(image_hsv, lower_color, upper_color)
-
-        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
-        image_erode = cv2.erode(mask, kernel, iterations=2)
-        image_dilate = cv2.dilate(mask, kernel, iterations=2)
-
-        return image_dilate
-
-
-
-
-
-
-
+    # def get_color_object_bleu(self, mask):
+    #     kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (3, 3))
+    #     image_erode = cv2.erode(mask, kernel, iterations=2)
+    #     image_dilate = cv2.dilate(image_erode, kernel, iterations=6)
+    #     return image_dilate
 

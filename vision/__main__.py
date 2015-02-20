@@ -1,7 +1,7 @@
-from kinect import Kinect, RANGES
+from kinect import Kinect
 import numpy as np
 import cv2
-import time
+from cube import Cube
 import math
 from visiontools import VisionTools
 
@@ -38,34 +38,18 @@ if __name__ == "__main__":
         img_cloud_map = ma_kinect.get_img_cloud_map()
 
         image_rgb = vision.get_image_rgb(ma_kinect.capt_obj)
-
-        color_range = RANGES.get('blue')
-
-        lower_color = np.array(color_range[0])
-        upper_color = np.array(color_range[1])
-
         image_hsv = vision.get_hsv_image(image_rgb)
-        mask_blue = vision.get_mask(image_hsv, lower_color, upper_color)
-        mask_blue = vision.get_color_object_bleu(mask_blue)
 
-
-
-
-        color_range = RANGES.get('red')
-
-        lower_color = np.array(color_range[0])
-        upper_color = np.array(color_range[1])
-
-        mask_red = vision.get_mask(image_hsv, lower_color, upper_color)
-        mask_red = vision.get_color_object_bleu(mask_red)
-        # cv2.fastNlMeansDenoisingColored(mask_red,mask_red)
-        # img_seg = vision.get_color_object_bleu(mask_blue)
+        red_cube = Cube('red')
+        blue_cube = Cube('blue')
+        mask_red = red_cube.apply_filters(image_hsv)
+        mask_blue = blue_cube.apply_filters(image_hsv)
 
         cv2.imshow('BGR', image_rgb)
         cv2.imshow('red_layer', mask_red)
         cv2.imshow('blue_layer', mask_blue)
-        cv2.imwrite('xxx_rgb.png', image_rgb)
-        cv2.imwrite('xxx_hsv.png', image_hsv)
+        # cv2.imwrite('xxx_rgb.png', image_rgb)
+        # cv2.imwrite('xxx_hsv.png', image_hsv)
 
         key = cv2.waitKey(5) & 0xFF
         if key == 27:
