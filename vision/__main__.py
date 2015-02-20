@@ -6,12 +6,12 @@ import math
 from visiontools import VisionTools
 
 def calculate_calibration_values(x1, x2, y1, y2):
-    x_value_of_math_function = (y2 - float(y1)) / (x2 - float(x1))
-    y_value_of_math_function = y1 - (x1 * x_value_of_math_function)
-    opposite_value_of_upper_triangle = y1 - y_value_of_math_function
-    angle_between_kinect_and_table = math.tanh(x1 / float(opposite_value_of_upper_triangle))
+    opposite_value_of_upper_triangle = math.fabs(x2 - y2)
+    adjacent_value_of_upper_triangle = math.fabs(x2 - x1)
+    print "opp" + str(opposite_value_of_upper_triangle) + "adj: " + str(adjacent_value_of_upper_triangle)
+    angle_between_kinect_and_table =  (opposite_value_of_upper_triangle/float(adjacent_value_of_upper_triangle))
 
-    hypotenuse_of_upper_triangle = math.sqrt(math.pow(x1, 2) + math.pow(opposite_value_of_upper_triangle, 2))
+    hypotenuse_of_upper_triangle = math.sqrt(math.pow(x1, 2) + math.pow(x2, 2))
     print(hypotenuse_of_upper_triangle)
     opposite_value_of_lower_triangle = math.tan(angle_between_kinect_and_table) * (662 - hypotenuse_of_upper_triangle)
     adjacent_overlay = math.tan(angle_between_kinect_and_table) * float(opposite_value_of_lower_triangle - 290)
@@ -23,6 +23,7 @@ def calculate_calibration_values(x1, x2, y1, y2):
 if __name__ == "__main__":
     # calculate_calibration_values(124.88, 414.59, 765.0, 1581.0)
     # calculate_calibration_values(124.88, 414.59, 775.0, 1591.0)
+    # calculate_calibration_values(-150.0, 770.0, 330.0, 1000.0)
 
     vision = VisionTools()
     cv2.namedWindow('BGR', cv2.WINDOW_AUTOSIZE)
@@ -63,7 +64,8 @@ if __name__ == "__main__":
         cv2.imshow('BGR', image_rgb)
         cv2.imshow('red_layer', mask_red)
         cv2.imshow('blue_layer', mask_blue)
-
+        cv2.imwrite('xxx_rgb.png', image_rgb)
+        cv2.imwrite('xxx_hsv.png', image_hsv)
 
         key = cv2.waitKey(5) & 0xFF
         if key == 27:
@@ -71,29 +73,33 @@ if __name__ == "__main__":
 
     cv2.destroyAllWindows()
 
-    point_centre = ma_kinect.get_centre_object(mask_blue)
+    point_centre = ma_kinect._get_centre_object(mask_blue)
 
     pixel_cloud = img_cloud_map[point_centre[1], point_centre[0]]
 
     point1Ref = [[-pixel_cloud[0]], [pixel_cloud[2]], [1]]
-    pointMonde = np.mat(point1Ref)
-    matrix = ma_kinect.apply_matrix_transformation(pointMonde)
+    blue_in_world = np.mat(point1Ref)
+    matrix = ma_kinect._apply_matrix_transformation(blue_in_world)
 
-    position_blue = ma_kinect.get_position_object(matrix)
+    # position_blue = ma_kinect.get_position_object(matrix)
+    position_blue = blue_in_world
 
     # print pixel_cloud
     print "blue" + str(position_blue)
 
-    point_centre = ma_kinect.get_centre_object(mask_red)
+    point_centre = ma_kinect._get_centre_object(mask_red)
 
     pixel_cloud = img_cloud_map[point_centre[1], point_centre[0]]
 
     point1Ref = [[-pixel_cloud[0]], [pixel_cloud[2]], [1]]
-    pointMonde = np.mat(point1Ref)
-    matrix = ma_kinect.apply_matrix_transformation(pointMonde)
+    red_in_world = np.mat(point1Ref)
+    matrix = ma_kinect._apply_matrix_transformation(red_in_world)
 
-    position_red = ma_kinect.get_position_object(matrix)
 
     # print pixel_cloud
+    position_red = red_in_world
     print "red" + str(position_red)
-    print calculate_calibration_values(position_red[0], position_red[1], position_blue[0], position_blue[1])
+    print calculate_calibration_values(position_red[0], position_red[1], blue_in_world[0], blue_in_world[1])
+
+    position_red = matrix[0], matrix[1]
+    print "red" + str(position_red)
