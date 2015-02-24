@@ -10,11 +10,11 @@ def calculate_calibration_values(x1, x2, y1, y2):
     print "opp" + str(opposite_value_of_upper_triangle) + "adj: " + str(adjacent_value_of_upper_triangle)
     angle_between_kinect_and_table =  (opposite_value_of_upper_triangle/float(adjacent_value_of_upper_triangle))
 
-    hypotenuse_of_upper_triangle = math.sqrt(math.pow(x1, 2) + math.pow(x2, 2))
+    hypotenuse_of_upper_triangle = math.sqrt(math.pow(x1, 2) + math.pow(x1 * math.sinh(angle_between_kinect_and_table), 2))
     print(hypotenuse_of_upper_triangle)
     opposite_value_of_lower_triangle = math.tan(angle_between_kinect_and_table) * (662 - hypotenuse_of_upper_triangle)
-    adjacent_overlay = math.tan(angle_between_kinect_and_table) * float(opposite_value_of_lower_triangle - 290)
-    distance_between_center_of_kinect_and_origin_of_table = 294 - adjacent_overlay
+    adjacent_overlay = math.tan(angle_between_kinect_and_table) * float(opposite_value_of_lower_triangle - 225)
+    distance_between_center_of_kinect_and_origin_of_table = 225 - adjacent_overlay
     print "angle:" + str(angle_between_kinect_and_table) + \
           " distance_x:" + str(distance_between_center_of_kinect_and_origin_of_table) + \
           " distance_z:" + str(y1 - hypotenuse_of_upper_triangle)
@@ -56,12 +56,12 @@ if __name__ == "__main__":
 
     cv2.destroyAllWindows()
 
-    position_blue = blue_cube.find_position(image_hsv, ma_kinect)
+    position_blue = blue_cube._find_position_in_world(image_hsv, ma_kinect)
 
     # print pixel_cloud
     print "blue" + str(position_blue)
 
-    position_red = red_cube.find_position(image_hsv, ma_kinect)
+    position_red = red_cube._find_position_in_world(image_hsv, ma_kinect)
 
 
     # print pixel_cloud
