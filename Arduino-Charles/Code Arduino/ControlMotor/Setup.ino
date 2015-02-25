@@ -9,6 +9,7 @@ void setup()
   pinMode(CCW2, OUTPUT), digitalWrite(CCW2, LOW);
   pinMode(CCW3, OUTPUT), digitalWrite(CCW3, LOW);
   pinMode(CCW4, OUTPUT), digitalWrite(CCW4, LOW);
+  pinMode(CCW4, OUTPUT), digitalWrite(CCW4, LOW);
   
   // PWM
   pinMode(Pin_PWM1, OUTPUT), digitalWrite(Pin_PWM1, 0);
@@ -20,6 +21,7 @@ void setup()
   attachInterrupt(CapteurHall_2, Interrupt_Motor2, RISING);
   attachInterrupt(CapteurHall_3, Interrupt_Motor3, RISING);
   attachInterrupt(CapteurHall_4, Interrupt_Motor4, RISING);
+  
   
   
   Serial.begin(9600); // Ouverture du port série

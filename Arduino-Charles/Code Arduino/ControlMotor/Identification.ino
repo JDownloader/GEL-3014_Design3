@@ -22,7 +22,7 @@ void Identification()
     }
     if(previousMillisIdent-currentMillis < 3000 && identSTEP == 5)
     {
-      FermetureGenerale();
+      //FermetureGenerale();
       ident = false;
     }
 }
