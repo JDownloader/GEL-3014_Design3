@@ -10,47 +10,50 @@ void Serie()
     Serial.print("    Vitesse: ");
     Serial.println(Vitesse);
     
-  
+  Unstarted = 0;
   switch ( Commande ) 
   {
+    
     case 1:
       // DROIT DEVANT !
       FermetureGenerale();
-      digitalWrite(CW1, HIGH);
-      analogWrite(Pin_PWM1,Vitesse);
-      
+
       digitalWrite(CCW3, HIGH);
       analogWrite(Pin_PWM3,Vitesse);
+      
+      digitalWrite(CW2, HIGH);
+      analogWrite(Pin_PWM2,Vitesse);
       break;
     case 2:
       // TRIBORD TOUTE (droite) !
       FermetureGenerale();
-      digitalWrite(CW2, HIGH);
-      analogWrite(Pin_PWM2,Vitesse);
+
       
-      digitalWrite(CCW4, HIGH);
+      digitalWrite(CCW1, HIGH);
+      analogWrite(Pin_PWM1,Vitesse);
+      
+      digitalWrite(CW4, HIGH);
       analogWrite(Pin_PWM4,Vitesse);
-      
       break;
     case 3:
       // On se replis !!
       FermetureGenerale();
-      digitalWrite(CCW1, HIGH);
-      analogWrite(Pin_PWM1,Vitesse);
-      
+
       digitalWrite(CW3, HIGH);
       analogWrite(Pin_PWM3,Vitesse);
-
+      
+      digitalWrite(CCW2, HIGH);
+      analogWrite(Pin_PWM2,Vitesse);
       break;
     case 4:
       // Mouissallions à babord !!
       FermetureGenerale();
-      digitalWrite(CW2, HIGH);
-      analogWrite(Pin_PWM2,Vitesse);
+      
+      digitalWrite(CW1, HIGH);
+      analogWrite(Pin_PWM1,Vitesse);
       
       digitalWrite(CCW4, HIGH);
       analogWrite(Pin_PWM4,Vitesse);
-
       break;
     case 101:
       // DANGERRRRRRR !!
@@ -66,6 +69,19 @@ void Serie()
 
       break;
     case 102:
+      // DANGERRRRRRR !!
+      FermetureGenerale();
+      digitalWrite(CCW1, HIGH);
+      analogWrite(Pin_PWM1,Vitesse);
+      digitalWrite(CCW2, HIGH);
+      analogWrite(Pin_PWM2,Vitesse);
+      digitalWrite(CCW3, HIGH);
+      analogWrite(Pin_PWM3,Vitesse);
+      digitalWrite(CCW4, HIGH);
+      analogWrite(Pin_PWM4,Vitesse);
+
+      break;
+    case 103:
       // Identification !!
       FermetureGenerale();
       ident = true;
@@ -73,17 +89,17 @@ void Serie()
       previousMillisIdent = currentMillis;
       break;
       
-    case 103:
+    case 104:
       // Identification !!
       FermetureGenerale();
       ident = false;
       identSTEP = 0;
       previousMillisIdent = currentMillis;
       break;
-   case 104:
+   case 105:
       digitalWrite(31, HIGH);
       break;
-   case 105:
+   case 106:
       digitalWrite(31, LOW);
       break;
     default:
@@ -103,6 +119,5 @@ void FermetureGenerale()
     digitalWrite(CCW2, LOW);
     digitalWrite(CCW3, LOW);
     digitalWrite(CCW4, LOW);
-    digitalWrite(31, LOW);
 }
 

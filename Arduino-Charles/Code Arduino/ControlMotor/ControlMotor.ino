@@ -60,6 +60,7 @@
 // Variable d'état
   bool ident = false;
   int  identSTEP = 0;
+  bool Unstarted = 1;
 
 // Gestion du temps!
   unsigned long previousMillis  = 0;
@@ -70,4 +71,8 @@
   unsigned long previousMillisIdent = 0;
   unsigned long currentMillis = 0;
 
+  vitesse_PID = Vitesse;
+  PID myPID1(&vitesse_mesure_roue1, &vitesse_PWM1, &vitesse_PID1,76.3,0.9457,0, DIRECT);
+
+  
 

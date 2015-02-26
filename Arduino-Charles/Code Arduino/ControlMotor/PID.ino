@@ -1,7 +1,7 @@
 void PIDsetup()
 {
   vitesse_PID = Vitesse;
-  PID myPID(&vitesse_mesure_roue1, &vitesse_PWM1, &vitesse_PID,1,1,0, DIRECT);
+  PID myPID(&vitesse_mesure_roue1, &vitesse_PWM1, &vitesse_PID,76.3,0.9457,0, DIRECT);
 //  //initialize the variables we're linked to
 //  Setpoint = 100;
 //  //tell the PID to range between 0 and the full window size

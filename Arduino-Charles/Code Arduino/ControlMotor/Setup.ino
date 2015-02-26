@@ -26,6 +26,10 @@ void setup()
   
   Serial.begin(9600); // Ouverture du port série
   while (!Serial);    // Attente de la confirmation!
+  
+  
+  myPID1.SetMode(AUTOMATIC);
+
 }
 
 
