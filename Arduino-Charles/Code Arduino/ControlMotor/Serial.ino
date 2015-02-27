@@ -17,11 +17,12 @@ void Serie()
     case 1:
       // DROIT DEVANT !
       FermetureGenerale();
-
+//      vitesse_PID3 = Vitesse; 
+//      vitesse_PID2 = Vitesse;
       digitalWrite(CCW3, HIGH);
-      analogWrite(Pin_PWM3,Vitesse);
-      
       digitalWrite(CW2, HIGH);
+      
+      analogWrite(Pin_PWM3,Vitesse);
       analogWrite(Pin_PWM2,Vitesse);
       break;
     case 2:
@@ -105,6 +106,10 @@ void Serie()
     default:
       // Code
       break;
+   case 99:
+      FermetureGenerale();
+      break;
+      
   }
 }
 

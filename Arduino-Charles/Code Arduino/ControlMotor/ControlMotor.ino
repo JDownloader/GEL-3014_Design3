@@ -71,8 +71,16 @@
   unsigned long previousMillisIdent = 0;
   unsigned long currentMillis = 0;
 
-  vitesse_PID = Vitesse;
-  PID myPID1(&vitesse_mesure_roue1, &vitesse_PWM1, &vitesse_PID1,76.3,0.9457,0, DIRECT);
+
+  double vitesse_PID1 = 0;
+  double vitesse_PID2 = 0;
+  double vitesse_PID3 = 0;
+  double vitesse_PID4 = 0;
+  PID PID_roue1(&vitesse_mesure_roue1, &vitesse_PWM1, &vitesse_PID1,2.60,0.27,0, DIRECT);
+  PID PID_roue2(&vitesse_mesure_roue2, &vitesse_PWM2, &vitesse_PID2,2.60,0.27,0, DIRECT);
+  PID PID_roue3(&vitesse_mesure_roue3, &vitesse_PWM3, &vitesse_PID3,2.60,0.27,0, DIRECT);
+  PID PID_roue4(&vitesse_mesure_roue4, &vitesse_PWM4, &vitesse_PID4,2.60,0.27,0, DIRECT);
+  
 
   
 

@@ -27,8 +27,16 @@ void setup()
   Serial.begin(9600); // Ouverture du port série
   while (!Serial);    // Attente de la confirmation!
   
-  
-  myPID1.SetMode(AUTOMATIC);
+    
+  PID_roue1.SetMode(AUTOMATIC);
+  PID_roue1.SetSampleTime(50);
+  PID_roue2.SetMode(AUTOMATIC);
+  PID_roue2.SetSampleTime(50);  
+  PID_roue3.SetMode(AUTOMATIC);
+  PID_roue3.SetSampleTime(50);
+  PID_roue4.SetMode(AUTOMATIC);
+  PID_roue4.SetSampleTime(50);
+
 
 }
 
