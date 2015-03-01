@@ -30,7 +30,7 @@ if __name__ == "__main__":
     cv2.namedWindow('red_layer', cv2.WINDOW_AUTOSIZE)
     try:
         ma_kinect = Kinect()
-    except NoKinectDetectedException as e:
+    except NoKinectDetectedException:
         print "No kinect detected"
         visionReady = False
 

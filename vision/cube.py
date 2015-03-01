@@ -2,14 +2,14 @@ import cv2
 import numpy as np
 
 RANGES_FOR_COLOR_FILTER = {'red': ([170, 80, 80], [179, 255, 255]),
-          'green': ([30, 110, 110], [50, 255, 255]),
-          'blue': ([95, 80, 80], [115, 255, 255]),
-          'yellow': ([22, 130, 130], [32, 255, 255])}
+                           'green': ([30, 110, 110], [50, 255, 255]),
+                           'blue': ([95, 80, 80], [115, 255, 255]),
+                           'yellow': ([22, 130, 130], [32, 255, 255])}
 
-ITERATIONS = {'red': ([8], [9]),
-          'green': ([5], [8]),
-          'blue': ( [5], [8]),
-          'yellow': ([2], [4])}
+PARAMETERS_FOR_FORM_FILTER = {'red': ([8], [9]),
+                              'green': ([5], [8]),
+                              'blue': ([5], [8]),
+                              'yellow': ([2], [4])}
 
 
 class ColorFilter:
@@ -41,7 +41,7 @@ class Cube:
         self.color = a_color
         self.position = None
         self.color_filter = ColorFilter(RANGES_FOR_COLOR_FILTER.get(a_color))
-        self.form_filter = FormFilter(ITERATIONS.get(a_color))
+        self.form_filter = FormFilter(PARAMETERS_FOR_FORM_FILTER.get(a_color))
 
     def apply_filters(self, img_hvg):
         img_mask = self.color_filter.apply(img_hvg)
@@ -50,7 +50,8 @@ class Cube:
 
     def find_position(self, img_hvg, kinect):
         position_in_world = self._find_position_in_world(img_hvg, kinect)
-        return kinect._apply_matrix_transformation(position_in_world)
+        self.position = kinect._apply_matrix_transformation(position_in_world)
+        return self.position
 
     def _find_position_in_world(self, img_hvg, kinect):
         img_mask = self.apply_filters(img_hvg)

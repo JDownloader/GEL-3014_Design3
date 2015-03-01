@@ -8,17 +8,6 @@ class VisionTools:
     def __init__(self):
         pass
 
-    def open_camera(self, a_cam_id):
-        cap = cv2.VideoCapture(a_cam_id)
-        return cap
-
-    def get_frame(self, cap):
-        ret, image = cap.read()
-        if ret == False:
-            print >> sys.stderr, "Error with the capture of video"
-            return None
-        return image
-
     def get_image_rgb(self, cap):
         flags, img = cap.retrieve(None, cv2.cv.CV_CAP_OPENNI_BGR_IMAGE)
         if not flags:

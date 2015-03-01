@@ -1,4 +1,3 @@
-import sys
 import cv2
 from distanceCalibration import DistanceCalibration
 
@@ -14,9 +13,6 @@ class Kinect():
         flags, img = self.capt_obj.read()
         if flags is False:
             raise NoKinectDetectedException()
-
-    def get_cube_position(self, img, cube):
-        pass
 
     def _apply_matrix_transformation(self, point_in_world):
         return self.distanceCalibration.apply_matrix_transformation(point_in_world)
@@ -35,8 +31,6 @@ class Kinect():
         if area < 2000000 and area != 0:
             x = int(moments['m10']/area)
             y = int(moments['m01']/area)
-
         centre = (x, y)
-
         return centre
 
