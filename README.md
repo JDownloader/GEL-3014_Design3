@@ -62,7 +62,7 @@ Usage
     
 Run project
 -----------
-    $ python sample
+    $ python baseStation
 
 Run tests
 ---------
