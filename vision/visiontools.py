@@ -26,10 +26,6 @@ class VisionTools:
             return None
         return img
 
-    def new_rgb_image(self, width, height):
-        image = np.zeros((height, width, 3), np.uint8)
-        return image
-
     def get_hsv_image(self, image_rgb):
         hsv_image = cv2.cvtColor(image_rgb, cv2.COLOR_BGR2HSV)
         return hsv_image

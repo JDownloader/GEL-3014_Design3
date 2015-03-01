@@ -1,12 +1,15 @@
 import cv2
 import numpy as np
 
-RANGES_FOR_COLOR_FILTER = {'red': ([165, 80, 80], [175, 255, 255]),
-          'green': ([30, 100, 100], [50, 255, 255]),
-          'blue': ([100, 80, 80], [115, 255, 255]),
-          'yellow': ([20, 60, 190], [30, 255, 255]),
-          'white': ([0, 0, 0], [0, 0, 0]),
-          'black':([90, 60, 30], [110, 255, 255])}
+RANGES_FOR_COLOR_FILTER = {'red': ([170, 80, 80], [179, 255, 255]),
+          'green': ([30, 110, 110], [50, 255, 255]),
+          'blue': ([95, 80, 80], [115, 255, 255]),
+          'yellow': ([22, 130, 130], [32, 255, 255])}
+
+ITERATIONS = {'red': ([8], [9]),
+          'green': ([5], [8]),
+          'blue': ( [5], [8]),
+          'yellow': ([2], [4])}
 
 
 class ColorFilter:
@@ -20,15 +23,16 @@ class ColorFilter:
         return img_mask
 
 class FormFilter:
-    def __init__(self, ellipse_size=3, erode_iteration=2, dilate_iteration=6):
-        self.ellipse_size = ellipse_size
-        self.erode_iteration = erode_iteration
-        self.dilate_iteration = dilate_iteration
+    def __init__(self, iteration_range):
+        self.erode_iteration = np.array(iteration_range[0])
+        self.dilate_iteration = np.array(iteration_range[1])
 
     def apply(self, img_mask):
-        kernel = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (self.ellipse_size, self.ellipse_size))
+        rect_size = 3
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (rect_size, rect_size))
         image_erode = cv2.erode(img_mask, kernel, iterations=self.erode_iteration)
         image_dilate = cv2.dilate(image_erode, kernel, iterations=self.dilate_iteration)
+
         return image_dilate
 
 
@@ -37,7 +41,7 @@ class Cube:
         self.color = a_color
         self.position = None
         self.color_filter = ColorFilter(RANGES_FOR_COLOR_FILTER.get(a_color))
-        self.form_filter = FormFilter()
+        self.form_filter = FormFilter(ITERATIONS.get(a_color))
 
     def apply_filters(self, img_hvg):
         img_mask = self.color_filter.apply(img_hvg)
@@ -54,3 +58,4 @@ class Cube:
         pixel_cloud = kinect.get_img_cloud_map()[point_centre[1], point_centre[0]]
         point1_ref = [[-pixel_cloud[0]], [pixel_cloud[2]], [1]]
         return np.mat(point1_ref)
+

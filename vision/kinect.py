@@ -39,3 +39,4 @@ class Kinect():
         centre = (x, y)
 
         return centre
+
