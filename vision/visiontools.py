@@ -8,27 +8,12 @@ class VisionTools:
     def __init__(self):
         pass
 
-    def open_camera(self, a_cam_id):
-        cap = cv2.VideoCapture(a_cam_id)
-        return cap
-
-    def get_frame(self, cap):
-        ret, image = cap.read()
-        if ret == False:
-            print >> sys.stderr, "Error with the capture of video"
-            return None
-        return image
-
     def get_image_rgb(self, cap):
         flags, img = cap.retrieve(None, cv2.cv.CV_CAP_OPENNI_BGR_IMAGE)
         if not flags:
             print >> sys.stderr, "Error with RGB image"
             return None
         return img
-
-    def new_rgb_image(self, width, height):
-        image = np.zeros((height, width, 3), np.uint8)
-        return image
 
     def get_hsv_image(self, image_rgb):
         hsv_image = cv2.cvtColor(image_rgb, cv2.COLOR_BGR2HSV)

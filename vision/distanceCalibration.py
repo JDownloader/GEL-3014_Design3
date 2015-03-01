@@ -15,9 +15,8 @@ class CalibrationValues:
 class DistanceCalibration:
     def __init__(self):
         #self.calibration_value = CalibrationValues(-22.75/180*math.pi, 0.105, -0.535)
-        #self.calibration_value = CalibrationValues(-0.3621, 0.1623, -0.4582)
-        self.calibration_value = CalibrationValues(-0.3970, 0.1623, -0.4582)
-
+        #self.calibration_value = CalibrationValues(-0.3970, 0.1623, -0.4582)
+        self.calibration_value = CalibrationValues(-0.3621, 0.105, -0.525)
 
     def apply_matrix_transformation(self, point_in_world):
         trans_rot = self.calibration_value.get_rotation_matrix()
