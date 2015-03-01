@@ -1,14 +1,13 @@
-from CodeWarrior.Metrowerks_Shell_Suite import _Prop_Stop_at_temp_breakpoint
-import random
-import sys
 from threading import Thread
 import time
-import os, re
+import os
+import re
 
 
 class RobotFinder(Thread):
     ROBOT_MAC = "a0:a8:cd:62:c3:75"
     IP_NOT_FOUND = "0.0.0.0"
+    SLEEP_TIME_IN_MINS = 5
     ip_address = IP_NOT_FOUND
 
     def __init__(self, callback):
@@ -17,14 +16,21 @@ class RobotFinder(Thread):
 
     def run(self):
         while self.ip_address == self.IP_NOT_FOUND:
-            time.sleep(5)
+            time.sleep(self.SLEEP_TIME_IN_MINS)
             self.ip_adress = self._attempt_find()
         self.callback(self.ip_address)
 
     def _attempt_find(self):
-        ip_address = self.IP_NOT_FOUND
-        arp_pipe=os.popen2("/usr/sbin/arp -a","");
+        arp_pipe = self._get_arp_pipe()
         lines_of_arp_exit = arp_pipe[1].read().split("\n")
+        ip_address = self._parse_answer(lines_of_arp_exit)
+        return ip_address
+
+    def _get_arp_pipe(self):
+        return os.popen2("/usr/sbin/arp -a","");
+
+    def _parse_answer(self, lines_of_arp_exit):
+        ip_address = self.IP_NOT_FOUND
         reg_ip = re.compile("\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}")
         reg_mac = re.compile("((?:[0-9A-f]{1,2}[:]){5}(?:[0-9A-f]{1,2}))")
         for lineOfArpExit in lines_of_arp_exit:

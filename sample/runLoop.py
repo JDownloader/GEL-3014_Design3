@@ -9,7 +9,7 @@ class RunLoop:
     def start(self):
         self.startTime = time.time()
 
-    def getTime(self):
+    def get_time(self):
         if self.startTime is None:
             return 0
         return time.time()-self.startTime;
