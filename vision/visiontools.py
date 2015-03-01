@@ -18,11 +18,3 @@ class VisionTools:
     def get_hsv_image(self, image_rgb):
         hsv_image = cv2.cvtColor(image_rgb, cv2.COLOR_BGR2HSV)
         return hsv_image
-
-    def find_contours(self, img):
-        contours, hierarchy = cv2.findContours(img, mode=cv2.RETR_TREE, method=cv2.CHAIN_APPROX_SIMPLE)
-        return contours
-
-    def mouse_click_callback(self, event, x, y, flags, param):
-        if event == cv2.EVENT_LBUTTONDBLCLK:
-            print "Click at %d, %d" % (x, y)

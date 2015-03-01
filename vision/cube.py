@@ -22,6 +22,7 @@ class ColorFilter:
         img_mask = cv2.inRange(img_hsv, lower_color, upper_color)
         return img_mask
 
+
 class FormFilter:
     def __init__(self, iteration_range):
         self.erode_iteration = np.array(iteration_range[0])
@@ -32,7 +33,6 @@ class FormFilter:
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (rect_size, rect_size))
         image_erode = cv2.erode(img_mask, kernel, iterations=self.erode_iteration)
         image_dilate = cv2.dilate(image_erode, kernel, iterations=self.dilate_iteration)
-
         return image_dilate
 
 
@@ -41,7 +41,7 @@ class Cube:
         self.color = a_color
         self.position = None
         self.color_filter = ColorFilter(RANGES_FOR_COLOR_FILTER.get(a_color))
-        self.form_filter = FormFilter(PARAMETERS_FOR_FORM_FILTER.get(a_color))
+        self.form_filter = FormFilter(PARAMETERS_FOR_FORM_FILTER.get(a_color))  
 
     def apply_filters(self, img_hvg):
         img_mask = self.color_filter.apply(img_hvg)
