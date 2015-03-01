@@ -1,9 +1,13 @@
-import os.path, random
-from flask import Flask, redirect, url_for, jsonify
-from time import gmtime, strftime
-from robotFinder import RobotFinder
+import random
+import os.path
 
+from time import gmtime, strftime
+from flask import Flask, redirect, url_for, jsonify
+from robotFinder import RobotFinder
 from runLoop import RunLoop
+
+
+SERVER_PORT = 8000
 
 class MyServer(Flask):
     robotIpAddress = RobotFinder.IP_NOT_FOUND
@@ -35,13 +39,13 @@ def start():
 
 @app.route('/status')
 def status():
-    poxY = random.randrange(0, 400, 1)
-    runTime = app.runLoop.getTime()
-    me = {  "top": 30,
-            "left": poxY,
-            "chrono": strftime("%Mm%Ss",gmtime(runTime)),
-            "robotIP":app.robotIpAddress,}
-    return jsonify(me)
+    pos_y = random.randrange(0, 400, 1)
+    run_time = app.runLoop.get_time()
+    sample_status = { "top": 30,
+                      "left": pos_y,
+                      "chrono": strftime("%Mm%Ss",gmtime(run_time)),
+                      "robotIP":app.robotIpAddress,}
+    return jsonify(sample_status)
 
 if __name__ == '__main__':  # pragma: no cover
-    app.run(port=8000)
+    app.run(port=SERVER_PORT)
