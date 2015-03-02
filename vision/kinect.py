@@ -19,6 +19,7 @@ class Kinect():
 
     def grab_new_image(self):
         self.capt_obj.grab()
+        return self.capt_obj
 
     def get_img_cloud_map(self):
         flags_p, img_cloud_map = self.capt_obj.retrieve(None, cv2.cv.CV_CAP_OPENNI_POINT_CLOUD_MAP)
