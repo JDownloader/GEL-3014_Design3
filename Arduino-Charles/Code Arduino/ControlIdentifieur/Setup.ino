@@ -29,23 +29,6 @@ void setup()
   
     
 
-
-  PID_roue1.SetSampleTime(periode_echantillonnage);
-  PID_roue2.SetSampleTime(periode_echantillonnage);  
-  PID_roue3.SetSampleTime(periode_echantillonnage);
-  PID_roue4.SetSampleTime(periode_echantillonnage);
-
-  PID_roue1.SetMode(AUTOMATIC);
-  PID_roue2.SetMode(AUTOMATIC);
-  PID_roue3.SetMode(AUTOMATIC);
-  PID_roue4.SetMode(AUTOMATIC);
-  
-  double PIDMIN = 60;
-  double PIDMAX = 255; 
-  PID_roue1.SetOutputLimits(PIDMIN, PIDMAX);
-  PID_roue2.SetOutputLimits(PIDMIN, PIDMAX);
-  PID_roue3.SetOutputLimits(PIDMIN, PIDMAX);
-  PID_roue4.SetOutputLimits(PIDMIN, PIDMAX);
   
 }
 

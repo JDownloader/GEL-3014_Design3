@@ -72,21 +72,6 @@
   unsigned long currentMillis = 0;
 
 
-  double vitesse_PID1 = 0;
-  double vitesse_PID2 = 0;
-  double vitesse_PID3 = 0;
-  double vitesse_PID4 = 0;
-  
-  double kp = 300;
-  double ki = 0.2243;
-  double kd = 0;
-  
-  PID PID_roue1(&vitesse_mesure_roue1, &vitesse_PWM1, &vitesse_PID1,kp,ki,kd, DIRECT);
-  PID PID_roue2(&vitesse_mesure_roue2, &vitesse_PWM2, &vitesse_PID2,kp,ki,kd, DIRECT);
-  PID PID_roue3(&vitesse_mesure_roue3, &vitesse_PWM3, &vitesse_PID3,kp,ki,kd, DIRECT);
-  PID PID_roue4(&vitesse_mesure_roue4, &vitesse_PWM4, &vitesse_PID4,kp,ki,kd, DIRECT);
- 
-
   
 
 

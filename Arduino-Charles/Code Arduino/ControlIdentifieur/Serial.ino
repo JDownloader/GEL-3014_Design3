@@ -17,21 +17,19 @@ void Serie()
     case 1:
       // DROIT DEVANT !
       FermetureGenerale();
-      vitesse_PID3 = Vitesse; 
-      vitesse_PID2 = Vitesse;
+      analogWrite(Pin_PWM3,Vitesse);
+      analogWrite(Pin_PWM2,Vitesse);     
       
       digitalWrite(CCW3, HIGH);
       digitalWrite(CW2, HIGH);
 
-//      analogWrite(Pin_PWM3,Vitesse);
-//      analogWrite(Pin_PWM2,Vitesse);
       break;
     case 2:
       // TRIBORD TOUTE (droite) !
       FermetureGenerale();
 
-      vitesse_PID1 = Vitesse;
-      vitesse_PID4 = Vitesse;
+      analogWrite(Pin_PWM1,Vitesse);
+      analogWrite(Pin_PWM4,Vitesse); 
       
       digitalWrite(CCW1, HIGH);
       digitalWrite(CW4, HIGH);
@@ -42,9 +40,9 @@ void Serie()
     case 3:
       // On se replis !!
       FermetureGenerale();
-      vitesse_PID3 = Vitesse; 
-      vitesse_PID2 = Vitesse;
-
+      analogWrite(Pin_PWM3,Vitesse);
+      analogWrite(Pin_PWM2,Vitesse);
+      
       digitalWrite(CW3, HIGH);
       digitalWrite(CCW2, HIGH);
 
@@ -52,8 +50,8 @@ void Serie()
     case 4:
       // Mouissallions à babord !!
       FermetureGenerale();
-      vitesse_PID1 = Vitesse;
-      vitesse_PID4 = Vitesse;
+      analogWrite(Pin_PWM1,Vitesse);
+      analogWrite(Pin_PWM4,Vitesse); 
       
       digitalWrite(CW1, HIGH);
       digitalWrite(CCW4, HIGH);
@@ -62,10 +60,10 @@ void Serie()
     case 101:
       // DANGERRRRRRR !!
       FermetureGenerale();
-      vitesse_PID1 = Vitesse;
-      vitesse_PID2 = Vitesse;
-      vitesse_PID3 = Vitesse; 
-      vitesse_PID4 = Vitesse;
+      analogWrite(Pin_PWM1,Vitesse);
+      analogWrite(Pin_PWM2,Vitesse);
+      analogWrite(Pin_PWM3,Vitesse);
+      analogWrite(Pin_PWM4,Vitesse); 
       digitalWrite(CW1, HIGH);
       digitalWrite(CW2, HIGH);
       digitalWrite(CW3, HIGH);
@@ -75,10 +73,10 @@ void Serie()
     case 102:
       // DANGERRRRRRR !!
       FermetureGenerale();
-      vitesse_PID1 = Vitesse;
-      vitesse_PID2 = Vitesse;
-      vitesse_PID3 = Vitesse; 
-      vitesse_PID4 = Vitesse;
+      analogWrite(Pin_PWM1,Vitesse);
+      analogWrite(Pin_PWM2,Vitesse);
+      analogWrite(Pin_PWM3,Vitesse);
+      analogWrite(Pin_PWM4,Vitesse); 
       digitalWrite(CCW1, HIGH);
       digitalWrite(CCW2, HIGH);
       digitalWrite(CCW3, HIGH);
@@ -128,10 +126,7 @@ void FermetureGenerale()
     digitalWrite(CCW2, LOW);
     digitalWrite(CCW3, LOW);
     digitalWrite(CCW4, LOW);
-    PID_roue1.Reset();
-    PID_roue2.Reset();
-    PID_roue3.Reset();
-    PID_roue4.Reset();
+
  
 }
 
