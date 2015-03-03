@@ -9,22 +9,34 @@ void loop()
   {
     Serie();    
   }
+  if(distance_roue2>10000)
+  {
+    FermetureGenerale();
+  }
   unsigned long currentMillis = millis();
   int deltaTime = currentMillis - previousMillis;
   if ((deltaTime) >= periode_echantillonnage)
     {
-      noInterrupts();
+      //noInterrupts();
       vitesse_mesure_roue1 = (float)(distance_roue1-distance_precedente_moteur1)/(float)deltaTime;
-      Serial.print("11,");
+      //Serial.print("11,");
       PID_roue1.Compute();
-      vitesse_mesure_roue2 = (float)(distance_roue2-distance_precedente_moteur2)/(float)deltaTime;
+      double vitesse_mesure_roue2 = (float)(distance_roue2-distance_precedente_moteur2)/(float)deltaTime;
+      Serial.print("  Différence2:");
+      Serial.print(distance_roue2-distance_precedente_moteur2);
+      Serial.print("  Vitesse2:");
+      Serial.println(vitesse_mesure_roue2,DEC);
       Serial.print("22,");
       PID_roue2.Compute();
       vitesse_mesure_roue3 = (float)(distance_roue3-distance_precedente_moteur3)/(float)deltaTime;
+      Serial.print("  Différence3:");
+      Serial.print(distance_roue3-distance_precedente_moteur3);
+      Serial.print("  Vitesse3:");
+      Serial.println(vitesse_mesure_roue3);
       Serial.print("33,");
       PID_roue3.Compute();
       vitesse_mesure_roue4 = (float)(distance_roue4-distance_precedente_moteur4)/(float)deltaTime;
-      Serial.print("44,");
+      //Serial.print("44,");
       PID_roue4.Compute();
       analogWrite(Pin_PWM1,vitesse_PWM1); 
       analogWrite(Pin_PWM2,vitesse_PWM2);
@@ -51,7 +63,7 @@ void loop()
       distance_precedente_moteur3 = distance_roue3;
       distance_precedente_moteur4 = distance_roue4;
       previousMillis = currentMillis;
-      interrupts();
+      //interrupts();
     }
   if(Unstarted)
   {

@@ -16,16 +16,32 @@ void loop()
       noInterrupts();
       vitesse_mesure_roue1 = (float)(distance_roue1-distance_precedente_moteur1)/(float)deltaTime;
       Serial.print("11,");
-      Serial.print(vitesse_mesure_roue1);
+      Serial.print(currentMillis);
+      Serial.print(",");
+      Serial.print(Vitesse);
+      Serial.print(",");
+      Serial.println(vitesse_mesure_roue1);
       vitesse_mesure_roue2 = (float)(distance_roue2-distance_precedente_moteur2)/(float)deltaTime;
       Serial.print("22,");
-      Serial.print(vitesse_mesure_roue2);
+      Serial.print(currentMillis);
+      Serial.print(",");
+      Serial.print(Vitesse);
+      Serial.print(",");
+      Serial.println(vitesse_mesure_roue2);
       vitesse_mesure_roue3 = (float)(distance_roue3-distance_precedente_moteur3)/(float)deltaTime;
       Serial.print("33,");
-      Serial.print(vitesse_mesure_roue3);
+      Serial.print(currentMillis);
+      Serial.print(",");
+      Serial.print(Vitesse);
+      Serial.print(",");
+      Serial.println(vitesse_mesure_roue3);
       vitesse_mesure_roue4 = (float)(distance_roue4-distance_precedente_moteur4)/(float)deltaTime;
       Serial.print("44,");
-      Serial.print(vitesse_mesure_roue4);
+      Serial.print(currentMillis);
+      Serial.print(",");
+      Serial.print(Vitesse);
+      Serial.print(",");
+      Serial.println(vitesse_mesure_roue4);
 
 
       

@@ -46,7 +46,7 @@
   double vitesse_mesure_roue3 = 0;
   double vitesse_mesure_roue4 = 0;
   
-  int periode_echantillonnage = 25; // Période d'échantillonnage en milli secondes
+  int periode_echantillonnage = 50; // Période d'échantillonnage en milli secondes
   double vitesse_PID; // identique à vitesse mais type double VS byte
   
 // Constante la communication serial
@@ -54,6 +54,7 @@
   byte NumeroMoteur  = 0;
   byte Direction     = 0;
   byte Vitesse       = 0;
+  byte Distance      = 0;
   
 
   
@@ -77,8 +78,8 @@
   double vitesse_PID3 = 0;
   double vitesse_PID4 = 0;
   
-  double kp = 300;
-  double ki = 0.2243;
+  double kp = 11.3; //24.16; //
+  double ki = 0.3379; //0.8817;//
   double kd = 0;
   
   PID PID_roue1(&vitesse_mesure_roue1, &vitesse_PWM1, &vitesse_PID1,kp,ki,kd, DIRECT);

@@ -32,11 +32,11 @@ void IdentificationMode(byte mode, bool etat, int vitesse)
   switch ( mode ) 
   {
     case 1: 
-      digitalWrite(CCW1, etat);
-      analogWrite(Pin_PWM1,vitesse);
-           
-      digitalWrite(CW3, etat);
-      analogWrite(Pin_PWM3,vitesse);
+      analogWrite(Pin_PWM3,Vitesse);
+      analogWrite(Pin_PWM2,Vitesse);
+      
+      digitalWrite(CW3, HIGH);
+      digitalWrite(CCW2, HIGH);
       
       previousMillisIdent = currentMillis;
       identSTEP++;

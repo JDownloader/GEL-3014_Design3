@@ -9,7 +9,6 @@ void setup()
   pinMode(CCW2, OUTPUT), digitalWrite(CCW2, LOW);
   pinMode(CCW3, OUTPUT), digitalWrite(CCW3, LOW);
   pinMode(CCW4, OUTPUT), digitalWrite(CCW4, LOW);
-  pinMode(CCW4, OUTPUT), digitalWrite(CCW4, LOW);
   
   // PWM
   pinMode(Pin_PWM1, OUTPUT), digitalWrite(Pin_PWM1, 0);
@@ -19,8 +18,8 @@ void setup()
   
   attachInterrupt(CapteurHall_1, Interrupt_Motor1, RISING);
   attachInterrupt(CapteurHall_2, Interrupt_Motor2, RISING);
-  attachInterrupt(CapteurHall_3, Interrupt_Motor3, RISING);
-  attachInterrupt(CapteurHall_4, Interrupt_Motor4, RISING);
+  attachInterrupt(CapteurHall_3, Interrupt_Motor3, FALLING);
+  attachInterrupt(CapteurHall_4, Interrupt_Motor4, FALLING);
   
   
   
@@ -40,7 +39,7 @@ void setup()
   PID_roue3.SetMode(AUTOMATIC);
   PID_roue4.SetMode(AUTOMATIC);
   
-  double PIDMIN = 60;
+  double PIDMIN = 55;
   double PIDMAX = 255; 
   PID_roue1.SetOutputLimits(PIDMIN, PIDMAX);
   PID_roue2.SetOutputLimits(PIDMIN, PIDMAX);
