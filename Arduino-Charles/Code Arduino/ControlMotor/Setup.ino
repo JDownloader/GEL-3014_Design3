@@ -43,7 +43,7 @@ void setup()
   double PIDMAX = 255; 
   PID_roue1.SetOutputLimits(PIDMIN, PIDMAX);
   PID_roue2.SetOutputLimits(PIDMIN, PIDMAX);
-  PID_roue3.SetOutputLimits(PIDMIN, PIDMAX);
+  PID_roue3.SetOutputLimits(PIDMIN-5, PIDMAX);
   PID_roue4.SetOutputLimits(PIDMIN, PIDMAX);
   
 }

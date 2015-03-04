@@ -57,6 +57,35 @@ void Serie()
       digitalWrite(CCW4, HIGH);
 
       break;
+      
+    case 11:
+      // Mouissallions à babord !!
+      FermetureGenerale();
+      analogWrite(Pin_PWM1,Vitesse);
+      digitalWrite(CW1, HIGH);
+
+      break;
+    case 12:
+      // Mouissallions à babord !!
+      FermetureGenerale();
+      analogWrite(Pin_PWM2,Vitesse);
+      digitalWrite(CW2, HIGH);
+
+      break;
+    case 13:
+      // Mouissallions à babord !!
+      FermetureGenerale();
+      analogWrite(Pin_PWM3,Vitesse);
+      digitalWrite(CW3, HIGH);
+
+      break;
+    case 14:
+      // Mouissallions à babord !!
+      FermetureGenerale();
+      analogWrite(Pin_PWM4,Vitesse);
+      digitalWrite(CW4, HIGH);
+
+      break;
     case 101:
       // DANGERRRRRRR !!
       FermetureGenerale();

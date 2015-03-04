@@ -1,4 +1,3 @@
-#include <PID_v1.h>
 // Descriptiond des pins!
 
   // outputs
@@ -29,7 +28,12 @@
   double vitesse_PWM2 = 0; // Vitesse Moteur #2
   double vitesse_PWM3 = 0; // Vitesse Moteur #3
   double vitesse_PWM4 = 0; // Vitesse Moteur #4
-    
+  
+  double vitesse_mesure_roue1 = 0;  //Vitesse mesurée
+  double vitesse_mesure_roue2 = 0;  //Vitesse mesurée
+  double vitesse_mesure_roue3 = 0;  //Vitesse mesurée
+  double vitesse_mesure_roue4 = 0;  //Vitesse mesurée
+      
 // Compteurs de distance
   int distance_roue1 = 0;
   int distance_roue2 = 0;
@@ -41,11 +45,7 @@
   int distance_precedente_moteur3 = 0;
   int distance_precedente_moteur4 = 0;
   
-  double vitesse_mesure_roue1 = 0;
-  double vitesse_mesure_roue2 = 0;
-  double vitesse_mesure_roue3 = 0;
-  double vitesse_mesure_roue4 = 0;
-  
+
   int periode_echantillonnage = 25; // Période d'échantillonnage en milli secondes
   double vitesse_PID; // identique à vitesse mais type double VS byte
   
