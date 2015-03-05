@@ -1,4 +1,6 @@
 import time
+import random
+from time import gmtime, strftime
 from flagLoop import FlagLoop
 
 class RunLoop:
@@ -15,5 +17,15 @@ class RunLoop:
             return 0
         return time.time()-self.startTime;
 
-    def get_current_json_flag(self):
+    def _get_current_flag(self):
         return self.flag_loop.get_json_flag()
+
+    def get_status(self, robot_ip):
+        pos_y = random.randrange(0, 400, 1)
+        run_time = self.get_time()
+        sample_status = { "top": 30,
+                      "left": pos_y,
+                      "chrono": strftime("%Mm%Ss",gmtime(run_time)),
+                      "robotIP": robot_ip,
+                      "flag": self._get_current_flag()}
+        return sample_status

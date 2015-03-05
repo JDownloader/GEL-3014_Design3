@@ -1,4 +1,3 @@
-import random
 import os.path
 from time import gmtime, strftime
 from flask import Flask, redirect, url_for, jsonify
@@ -8,13 +7,13 @@ from runLoop import RunLoop
 SERVER_PORT = 8000
 
 class MyServer(Flask):
-    robotIpAddress = RobotFinder.IP_NOT_FOUND
+    robot_ip_address = RobotFinder.IP_NOT_FOUND
     def __init__(self, *args, **kwargs):
         super(MyServer, self).__init__(*args, **kwargs)
         self.runLoop = RunLoop()
 
     def setBaseIpAdress(self, ip):
-        self.robotIpAddress = ip
+        self.robot_ip_address = ip
 
 app = MyServer(__name__)
 app.config.from_object(__name__)
@@ -38,13 +37,7 @@ def start():
 
 @app.route('/status')
 def status():
-    pos_y = random.randrange(0, 400, 1)
-    run_time = app.runLoop.get_time()
-    sample_status = { "top": 30,
-                      "left": pos_y,
-                      "chrono": strftime("%Mm%Ss",gmtime(run_time)),
-                      "robotIP": app.robotIpAddress,
-                      "flag": app.runLoop.get_current_json_flag()}
+    sample_status = app.runLoop.get_status(app.robot_ip_address)
     return jsonify(sample_status)
 
 if __name__ == '__main__':  # pragma: no cover
