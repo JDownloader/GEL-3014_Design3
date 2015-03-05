@@ -9,13 +9,14 @@ class RobotFinder(Thread):
     IP_NOT_FOUND = "0.0.0.0"
     SLEEP_TIME_IN_MINS = 5
     ip_address = IP_NOT_FOUND
+    stop = False
 
     def __init__(self, callback):
         Thread.__init__(self)
         self.callback = callback
 
     def run(self):
-        while self.ip_address == self.IP_NOT_FOUND:
+        while self.ip_address == self.IP_NOT_FOUND and self.stop is False:
             time.sleep(self.SLEEP_TIME_IN_MINS)
             self.ip_adress = self._attempt_find()
         self.callback(self.ip_address)
@@ -40,3 +41,6 @@ class RobotFinder(Thread):
                 if found_mac[0].lower() == self.ROBOT_MAC.lower():
                     ip_address = found_ip[0]
         return ip_address
+
+    def stop(self):
+        self.stop = True

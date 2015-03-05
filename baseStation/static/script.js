@@ -44,8 +44,8 @@
 	for (y = 0; y < 3; y++){
 		for (x = 0; x < 3; x++){
 			var cube = new fabric.Rect({
-				width: 50, height: 50, left: x*60+10, top: y*60+10, angle: 0,
-				fill: 'rgba(0,0,200,0.5)',
+				width: 50, height: 50, left: y*60+10, top: x*60+10, angle: 0,
+				fill: 'rgba(0,0,200,0.1)',
 				hasControls: false,
 			});
 			flagCanvas.add(cube);
@@ -57,9 +57,6 @@
 
 	document.getElementById("btn1").addEventListener("click", startRun);
 	function startRun(){
-		flagCubes[1].fill = 'rgba(255,0,200,1)';
-		flagCanvas.calcOffset();
-		flagCanvas.renderAll();
 		$.getJSON('/start').then(function(data) {
 			console.log( "Data: " + data );
 		}, function(status) { //error detection....
@@ -76,6 +73,7 @@
 		$.getJSON('/status').then(function(data) {
 			setRobotPosition(data.left, data.top);
 			setStatus(data);
+            setFlag(data.flag)
 			document.getElementById("baseConnectionErrorMessage").innerHTML = "";
 		}, function(status) { //error detection....
 			console.log( "Request Failed: " + status );
@@ -87,6 +85,29 @@
 		document.getElementById("chrono").innerHTML = data.chrono;
 		robotStatusHandler.updateStatus(data);
 	}
+
+    function setFlag(baseFlag){
+        var colors = {};
+        colors['black'] = 'rgba(0,0,0,1)';
+        colors['blue'] = 'rgba(0,0,255,1)';
+        colors['red'] = 'rgba(255,0,0,1)';
+        colors['yellow'] = 'rgba(255,255,0,1)';
+        colors['white'] = 'rgba(255,255,255,1)';
+        colors['green'] = 'rgba(0,255,0,1)';
+        for (i = 0; i < 9; i++){
+            if(baseFlag[i]===null) {
+                flagCubes[i].fill = 'rgba(0,0,0,0)';
+            } else{
+                flagCubes[i].fill = colors[baseFlag[i]];
+                flagCubes[i].stroke = '#000';
+                flagCubes[i].strokeWidth = 2;
+			    //console.log( colors[baseFlag]);
+            }
+        }
+		flagCanvas.calcOffset();
+		flagCanvas.renderAll();
+
+    }
 
 	//Classes
 

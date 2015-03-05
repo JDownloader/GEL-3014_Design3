@@ -1,11 +1,9 @@
 import random
 import os.path
-
 from time import gmtime, strftime
 from flask import Flask, redirect, url_for, jsonify
 from robotFinder import RobotFinder
 from runLoop import RunLoop
-
 
 SERVER_PORT = 8000
 
@@ -14,8 +12,6 @@ class MyServer(Flask):
     def __init__(self, *args, **kwargs):
         super(MyServer, self).__init__(*args, **kwargs)
         self.runLoop = RunLoop()
-        threadRobotFinder = RobotFinder(self.setBaseIpAdress)
-        threadRobotFinder.start()
 
     def setBaseIpAdress(self, ip):
         self.robotIpAddress = ip
@@ -24,6 +20,9 @@ app = MyServer(__name__)
 app.config.from_object(__name__)
 # since it will only be use by software engineer, debug on is ok
 app.debug = True
+threadRobotFinder = RobotFinder(app.setBaseIpAdress)
+threadRobotFinder.start()
+
 
 def root_dir():
     return os.path.abspath(os.path.dirname(__file__))
@@ -44,8 +43,10 @@ def status():
     sample_status = { "top": 30,
                       "left": pos_y,
                       "chrono": strftime("%Mm%Ss",gmtime(run_time)),
-                      "robotIP":app.robotIpAddress,}
+                      "robotIP": app.robotIpAddress,
+                      "flag": app.runLoop.get_current_json_flag()}
     return jsonify(sample_status)
 
 if __name__ == '__main__':  # pragma: no cover
     app.run(port=SERVER_PORT)
+    threadRobotFinder.stop()
