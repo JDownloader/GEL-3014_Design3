@@ -4,7 +4,7 @@ from flag import Flag
 
 class FlagLoop():
     def __init__(self):
-        self.flag = Flag('Canada')
+        self.flag = Flag('Saudi Arabia')
 
-    def get_json_flag(self):
+    def get_flag(self):
         return self.flag.get_matrix()
