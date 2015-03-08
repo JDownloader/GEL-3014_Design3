@@ -2,7 +2,8 @@
 
 	var planCanvas = new fabric.Canvas('planCanvas');
 	var flagCanvas = new fabric.Canvas('flagCanvas');
-	fabric.Object.prototype.transparentCorners = false;
+    var currentFlag;
+    var currentCubes;
     var colors = {};
     colors['black'] = 'rgba(0,0,0,1)';
     colors['blue'] = 'rgba(0,0,255,1)';
@@ -10,6 +11,35 @@
     colors['yellow'] = 'rgba(255,255,0,1)';
     colors['white'] = 'rgba(255,255,255,1)';
     colors['green'] = 'rgba(0,255,0,1)';
+    colors['black_p'] = 'rgba(0,0,0,0.2)';
+    colors['blue_p'] = 'rgba(0,0,255,0.2)';
+    colors['red_p'] = 'rgba(255,0,0,0.2)';
+    colors['yellow_p'] = 'rgba(255,255,0,0.2)';
+    colors['white_p'] = 'rgba(255,255,255,0.2)';
+    colors['green_p'] = 'rgba(0,255,0,0.2)';
+
+	fabric.Object.prototype.transparentCorners = false;
+
+    function compareTbl(tblA, tblB){
+        var areTheSame = true;
+        if(tblA == null || tblB == null){
+            areTheSame = false;
+        } else{
+            var lenA = tblA.length;
+            var lenB = tblB.length;
+            if(lenA === lenB){
+                for(i = 0; i < lenA; i++) {
+                    if(tblA[i] != tblB[i]) {
+                        areTheSame = false;
+                        break;
+                    }
+                }
+            } else{
+                areTheSame = false
+            }
+        }
+        return areTheSame;
+    }
 
 	//planCanvas
 
@@ -107,6 +137,13 @@
 	}
 
     function setFlag(baseFlag){
+        if(!compareTbl(currentFlag, baseFlag)){
+            currentFlag = baseFlag;
+            refreshFlag(baseFlag);
+        }
+    }
+
+    function refreshFlag(baseFlag){
         for (i = 0; i < 9; i++){
             if(baseFlag[i] === null) {
                 flagCubes[i].fill = 'rgba(0,0,0,0)';
@@ -118,10 +155,16 @@
         }
 		flagCanvas.calcOffset();
 		flagCanvas.renderAll();
-
     }
 
     function setCubes(cubes){
+        if(true){
+            currentCubes = cubes;
+            refreshCubes(cubes);
+        }
+    }
+
+    function refreshCubes(cubes){
         for(i = 0, len = cubes.length; i < 10; i++){
             if(i < len){
                 planCubes[i].set('left', cubes[i][0]);
@@ -134,6 +177,7 @@
         planCanvas.calcOffset();
         planCanvas.renderAll();
     }
+
 	//Classes
 
 	function RobotStatusHandler () {
@@ -156,12 +200,12 @@
 			} else{
 				this.refreshInvalid(robotIP);
 			}
-		}
+		};
 		this.refreshValid = function(robotIP) {
 			document.getElementById("robotConnectionErrorMessage").innerHTML = "";
 			document.getElementById("robotIP").innerHTML = "The IP of your robot is " + robotIP;
 			document.getElementById("startButton").disabled = false;
-		}
+		};
 		this.refreshInvalid = function(robotIP) {
 			document.getElementById("robotConnectionErrorMessage").innerHTML = "Can't contact robot.";
 			document.getElementById("robotIP").innerHTML = "";
