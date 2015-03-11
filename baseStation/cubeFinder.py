@@ -7,7 +7,7 @@ class CubeFinder():
     def __init__(self):
         pass
     def get_all_cubes(self):
-        return None
+        return []
     def add_cube(self, cube):
         pass
 

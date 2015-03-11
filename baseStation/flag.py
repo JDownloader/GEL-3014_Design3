@@ -5,15 +5,13 @@ here = path.abspath(path.dirname(__file__))
 
 
 class Flag():
-    FLAGS_FILE = 'flags.json'
+    FLAGS_FILE = here+ '/flags.json'
     cubes_of_tiles = [None]*9;
 
     def __init__(self, country):
         json_data=open(self.FLAGS_FILE)
         data = json.load(json_data)
         self.flag_matrix = data[country]
-        print self.flag_matrix
-        print type(self.flag_matrix)
 
     def get_matrix(self):
         tiles = [None]*9
