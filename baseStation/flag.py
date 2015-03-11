@@ -22,5 +22,4 @@ class Flag():
             else:
                 tiles[i] = self.flag_matrix[i]
             i += 1
-
         return tiles
