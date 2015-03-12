@@ -5,7 +5,7 @@ here = path.abspath(path.dirname(__file__))
 
 
 class Flag():
-    FLAGS_FILE = here+ '/flags.json'
+    FLAGS_FILE = here + '/flags.json'
     cubes_of_tiles = [None]*9;
 
     def __init__(self, country):
@@ -17,7 +17,7 @@ class Flag():
         tiles = [None]*9
         i = 0
         for tile in tiles:
-            if self.cubes_of_tiles[i] is None:
+            if self.cubes_of_tiles[i] is None and self.flag_matrix[i] is not None:
                 tiles[i] = self.flag_matrix[i]+'_p'
             else:
                 tiles[i] = self.flag_matrix[i]

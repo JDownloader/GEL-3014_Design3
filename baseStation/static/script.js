@@ -53,7 +53,7 @@
     var planCubes = new Array();
 	for (i = 0; i < 10; i++){
         var cube = new fabric.Rect({
-            width: 20, height: 20, left: 150, top: 100, angle: 0,
+            width: 22, height: 22, left: 150, top: 100, angle: 0,
 		    fill: 'rgba(0,0,0,0)',
             hasControls: false,
         });
@@ -63,7 +63,7 @@
 
 
 	var greenLines = new fabric.Rect({
-		width: 320, height: 220, left: 30, top: 330, angle: 0,
+		width: 178, height: 178, left: 61, top: 363, angle: 0,
 		stroke: '#AEEBAC', strokeWidth: 10,
 		fill:'transparent',
 		selectable: false,
@@ -101,6 +101,7 @@
 			flagCubes[x + y*3] = cube;
 		}
 	}
+    greenLines.moveTo(0);
 
 	//Events
 
@@ -167,8 +168,7 @@
     function refreshCubes(cubes){
         for(i = 0, len = cubes.length; i < 10; i++){
             if(i < len){
-                planCubes[i].set('left', cubes[i][0]);
-                planCubes[i].set('top', cubes[i][1]);
+                setCubePlanCanvasPosition(cubes[i][0], cubes[i][1], planCubes[i])
                 planCubes[i].fill = colors[cubes[i][2]];
             } else{
                 planCubes[i].fill = 'rgba(0,0,0,0)';
@@ -176,6 +176,15 @@
         }
         planCanvas.calcOffset();
         planCanvas.renderAll();
+    }
+
+    function setCubePlanCanvasPosition(x, y, cube){
+        canvasWidth = planCanvas.width;
+        canvasHeight = planCanvas.height;
+        cubeLeft = canvasWidth - 11 - x / 1120 * canvasWidth;
+        cubeTop = canvasHeight - 11 - y / 2230 * canvasHeight;
+        cube.set('left', cubeLeft);
+        cube.set('top', cubeTop);
     }
 
 	//Classes

@@ -1,5 +1,7 @@
 import time
 import random
+from vision.kinect import Kinect
+from cubeFinder import CubeFinder, DemoCubeFinder
 from time import gmtime, strftime
 from flagLoop import FlagLoop
 
@@ -8,6 +10,8 @@ class RunLoop:
 
     def __init__(self):
         self.flag_loop = FlagLoop()
+        self.kinect = Kinect()
+        self.cube_finder = DemoCubeFinder(self.kinect)
 
     def start(self):
         self.startTime = time.time()
@@ -28,5 +32,6 @@ class RunLoop:
                           "chrono": strftime("%Mm%Ss",gmtime(run_time)),
                           "robotIP": robot_ip,
                           "flag": self._get_current_flag(),
-                          "cubes": [[20, 20 , 'red'], [20, 100, 'blue']]}
+                          "cubes": self.cube_finder.get_cubes_positions()}
+        # "cubes": [[20, 20 , 'red'], [20, 100, 'blue']]
         return sample_status

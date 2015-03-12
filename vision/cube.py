@@ -50,7 +50,8 @@ class Cube:
 
     def find_position(self, img_hvg, kinect):
         position_in_world = self._find_position_in_world(img_hvg, kinect)
-        self.position = kinect._apply_matrix_transformation(position_in_world)
+        position = kinect._apply_matrix_transformation(position_in_world)
+        self.position = (int(position[0]*1000), int(position[1]*1000+40))
         return self.position
 
     def _find_position_in_world(self, img_hvg, kinect):

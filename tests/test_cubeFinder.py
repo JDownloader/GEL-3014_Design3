@@ -10,8 +10,9 @@ class TestCubeFinder(TestCase):
     CUBE_Y = 31
     
     def setUp(self):
-        self.empty_cubefinder = CubeFinder()
-        self.single_cube_cubefinder = CubeFinder()
+        fake_kinect = None
+        self.empty_cubefinder = CubeFinder(fake_kinect)
+        self.single_cube_cubefinder = CubeFinder(fake_kinect)
         cube = Cube(self.CUBE_COLOR)
         cube.find_position = Mock(return_value=(self.CUBE_X, self.CUBE_Y))
         cube.position = (self.CUBE_X, self.CUBE_Y)
