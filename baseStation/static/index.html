@@ -19,20 +19,35 @@
 					</canvas>
 				</div>
 				<div class="col-lg-6 col-md-6 portfolio-item">
-					<a id="robotIP" style="color: green"></a>
-					<a id="robotConnectionErrorMessage" style="color: red"></a>
-					<a id="baseConnectionErrorMessage" style="color: red"></a>
-					<h3><a>Buttons</a></h3>
-					<p><button id="startButton" type="button" class="btn btn-lg btn-primary">Start</button></p>
-					<p><button id="btn1" type="button" class="btn btn-lg btn-primary">Move robot</button></p>
-					<h3><a>Stats</a></h3>
-					<h4><a>Chrono: </a><a id="chrono">chrono: 00m00s</a></h4>
-					<h4><a>question:</a></h4>
-					<h4><a>country:</a></h4>
-					<h4><a>flag:</a></h4>
-					<canvas id="flagCanvas" width="190" height="190" style="border:1px solid #d3d3d3;">
-						Your browser does not support the HTML5 canvas tag.
-					</canvas>
+                    <form>
+                        <div class="btn-group" id="ddTable"> <a class="btn btn-default dropdown-toggle btn-select" data-toggle="dropdown" href="#">Select a table <span class="caret"></span></a>
+                            <ul class="dropdown-menu">
+                                <li><a href="#">Table 1</a></li>
+                                <li><a href="#">Table 2</a></li>
+                                <li><a href="#">Table 3</a></li>
+                                <li><a href="#">Table 4</a></li>
+                                <li class="divider"></li>
+                                <li><a href="#">Table 5</a></li>
+                                <li><a href="#">Table 6</a></li>
+                            </ul>
+                        </div>
+                    </form>
+                    <div>
+                        <a id="robotIP" style="color: green"></a>
+                        <a id="robotConnectionErrorMessage" style="color: red"></a>
+                        <a id="baseConnectionErrorMessage" style="color: red"></a>
+                        <h3><a>Buttons</a></h3>
+                        <p><button id="startButton" type="button" class="btn btn-lg btn-primary">Start</button></p>
+                        <p><button id="btn1" type="button" class="btn btn-lg btn-primary">Move robot</button></p>
+                        <h3><a>Stats</a></h3>
+                        <h4><a>Chrono: </a><a id="chrono">chrono: 00m00s</a></h4>
+                        <h4><a>question:</a></h4>
+                        <h4><a>country:</a></h4>
+                        <h4><a>flag:</a></h4>
+                        <canvas id="flagCanvas" width="190" height="190" style="border:1px solid #d3d3d3;">
+                            Your browser does not support the HTML5 canvas tag.
+                        </canvas>
+                    </div>
 				</div>
 			</div>
 			<footer>
