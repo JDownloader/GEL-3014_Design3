@@ -26,13 +26,14 @@ if __name__ == "__main__":
         mask_blue = blue_cube.apply_filters(image_hsv)
 
         cv2.imshow('BGR', image_rgb)
-        cv2.imshow('red_layer', image_hsv)
+        cv2.imshow('red_layer', mask_red)
         cv2.imshow('blue_layer', mask_blue)
         # cv2.imwrite('xxx_rgb.png', image_rgb)
         # cv2.imwrite('xxx_hsv.png', image_hsv)
 
         key = cv2.waitKey(5) & 0xFF
         if key == 27:
+            cv2.imwrite('xxx_rgb.png', image_rgb    )
             break
 
     cv2.destroyAllWindows()

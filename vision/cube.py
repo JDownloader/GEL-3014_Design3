@@ -1,12 +1,12 @@
 import cv2
 import numpy as np
 
-RANGES_FOR_COLOR_FILTER = {'red': ([170, 80, 80], [179, 255, 255]),
-                           'green': ([30, 110, 110], [50, 255, 255]),
-                           'blue': ([95, 80, 80], [115, 255, 255]),
-                           'yellow': ([22, 130, 130], [32, 255, 255])}
+RANGES_FOR_COLOR_FILTER = {'red': [([169, 73, 100], [179, 255, 255]), ([0, 73, 110],[2, 255, 255])],
+                           'green': [([30, 110, 110], [50, 255, 255])],
+                           'blue': [([95, 80, 80], [115, 255, 255])],
+                           'yellow': [([22, 130, 130], [32, 255, 255])]}
 
-PARAMETERS_FOR_FORM_FILTER = {'red': ([8], [9]),
+PARAMETERS_FOR_FORM_FILTER = {'red': ([2], [9]),
                               'green': ([5], [8]),
                               'blue': ([5], [8]),
                               'yellow': ([2], [4])}
@@ -17,9 +17,14 @@ class ColorFilter:
         self.color_range = color_range
 
     def apply(self, img_hsv):
-        lower_color = np.array(self.color_range[0])
-        upper_color = np.array(self.color_range[1])
-        img_mask = cv2.inRange(img_hsv, lower_color, upper_color)
+        img_mask = None
+        for range in self.color_range:
+            lower_color = np.array(range[0])
+            upper_color = np.array(range[1])
+            if img_mask is None:
+                img_mask = cv2.inRange(img_hsv, lower_color, upper_color)
+            else:
+                img_mask += cv2.inRange(img_hsv, lower_color, upper_color)
         return img_mask
 
 
@@ -43,8 +48,8 @@ class Cube:
         self.color_filter = ColorFilter(RANGES_FOR_COLOR_FILTER.get(a_color))
         self.form_filter = FormFilter(PARAMETERS_FOR_FORM_FILTER.get(a_color))  
 
-    def apply_filters(self, img_hvg):
-        img_mask = self.color_filter.apply(img_hvg)
+    def apply_filters(self, img_hsv):
+        img_mask = self.color_filter.apply(img_hsv)
         img_mask = self.form_filter.apply(img_mask)
         return img_mask
 
