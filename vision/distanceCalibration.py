@@ -23,7 +23,7 @@ class CalibrationValues:
                     [0, 0, 1]]
 
 TABLE_CALIBRATION_DISTANCES = {'1': CalibrationValues(-0.4021, 0.05, -0.570, 1.13, 1),  # Not set yet
-                               '2': CalibrationValues(-0.4171, 0.05, -0.570, 1.13, 1),
+                               '2': CalibrationValues(-0.3971, 0.05, -0.570, 1.09, 1.03),
                                '3': CalibrationValues(-0.4021, 0.05, -0.570, 1.13, 1),
                                '4': CalibrationValues(-0.4021, 0.05, -0.570, 1.13, 1),  # Not set yet
                                '5': CalibrationValues(-0.4021, 0.05, -0.570, 1.13, 1),  # Not set yet
