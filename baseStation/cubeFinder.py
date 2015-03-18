@@ -2,8 +2,6 @@ from vision.cube import Cube
 from vision.visiontools import VisionTools
 
 
-
-
 class CubeFinder():
     def __init__(self, kinect):
         self.kinect = kinect

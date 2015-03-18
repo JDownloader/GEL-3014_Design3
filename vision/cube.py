@@ -35,10 +35,18 @@ class FormFilter:
 
     def apply(self, img_mask):
         rect_size = 3
+        self._apply_stencil(img_mask)
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (rect_size, rect_size))
         image_erode = cv2.erode(img_mask, kernel, iterations=self.erode_iteration)
         image_dilate = cv2.dilate(image_erode, kernel, iterations=self.dilate_iteration)
         return image_dilate
+
+    def _apply_stencil(self, img_mask):
+        poly_top = np.array([[0, 0], [640, 0], [640, 289], [607, 273], [607, 210], [0, 210]], np.int32)
+        poly_top = poly_top.reshape((-1,1,2))
+        poly_bottom = np.array([[0, 293], [640, 322], [640, 480], [0, 480]], np.int32)
+        poly_bottom = poly_bottom.reshape((-1,1,2))
+        cv2.fillPoly(img_mask, [poly_top, poly_bottom], (0, 0, 0))
 
 
 class Cube:
@@ -66,4 +74,18 @@ class Cube:
         point_world = pixel_cloud[point_centre[1], point_centre[0]]
         point1_ref = [[-point_world[0]], [point_world[2]], [1]]
         return np.mat(point1_ref)
+
+
+class WhiteCube(Cube):
+    def __init__(self):
+        self.color = 'white'
+        self.position = None
+        self.color_filter = ColorFilter([([0, 0, 230], [180, 20, 255])])
+        self.form_filter = FormFilter((5, 3))
+
+    def apply_filters(self, img_hsv):
+        img_mask = cv2.bilateralFilter(img_hsv, 20, 75, 75)
+        img_mask = self.color_filter.apply(img_mask)
+        img_mask = self.form_filter.apply(img_mask)
+        return img_mask
 

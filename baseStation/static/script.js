@@ -45,7 +45,8 @@
 
 	var robot = new fabric.Rect({
 		width: 50, height: 50, left: 150, top: 100, angle: 45,
-		stroke: '#eee', strokeWidth: 10,
+		stroke: '#eee',
+        strokeWidth: 10,
 		fill: 'rgba(0,0,200,0.5)',
 		hasControls: false,
 	});
@@ -55,6 +56,8 @@
         var cube = new fabric.Rect({
             width: 22, height: 22, left: 150, top: 100, angle: 0,
 		    fill: 'rgba(0,0,0,0)',
+            stroke: '#000',
+            strokeWidth: 1,
             hasControls: false,
         });
         planCanvas.add(cube);
