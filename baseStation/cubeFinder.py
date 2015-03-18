@@ -32,11 +32,7 @@ class CubeFinder():
 class DemoCubeFinder(CubeFinder):
     def __init__(self, kinect):
         CubeFinder.__init__(self, kinect)
-        red_cube = Cube('red')
-        green_cube = Cube('green')
-        blue_cube = Cube('blue')
-        yellow_cube = Cube('yellow')
-        self.add_cube(red_cube)
-        self.add_cube(green_cube)
-        self.add_cube(blue_cube)
-        self.add_cube(yellow_cube)
+        self.add_cube(Cube('red'))
+        self.add_cube(Cube('green'))
+        self.add_cube(Cube('blue'))
+        self.add_cube(Cube('yellow'))

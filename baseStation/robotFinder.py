@@ -13,10 +13,10 @@ class RobotFinder(Thread):
     def __init__(self, callback):
         Thread.__init__(self)
         self.callback = callback
-        self.is_stop = False
+        self.is_stopped = False
 
     def run(self):
-        while self.ip_address == self.IP_NOT_FOUND and self.is_stop is False:
+        while self.ip_address == self.IP_NOT_FOUND and self.is_stopped is False:
             time.sleep(self.SLEEP_TIME_IN_MINS)
             self.ip_address = self._attempt_find()
         self.callback(self.ip_address)
@@ -44,4 +44,4 @@ class RobotFinder(Thread):
         return ip_address
 
     def stop(self):
-        self.is_stop = True
+        self.is_stopped = True
