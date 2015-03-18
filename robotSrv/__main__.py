@@ -17,15 +17,13 @@ app.debug = True
 def root_dir():
     return os.path.abspath(os.path.dirname(__file__))
 
-@app.route('/getPosition')
-def start():
-    app.runLoop.start()
-    return "ok"
+@app.route('/move')
+def robot_move():
+    return 'fail'
 
 @app.route('/status')
-def status():
-    sample_status = app.runLoop.get_status(app.robot_ip_address)
-    return jsonify(sample_status)
+def robot_get_context():
+    return 'ok'
 
 if __name__ == '__main__':  # pragma: no cover
     app.run(port=SERVER_PORT)
