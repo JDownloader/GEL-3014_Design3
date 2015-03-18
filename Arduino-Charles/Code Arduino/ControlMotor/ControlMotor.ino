@@ -9,14 +9,14 @@
       #define Pin_PWM4   6
     
     // Sens de rotation
-      #define CW1     53  //Moteur #1 pin ClockWise  
-      #define CCW1    52  //Moteur #1 pin CounterClockWise  
-      #define CW2     51  //Moteur #2 pin ClockWise  
-      #define CCW2    50  //Moteur #2 pin CounterClockWise  
-      #define CW3     49  //Moteur #3 pin ClockWise  
-      #define CCW3    48  //Moteur #3 pin CounterClockWise  
-      #define CW4     47  //Moteur #4 pin ClockWise  
-      #define CCW4    46  //Moteur #4 pin CounterClockWise  
+      #define CW1     52  //Moteur #1 pin ClockWise  
+      #define CCW1    50  //Moteur #1 pin CounterClockWise  
+      #define CW2     53  //Moteur #2 pin ClockWise  
+      #define CCW2    51  //Moteur #2 pin CounterClockWise  
+      #define CW3     48  //Moteur #3 pin ClockWise  
+      #define CCW3    46  //Moteur #3 pin CounterClockWise  
+      #define CW4     49  //Moteur #4 pin ClockWise  
+      #define CCW4    47  //Moteur #4 pin CounterClockWise  
     
   // Inputs
     #define CapteurHall_1     42  // Capteur Hall Moteur #1
@@ -73,8 +73,8 @@
 
 
   
-  #define kp  6 //11.3 //24.16; //
-  #define ki  50 //0.8817;//
+  #define kp  1 //11.3 //24.16; //
+  #define ki  150 //0.8817;//
   #define kd  0
   
   PID PID_roue1(&vitesse_mesure_roue1, &vitesse_PWM1, &vitesse_PID1,kp,ki,kd, DIRECT);

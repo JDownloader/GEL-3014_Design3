@@ -28,13 +28,13 @@ void loop()
 //      Serial.print("Vitesse roue3:");
 //      Serial.println(vitesse_mesure_roue3);
 
-      //Serial.print("11");
+      //Serial.print("11,");
       PID_roue1.Compute();
-      //Serial.print("22");
+      //Serial.print("22,");
       PID_roue2.Compute();
-      //Serial.print("33");
+      //Serial.print("33,");
       PID_roue3.Compute();
-      //Serial.print("44");
+      //Serial.print("44,");
       PID_roue4.Compute();
       analogWrite(Pin_PWM1,vitesse_PWM1); 
       analogWrite(Pin_PWM2,vitesse_PWM2);

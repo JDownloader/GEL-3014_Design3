@@ -113,6 +113,12 @@ void Serie()
    case 99:
       FermetureGenerale();
       break;
+   case 254:
+      FermetureGenerale();
+      PID_roue2.SetTunings(Vitesse, Distance, 0);
+      PID_roue3.SetTunings(Vitesse, Distance, 0);
+      
+      break;
    default: 
       break;
       
