@@ -17,8 +17,8 @@ if __name__ == "__main__":
         visionReady = False
 
     while visionReady:
-        image_rgb = vision.get_image_rgb(ma_kinect.grab_new_image())
-        image_hsv = vision.get_hsv_image(image_rgb)
+        image_rgb = VisionTools().get_image_rgb(ma_kinect.grab_new_image())
+        image_hsv = VisionTools().get_hsv_image(image_rgb)
 
         red_cube = Cube('red')
         blue_cube = Cube('blue')
@@ -26,13 +26,14 @@ if __name__ == "__main__":
         mask_blue = blue_cube.apply_filters(image_hsv)
 
         cv2.imshow('BGR', image_rgb)
-        cv2.imshow('red_layer', image_hsv)
+        cv2.imshow('red_layer', mask_red)
         cv2.imshow('blue_layer', mask_blue)
         # cv2.imwrite('xxx_rgb.png', image_rgb)
         # cv2.imwrite('xxx_hsv.png', image_hsv)
 
         key = cv2.waitKey(5) & 0xFF
         if key == 27:
+            cv2.imwrite('xxx_rgb.png', image_rgb    )
             break
 
     cv2.destroyAllWindows()
