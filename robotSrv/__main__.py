@@ -1,4 +1,5 @@
 import socket
+from socket import AF_INET, SOCK_STREAM
 from robotCommands import RobotCommand
 import cPickle
 
@@ -7,12 +8,12 @@ SERVER_PORT = 8001
 
 class RobotSocket():
     MAX_CONNECTION = 1
-    HOST = socket.gethostname()
+    HOST = '0.0.0.0'
 
     def __init__(self, port):
         self.server_available = True
         self.connection_available = True
-        self.my_socket = socket.socket()
+        self.my_socket = socket.socket(AF_INET, SOCK_STREAM)
         self.my_socket.bind((self.HOST, port))
 
     def connection_stopped(self):
