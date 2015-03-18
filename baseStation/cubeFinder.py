@@ -14,13 +14,6 @@ class CubeFinder():
         if cube not in self.cubes:
             self.cubes.append(cube)
 
-    def get_cubes_positions(self):
-        self.refresh_position()
-        cubes_positions = []
-        for cube in self.cubes:
-            cubes_positions.append([cube.position[0], cube.position[1], cube.color])
-        return cubes_positions
-
     def refresh_position(self):
         image_rgb = VisionTools().get_image_rgb(self.kinect.grab_new_image())
         image_hsv = VisionTools().get_hsv_image(image_rgb)

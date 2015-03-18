@@ -28,7 +28,7 @@ class TestCubeFinder(TestCase):
         cubes = self.single_cube_cubefinder.get_all_cubes()
         self.assertEqual(len(cubes), 1)
 
-    def test_get_all_cubes_return_return_new_added_cube(self):
+    def test_get_all_cubes_return_new_added_cube(self):
         is_inside_cubes = False
         cube = Cube('blue')
         self.empty_cubefinder.add_cube(cube)
@@ -37,7 +37,7 @@ class TestCubeFinder(TestCase):
             is_inside_cubes = True
         assert is_inside_cubes
 
-    def test_cant_add_same_instance_two_time(self):
+    def test_for_a_cubefinder_a_cube_cant_be_add_two_times(self):
         cube = Cube('blue')
         self.empty_cubefinder.add_cube(cube)
         self.empty_cubefinder.add_cube(cube)

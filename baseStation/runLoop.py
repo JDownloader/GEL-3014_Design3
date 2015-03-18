@@ -32,6 +32,13 @@ class RunLoop:
                           "chrono": strftime("%Mm%Ss",gmtime(run_time)),
                           "robotIP": robot_ip,
                           "flag": self._get_current_flag(),
-                          "cubes": self.cube_finder.get_cubes_positions()}
+                          "cubes": self.get_cubes()}
         # "cubes": [[20, 20 , 'red'], [20, 100, 'blue']]
         return sample_status
+
+    def get_cubes(self):#TODO
+        self.cube_finder.refresh_position()
+        cubes_positions = []
+        for cube in self.cube_finder.cubes:
+            cubes_positions.append([cube.position[0], cube.position[1], cube.color])
+        return cubes_positions

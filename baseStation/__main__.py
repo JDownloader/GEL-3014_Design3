@@ -34,10 +34,10 @@ def start():
     app.runLoop.start()
     return "ok"
 
-@app.route('/status')
-def status():
-    sample_status = app.runLoop.get_status(app.robot_ip_address)
-    return jsonify(sample_status)
+@app.route('/context')
+def get_context():
+    sample_context = app.runLoop.get_status(app.robot_ip_address)
+    return jsonify(sample_context)
 
 if __name__ == '__main__':  # pragma: no cover
     app.run(port=SERVER_PORT)

@@ -128,13 +128,13 @@
 
 	//Refresh part
 
-	var robotStatusHandler = new RobotStatusHandler();
+	var robotContextHandler = new RobotContextHandler();
 	setInterval(refreshInterface, 250);
 
 	function refreshInterface(){
-		$.getJSON('/status').then(function(data) {
+		$.getJSON('/context').then(function(data) {
 			setRobotPosition(data.left, data.top);
-			setStatus(data);
+			setContext(data);
 			setFlag(data.flag);
 			setCubes(data.cubes);
 			document.getElementById("baseConnectionErrorMessage").innerHTML = "";
@@ -144,9 +144,9 @@
 		});
 	}
 
-	function setStatus(data){
+	function setContext(data){
 		document.getElementById("chrono").innerHTML = data.chrono;
-		robotStatusHandler.updateStatus(data);
+		robotContextHandler.updateContext(data);
 	}
 
 	function setFlag(baseFlag){
@@ -201,9 +201,9 @@
 
 	//Classes
 
-	function RobotStatusHandler () {
+	function RobotContextHandler () {
 		this.valid = null;
-		this.updateStatus = function(data) {
+		this.updateContext = function(data) {
 			newValid = false;
 			if(data.robotIP === "0.0.0.0"){
 				newValid = false;
