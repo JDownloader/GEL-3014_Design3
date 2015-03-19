@@ -27,6 +27,15 @@ class ColorFilter:
                 img_mask += cv2.inRange(img_hsv, lower_color, upper_color)
         return img_mask
 
+    def applyCamera(self, image):
+        img = cv2.GaussianBlur(image, (5, 5), 0)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+        for range in self.color_range:
+            lower_blue = np.array(range[0], np.uint8)
+            upper_blue = np.array(range[1], np.uint8)
+            img_binary = cv2.inRange(img, lower_blue, upper_blue)
+        return img_binary
+
 
 class FormFilter:
     def __init__(self, iteration_range):
@@ -88,4 +97,12 @@ class WhiteCube(Cube):
         img_mask = self.color_filter.apply(img_mask)
         img_mask = self.form_filter.apply(img_mask)
         return img_mask
+
+
+class BlackCube(Cube):
+    def __init__(self):
+        self.color = "black"
+        self.position = None
+
+
 
