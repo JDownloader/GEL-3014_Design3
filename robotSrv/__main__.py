@@ -24,7 +24,6 @@ class RobotSocket():
         while self.server_available:
             my_connection, addr = self.my_socket.accept()
             print 'Got connection from', addr
-            my_connection.send('Thank you for connecting')
             self.listen_connection_loop(my_connection)
         my_connection.close()
         self.my_socket.close()
