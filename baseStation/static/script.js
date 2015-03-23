@@ -138,9 +138,9 @@
 			setFlag(data.flag);
 			setCubes(data.cubes);
 			document.getElementById("baseConnectionErrorMessage").innerHTML = "";
-            if(data.kinect_is_fake){
-                document.getElementById("baseConnectionErrorMessage").innerHTML = "The kinect is mocked.";
-            }
+			if(data.kinect_is_fake){
+				document.getElementById("baseConnectionErrorMessage").innerHTML = "The kinect is mocked.";
+			}
 		}, function(status) { //error detection....
 			console.log( "Request Failed: " + status );
 			document.getElementById("baseConnectionErrorMessage").innerHTML = "Can't contact base server.";
