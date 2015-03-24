@@ -38,7 +38,6 @@ class RunLoop:
                           'robotIP': robot_ip,
                           'flag': self._get_current_flag(),
                           'cubes': self.get_cubes()}
-        # "cubes": [[20, 20 , 'red'], [20, 100, 'blue']]
         return sample_status
 
     def get_cubes(self):#TODO

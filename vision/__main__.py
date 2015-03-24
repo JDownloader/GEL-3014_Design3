@@ -17,7 +17,7 @@ if __name__ == "__main__":
         visionReady = False
 
     while visionReady:
-        image_rgb = VisionTools().get_image_rgb(ma_kinect.grab_new_image())
+        image_rgb = ma_kinect.grab_new_image()
         image_hsv = VisionTools().get_hsv_image(image_rgb)
 
         red_cube = Cube('red')

@@ -15,7 +15,6 @@ class CubeFinder():
             self.cubes.append(cube)
 
     def refresh_position(self):
-        # image_rgb = VisionTools().get_image_rgb(self.kinect.grab_new_image())
         image_rgb = self.kinect.grab_new_image()
         image_hsv = VisionTools().get_hsv_image(image_rgb)
         for cube in self.cubes:

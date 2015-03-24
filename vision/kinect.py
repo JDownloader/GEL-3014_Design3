@@ -19,7 +19,11 @@ class Kinect():
 
     def grab_new_image(self):
         self.capt_obj.grab()
-        return self.capt_obj
+        flags, img = self.capt_obj.retrieve(None, cv2.cv.CV_CAP_OPENNI_BGR_IMAGE)
+        if not flags:
+            print >> self.capt_obj.stderr, "Error with RGB image"
+            return None
+        return img
 
     def get_img_cloud_map(self):
         flags_p, img_cloud_map = self.capt_obj.retrieve(None, cv2.cv.CV_CAP_OPENNI_POINT_CLOUD_MAP)

@@ -140,7 +140,7 @@
 			document.getElementById("baseConnectionErrorMessage").innerHTML = "";
             if(data.kinect_is_fake){
                 document.getElementById("baseConnectionErrorMessage").innerHTML = "The kinect is mocked.";
-            }
+             }
 		}, function(status) { //error detection....
 			console.log( "Request Failed: " + status );
 			document.getElementById("baseConnectionErrorMessage").innerHTML = "Can't contact base server.";
@@ -185,8 +185,10 @@
 			if(i < len){
 				setCubePlanCanvasPosition(cubes[i][0], cubes[i][1], planCubes[i])
 				planCubes[i].fill = colors[cubes[i][2]];
+                planCubes[i].strokeWidth = 1;
 			} else{
 				planCubes[i].fill = 'rgba(0,0,0,0)';
+                planCubes[i].strokeWidth = 0;
 			}
 		}
 		planCanvas.calcOffset();
