@@ -10,26 +10,29 @@ from vision.visiontools import VisionTools
 here = path.abspath(path.dirname(__file__))
 
 
+class FakeKinect(Kinect):
+    def __init__(self):
+        self.distanceCalibration = DistanceCalibration()
+        self.cloud_map = np.load(here+'/kinect_cloud_map.npy')
+        self.img = self.img = cv2.imread(here+'/4_different_cubes.png')
+
+    def get_img_cloud_map(self):
+        return self.cloud_map
+
+    def grab_new_image(self):
+        return self.img
+
+
 class TestSimple(TestCase):
     ALLOWED_IMPRECISION = 80
 
-    class FakeKinect(Kinect):
-        def __init__(self, cloud_map):
-            self.distanceCalibration = DistanceCalibration()
-            self.cloud_map = cloud_map
-
-        def get_img_cloud_map(self):
-            return self.cloud_map
-
     def setUp(self):
-        self.cloud_map = np.load(here+'/kinect_cloud_map.npy')
-        self.img = cv2.imread('4_different_cubes.png')
-        self.img_hsv = VisionTools().get_hsv_image(self.img)
+        self.fake_kinect = FakeKinect()
+        self.img_hsv = VisionTools().get_hsv_image(self.fake_kinect.grab_new_image())
         self.red_cube = Cube('red')
         self.blue_cube = Cube('blue')
         self.yellow_cube = Cube('yellow')
         self.green_cube = Cube('green')
-        self.fake_kinect = self.FakeKinect(self.cloud_map)
 
     def test_detect_red_cube(self):
         position_actual = self.red_cube.find_position(self.img_hsv, self.fake_kinect)

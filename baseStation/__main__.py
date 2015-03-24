@@ -2,17 +2,21 @@ import os.path
 from flask import Flask, redirect, url_for, jsonify
 from robotFinder import RobotFinder
 from runLoop import RunLoop
+from robotConnection import RobotConnection
 
 SERVER_PORT = 8000
 
 class MyServer(Flask):
     robot_ip_address = RobotFinder.IP_NOT_FOUND
+
     def __init__(self, *args, **kwargs):
         super(MyServer, self).__init__(*args, **kwargs)
-        self.runLoop = RunLoop()
+        self.run_loop = RunLoop()
+        self.robot_connection = None
 
     def set_robot_ip_address(self, ip):
         self.robot_ip_address = ip
+        self.robot_connection = RobotConnection(self.robot_ip_address)
 
 app = MyServer(__name__)
 app.config.from_object(__name__)
@@ -31,13 +35,17 @@ def hello():
 
 @app.route('/start')
 def start():
-    app.runLoop.start()
+    app.run_loop.start()
     return "ok"
 
 @app.route('/context')
 def get_context():
-    sample_context = app.runLoop.get_status(app.robot_ip_address)
+    sample_context = app.run_loop.get_status(app.robot_ip_address)
     return jsonify(sample_context)
+
+@app.route('/demomoverobot')
+def demo_move_robot():
+    app.robot_connection.send_move_command()
 
 if __name__ == '__main__':  # pragma: no cover
     app.run(port=SERVER_PORT)
