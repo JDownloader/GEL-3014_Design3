@@ -1,4 +1,4 @@
-from vision.cube import Cube
+from vision.cube import Cube, WhiteCube
 from vision.visiontools import VisionTools
 
 
@@ -29,3 +29,4 @@ class DemoCubeFinder(CubeFinder):
         self.add_cube(Cube('green'))
         self.add_cube(Cube('blue'))
         self.add_cube(Cube('yellow'))
+        self.add_cube(WhiteCube())

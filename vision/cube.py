@@ -86,9 +86,8 @@ class WhiteCube(Cube):
         self.black_form_filter = FormFilter([0, 5, 3])
 
     def apply_filters(self, img_hsv):
-        img_mask = cv2.bilateralFilter(img_hsv, 20, 75, 75)
-        img_mask_white = self.white_filter.apply(img_mask)
-        img_mask_black = self.black_filter.apply(img_mask)
+        img_mask_white = self.white_filter.apply(img_hsv)
+        img_mask_black = self.black_filter.apply(img_hsv)
         img_mask_black = self.black_form_filter.apply(img_mask_black)
         img_mask = self.filter_white_cube(img_mask_white, img_mask_black)
         img_mask = cv2.cvtColor(img_mask, cv2.COLOR_BGR2GRAY)
@@ -119,8 +118,7 @@ class BlackCube(Cube):
         self.form_filter = FormFilter([0, 5, 3])
 
     def apply_filters(self, img_hsv):
-        img_mask = cv2.bilateralFilter(img_hsv, 20, 75, 75)
-        img_mask = self.color_filter.apply(img_mask)
+        img_mask = self.color_filter.apply(img_hsv)
         # kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 1))
         # img_mask = cv2.erode(img_mask, kernel, iterations=1)
         img_mask = self.form_filter.apply(img_mask)
