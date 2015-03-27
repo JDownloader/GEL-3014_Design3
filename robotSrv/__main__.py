@@ -26,11 +26,13 @@ class RobotSocket():
             print 'Got connection from', addr
             self.listen_connection_loop(my_connection)
         my_connection.close()
+
+    def stop(self):
         self.my_socket.close()
 
     def listen_connection_loop(self, my_connection):
         while self.connection_available:
-            msg = my_connection.recv(1024)
+            msg = my_connection.recv(2048)
             if not msg:
                 self.connection_available = False
                 self.server_available = False
@@ -42,4 +44,5 @@ class RobotSocket():
 if __name__ == '__main__':
     my_socket = RobotSocket(SERVER_PORT)
     my_socket.start_listen_loop()
+    my_socket.stop()
 

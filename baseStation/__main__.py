@@ -1,5 +1,5 @@
 import os.path
-from flask import Flask, redirect, url_for, jsonify
+from flask import Flask, abort, redirect, url_for, jsonify
 from robotFinder import RobotFinder
 from runLoop import RunLoop
 from robotConnection import RobotConnection
@@ -43,10 +43,14 @@ def get_context():
     sample_context = app.run_loop.get_status(app.robot_ip_address)
     return jsonify(sample_context)
 
-@app.route('/demomoverobot')
-def demo_move_robot():
-    app.robot_connection.send_move_command()
+@app.route('/demomoverobot/<x>/<y>')
+def demo_move_robot(x, y):
+    if app.robot_connection is not None:
+        app.robot_connection.send_move_command(x, y)
+    else:
+        abort(500)
+    return "ok"
 
 if __name__ == '__main__':  # pragma: no cover
-    app.run(port=SERVER_PORT)
+    app.run(port=SERVER_PORT, use_reloader=False)
     thread_robot_finder.stop()

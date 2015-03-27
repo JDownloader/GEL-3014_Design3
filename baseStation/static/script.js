@@ -110,12 +110,38 @@
 
 	document.getElementById("btn1").addEventListener("click", startRun);
 	function startRun(){
-		$.getJSON('/start').then(function(data) {
+		$.getJSON('/demomoverobot').then(function(data) {
 			console.log( "Data: " + data );
 		}, function(status) { //error detection....
 			console.log( "Request Failed: " + status );
 		});
 	}
+
+    document.getElementById("upButton").addEventListener("click", doMoveRobotUp);
+    document.getElementById("downButton").addEventListener("click", doMoveRobotDown);
+    document.getElementById("leftButton").addEventListener("click", doMoveRobotLeft);
+    document.getElementById("rightButton").addEventListener("click", doMoveRobotRight);
+
+    function doMoveRobotUp(){
+        doMoveRobot(0,10);
+    }
+    function doMoveRobotDown(){
+        doMoveRobot(0,'n10');
+    }
+    function doMoveRobotLeft(){
+        doMoveRobot('n10',0);
+    }
+    function doMoveRobotRight(){
+        doMoveRobot(10,0);
+    }
+
+    function doMoveRobot(X,Y){
+		$.getJSON('/demomoverobot/'+X+'/'+Y).then(function(data) {
+			console.log( "Data: " + data );
+		}, function(status) { //error detection....
+			console.log( "Request Failed: " + status );
+		});
+    }
 
 	$(".dropdown-menu li a").click(function(){
 		var selText = $(this).text();
