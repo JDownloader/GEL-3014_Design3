@@ -12,7 +12,8 @@ here = path.abspath(path.dirname(__file__))
 
 class FakeKinect(Kinect):
     def __init__(self):
-        self.distanceCalibration = DistanceCalibration()
+        self.table = '2'
+        self.distanceCalibration = DistanceCalibration(self.table)
         self.cloud_map = np.load(here+'/kinect_cloud_map.npy')
         self.img = self.img = cv2.imread(here+'/4_different_cubes.png')
 

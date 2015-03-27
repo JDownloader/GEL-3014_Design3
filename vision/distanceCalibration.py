@@ -31,10 +31,8 @@ TABLE_CALIBRATION_DISTANCES = {'1': CalibrationValues(-0.4021, 0.05, -0.570, 1.1
 
 
 class DistanceCalibration:
-    def __init__(self):
-        #self.calibration_value = CalibrationValues(-22.75/180*math.pi, 0.105, -0.535)
-        #self.calibration_value = CalibrationValues(-0.3970, 0.1623, -0.4582)
-        self.calibration_value = TABLE_CALIBRATION_DISTANCES.get(str(2))
+    def __init__(self, table):
+        self.calibration_value = TABLE_CALIBRATION_DISTANCES.get(table)
 
     def apply_matrix_transformation(self, point_in_world):
         trans_rot = self.calibration_value.get_rotation_matrix()

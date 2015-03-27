@@ -1,15 +1,17 @@
 import cv2
 from distanceCalibration import DistanceCalibration
 
+
 class NoKinectDetectedException(Exception):
     def __init__(self):
         pass
 
-class Kinect():
 
-    def __init__(self):
+class Kinect():
+    def __init__(self, table):
         self.capt_obj = cv2.VideoCapture(cv2.cv.CV_CAP_OPENNI)
-        self.distanceCalibration = DistanceCalibration()
+        self.table = table
+        self.distanceCalibration = DistanceCalibration(self.table)
         flags, img = self.capt_obj.read()
         if flags is False:
             raise NoKinectDetectedException()

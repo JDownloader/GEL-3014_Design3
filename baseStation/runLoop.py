@@ -1,10 +1,11 @@
 import time
 import random
 from vision.kinect import Kinect, NoKinectDetectedException
-from tests.test_vision import FakeKinect
+from tests.test_vision_kinect import FakeKinect
 from cubeFinder import CubeFinder, DemoCubeFinder
 from time import gmtime, strftime
 from flagLoop import FlagLoop
+
 
 class RunLoop:
     startTime = None;
@@ -12,7 +13,7 @@ class RunLoop:
     def __init__(self):
         self.flag_loop = FlagLoop()
         try:
-            self.kinect = Kinect()
+            self.kinect = Kinect('2')
         except NoKinectDetectedException:
             self.kinect = FakeKinect()
         self.cube_finder = DemoCubeFinder(self.kinect)
