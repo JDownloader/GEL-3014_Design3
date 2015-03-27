@@ -7,24 +7,26 @@
       #define Pin_PWM2   4
       #define Pin_PWM3   5
       #define Pin_PWM4   6
-    
+
+// ANCIENNE POSITION    
     // Sens de rotation
-      #define CW1     52  //Moteur #1 pin ClockWise  
-      #define CCW1    50  //Moteur #1 pin CounterClockWise  
-      #define CW2     53  //Moteur #2 pin ClockWise  
-      #define CCW2    51  //Moteur #2 pin CounterClockWise  
-      #define CW3     48  //Moteur #3 pin ClockWise  
-      #define CCW3    46  //Moteur #3 pin CounterClockWise  
-      #define CW4     49  //Moteur #4 pin ClockWise  
-      #define CCW4    47  //Moteur #4 pin CounterClockWise  
+      #define CW1     23  //Moteur #1 pin ClockWise  
+      #define CCW1    25  //Moteur #1 pin CounterClockWise  
+      #define CW2     22  //Moteur #2 pin ClockWise  
+      #define CCW2    24  //Moteur #2 pin CounterClockWise  
+      #define CW3     27  //Moteur #3 pin ClockWise  
+      #define CCW3    29  //Moteur #3 pin CounterClockWise  
+      #define CW4     26  //Moteur #4 pin ClockWise  
+      #define CCW4    28  //Moteur #4 pin CounterClockWise  
     
   // Inputs
-    #define CapteurHall_1     42  // Capteur Hall Moteur #1
-    #define CapteurHall_2     43  // Capteur Hall Moteur #2
-    #define CapteurHall_3     44  // Capteur Hall Moteur #3
-    #define CapteurHall_4     45  // Capteur Hall Moteur #4
+    #define CapteurHall_1     31  // Capteur Hall Moteur #1
+    #define CapteurHall_2     33  // Capteur Hall Moteur #2
+    #define CapteurHall_3     30  // Capteur Hall Moteur #3
+    #define CapteurHall_4     32  // Capteur Hall Moteur #4
+
     
-    #define periode_echantillonnage 5 // Période d'échantillonnage en milli secondes
+    #define periode_echantillonnage 40 // Période d'échantillonnage en milli secondes
     
 // Variable commandée
   double vitesse_PWM1 = 0; // Vitesse Moteur #1
@@ -73,9 +75,9 @@
 
 
   
-  #define kp  1 //11.3 //24.16; //
-  #define ki  150 //0.8817;//
-  #define kd  0
+  #define kp  43.99
+  #define ki  0.867
+  #define kd  38.35
   
   PID PID_roue1(&vitesse_mesure_roue1, &vitesse_PWM1, &vitesse_PID1,kp,ki,kd, DIRECT);
   PID PID_roue2(&vitesse_mesure_roue2, &vitesse_PWM2, &vitesse_PID2,kp,ki,kd, DIRECT);

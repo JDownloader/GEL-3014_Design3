@@ -4,14 +4,14 @@ void loop()
   {
     Serie();    
   }
-  if(distance_roue2>10000)
-  {
-    FermetureGenerale();
-  }
-  if(distance_roue1>(Distance*10))
-  {
-    FermetureGenerale();
-  }
+//  if(distance_roue2>10000)
+//  {
+//    FermetureGenerale();
+//  }
+//  if(distance_roue1>(Distance*10))
+//  {
+//    FermetureGenerale();
+//  }
   
 
   
@@ -22,11 +22,6 @@ void loop()
       vitesse_mesure_roue2 = float(distance_roue2-distance_precedente_moteur2)/float(millis() - previousMillis)*50.0;
       vitesse_mesure_roue3 = float(distance_roue3-distance_precedente_moteur3)/float(millis() - previousMillis)*50.0;
       vitesse_mesure_roue4 = float(distance_roue4-distance_precedente_moteur4)/float(millis() - previousMillis)*50.0;
-//      
-//      Serial.print("Vitesse roue2:");
-//      Serial.println(vitesse_mesure_roue2);
-//      Serial.print("Vitesse roue3:");
-//      Serial.println(vitesse_mesure_roue3);
 
       //Serial.print("11,");
       PID_roue1.Compute();

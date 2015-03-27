@@ -7,6 +7,7 @@ void Serie()
   Distance      = Serial.read();
     
   Unstarted = 0;
+  
   switch ( Commande ) 
   {
     case 0:
@@ -68,6 +69,58 @@ void Serie()
       digitalWrite(CCW4, HIGH);
 
       break;
+
+
+    case 11:
+      // DANGERRRRRRR !!
+      FermetureGenerale();
+      
+      vitesse_PID1 = Vitesse;
+   
+      PID_roue1.SetMode(1);
+      
+      digitalWrite(CW1, HIGH);
+      break;
+      
+    case 12:
+      // DANGERRRRRRR !!
+      FermetureGenerale();
+      
+      vitesse_PID2 = Vitesse;
+
+      PID_roue2.SetMode(1);
+
+      digitalWrite(CW2, HIGH);
+
+      break;
+      
+
+    
+    case 13:
+      // DANGERRRRRRR !!
+      FermetureGenerale();
+
+      vitesse_PID3 = Vitesse; 
+
+      PID_roue3.SetMode(1);
+
+      digitalWrite(CW3, HIGH);
+
+      break;
+      
+      
+    case 14:
+      // DANGERRRRRRR !!
+      FermetureGenerale();
+
+      vitesse_PID4 = Vitesse;
+
+      PID_roue4.SetMode(1);
+
+      digitalWrite(CW4, HIGH);
+
+      break;
+  
     case 101:
       // DANGERRRRRRR !!
       FermetureGenerale();

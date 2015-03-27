@@ -39,11 +39,11 @@ void setup()
   PID_roue3.SetMode(AUTOMATIC);
   PID_roue4.SetMode(AUTOMATIC);
   
-  double PIDMIN = 55;
+  double PIDMIN = 0; // ne sert plus!
   double PIDMAX = 255; 
   PID_roue1.SetOutputLimits(PIDMIN, PIDMAX);
   PID_roue2.SetOutputLimits(PIDMIN, PIDMAX);
-  PID_roue3.SetOutputLimits(PIDMIN-5, PIDMAX);
+  PID_roue3.SetOutputLimits(PIDMIN, PIDMAX); // était à -5
   PID_roue4.SetOutputLimits(PIDMIN, PIDMAX);
   
 }
