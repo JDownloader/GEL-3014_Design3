@@ -3,7 +3,7 @@ import numpy as np
 
 
 class CalibrationValues:
-    def __init__(self, angle, trans_x, trans_y, dilatate_x = 1, dilatate_y = 1):
+    def __init__(self, angle, trans_x, trans_y, dilatate_x=1, dilatate_y=1):
         self.angle = angle
         self.trans_x = trans_x
         self.trans_y = trans_y

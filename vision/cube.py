@@ -80,9 +80,8 @@ class Cube:
         self.form_filter = FormFilter(PARAMETERS_FOR_FORM_FILTER.get(a_color))
 
     def apply_filters(self, img_hsv, kinect=None):
-        # img_mask = self.color_filter.apply(img_hsv)
-        # img_mask = self.form_filter.apply(img_mask)
-        img_mask = img_hsv
+        img_mask = self.color_filter.apply(img_hsv)
+        img_mask = self.form_filter.apply(img_mask)
         if kinect is not None:
             FormStencil(TABLE_STENCIL.get(kinect.table)).apply(img_mask)
         return img_mask
