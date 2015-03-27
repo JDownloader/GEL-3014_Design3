@@ -129,13 +129,22 @@ class BlackCube(Cube):
     def __init__(self):
         self.color = 'black'
         self.position = None
-        self.color_filter = ColorFilter([([0, 0, 0], [180, 256, 170])])
-        self.form_filter = FormFilter([0, 5, 3])
+        self.always_black_mask = None
+        self.calibration_attempt_remaining = 10
+        self.attempt_without_position_remaining = 0
+        self.color_filter = ColorFilter([([0, 0, 0], [180, 256, 130])])
+        self.form_filter = FormFilter([1, 0, 3])
 
     def apply_filters(self, img_hsv):
+        img_hsv = cv2.GaussianBlur(img_hsv, (5, 5), 0)
         img_mask = self.color_filter.apply(img_hsv)
-        # kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (1, 1))
-        # img_mask = cv2.erode(img_mask, kernel, iterations=1)
+        if self.always_black_mask is None:
+            self.always_black_mask = img_mask
+        elif self.calibration_attempt_remaining > 0:
+            self.always_black_mask = cv2.bitwise_or(self.always_black_mask, img_mask)
+            self.calibration_attempt_remaining -= 1
+        else:
+            img_mask = cv2.bitwise_xor(img_mask, self.always_black_mask)
         img_mask = self.form_filter.apply(img_mask)
         return img_mask
 
