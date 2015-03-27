@@ -19,7 +19,7 @@ class FakeKinect(Kinect):
     def get_img_cloud_map(self):
         return self.cloud_map
 
-    def grab_new_image(self):
+    def grab_new_image(self, bilateral_filter_activated=False):
         return self.img
 
 

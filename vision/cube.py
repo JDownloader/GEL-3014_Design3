@@ -50,11 +50,15 @@ class FormFilter:
 
 
 class Cube:
+    NEGATIVE_POSITION_TOLERANCE_IN_MM = -100
+    NO_POSITION_TOLERANCE = 4
+
     def __init__(self, a_color):
         self.color = a_color
         self.position = None
+        self.attempt_without_position_remaining = 0
         self.color_filter = ColorFilter(RANGES_FOR_COLOR_FILTER.get(a_color))
-        self.form_filter = FormFilter(PARAMETERS_FOR_FORM_FILTER.get(a_color))  
+        self.form_filter = FormFilter(PARAMETERS_FOR_FORM_FILTER.get(a_color))
 
     def apply_filters(self, img_hsv):
         img_mask = self.color_filter.apply(img_hsv)
@@ -64,8 +68,18 @@ class Cube:
     def find_position(self, img_hvg, kinect):
         position_in_world = self._find_position_in_world(img_hvg, kinect)
         position = kinect._apply_matrix_transformation(position_in_world)
-        self.position = (int(position[0]*1000), int(position[1]*1000+40))
+        self.adjust_position(int(position[0]*1000), int(position[1]*1000+40))
         return self.position
+
+    def adjust_position(self, x, y):
+        if x > self.NEGATIVE_POSITION_TOLERANCE_IN_MM \
+                and y > self.NEGATIVE_POSITION_TOLERANCE_IN_MM:
+            self.position = (x, y)
+            self.attempt_without_position_remaining = self.NO_POSITION_TOLERANCE
+        elif self.attempt_without_position_remaining == 0:
+            self.position = (-500, -500)
+        else:
+            self.attempt_without_position_remaining -= 1
 
     def _find_position_in_world(self, img_hvg, kinect):
         img_mask = self.apply_filters(img_hvg)
@@ -80,8 +94,9 @@ class WhiteCube(Cube):
     def __init__(self):
         self.color = 'white'
         self.position = None
-        self.white_filter = ColorFilter([([0, 0, 200], [180, 27, 255])])
-        self.black_filter = ColorFilter([([0, 0, 0], [180, 256, 170])])
+        self.attempt_without_position_remaining = 0
+        self.white_filter = ColorFilter([([0, 0, 200], [180, 23, 255])])
+        self.black_filter = ColorFilter([([0, 0, 0], [180, 256, 145])])
         self.form_filter = FormFilter([4, 4, 2])
         self.black_form_filter = FormFilter([0, 5, 3])
 

@@ -41,7 +41,7 @@ class RunLoop:
         return sample_status
 
     def get_cubes_data(self):
-        self.cube_finder.refresh_position(True)
+        self.cube_finder.refresh_position()
         cubes_positions = []
         for cube in self.cube_finder.cubes:
             cubes_positions.append([cube.position[0], cube.position[1], cube.color])
