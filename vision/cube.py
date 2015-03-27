@@ -16,25 +16,17 @@ class ColorFilter:
     def __init__(self, color_range):
         self.color_range = color_range
 
+
     def apply(self, img_hsv):
         img_mask = None
         for range in self.color_range:
-            lower_color = np.array(range[0])
-            upper_color = np.array(range[1])
+            lower_color = np.array(range[0], np.uint8)
+            upper_color = np.array(range[1], np.uint8)
             if img_mask is None:
                 img_mask = cv2.inRange(img_hsv, lower_color, upper_color)
             else:
                 img_mask += cv2.inRange(img_hsv, lower_color, upper_color)
         return img_mask
-
-    def applyCamera(self, image):
-        img = cv2.GaussianBlur(image, (5, 5), 0)
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
-        for range in self.color_range:
-            lower_blue = np.array(range[0], np.uint8)
-            upper_blue = np.array(range[1], np.uint8)
-            img_binary = cv2.inRange(img, lower_blue, upper_blue)
-        return img_binary
 
 
 class FormFilter:
@@ -63,7 +55,7 @@ class Cube:
         self.color = a_color
         self.position = None
         self.color_filter = ColorFilter(RANGES_FOR_COLOR_FILTER.get(a_color))
-        self.form_filter = FormFilter(PARAMETERS_FOR_FORM_FILTER.get(a_color))  
+        self.form_filter = FormFilter(PARAMETERS_FOR_FORM_FILTER.get(a_color))
 
     def apply_filters(self, img_hsv):
         img_mask = self.color_filter.apply(img_hsv)

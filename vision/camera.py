@@ -22,9 +22,15 @@ class Camera():
         dst = dst[y:y+h, x:x+w]
         return dst
 
+    def apply_filter_image(self, img_rgb, cube):
+        img = cv2.GaussianBlur(img_rgb, (5, 5), 0)
+        img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
+        img_binary = cube.color_filter.apply(img)
+        return img_binary
+
     def find_cube_marker(self, img_rgb, cube):
-        img_binary = cube.color_filter.applyCamera(img_rgb)
-        dilation = np.ones((3, 3), "uint8")
+        img_binary = self.apply_filter_image(img_rgb, cube)
+        dilation = np.ones((2, 2), "uint8")
         img_binary = cv2.dilate(img_binary, dilation)
         contours, hierarchy = cv2.findContours(img_binary, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
         max_area = 0
