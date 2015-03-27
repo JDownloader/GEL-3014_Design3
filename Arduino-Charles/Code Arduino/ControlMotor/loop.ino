@@ -8,11 +8,32 @@ void loop()
 //  {
 //    FermetureGenerale();
 //  }
-//  if(distance_roue1>(Distance*10))
-//  {
-//    FermetureGenerale();
-//  }
-  
+  if(distance_roue1>(Distance*76))
+  {
+    vitesse_PID1 = 0;
+    PID_roue1.Reset();
+    Serial.println(distance_roue1);
+    
+  }
+  if(distance_roue2>(Distance*76))
+  {
+    vitesse_PID2 = 0;
+    PID_roue2.Reset();
+    Serial.println(distance_roue2);
+    
+  }
+  if(distance_roue3>(Distance*76))
+  {
+    vitesse_PID3 = 0;
+    PID_roue3.Reset();
+    Serial.println(distance_roue3);
+  }
+  if(distance_roue4>(Distance*76))
+  {
+    vitesse_PID4 = 0;
+    PID_roue4.Reset();
+    Serial.println(distance_roue4);
+  }
 
   
   

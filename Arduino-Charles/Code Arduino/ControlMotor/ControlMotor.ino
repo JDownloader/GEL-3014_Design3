@@ -75,9 +75,9 @@
 
 
   
-  #define kp  43.99
-  #define ki  0.867
-  #define kd  38.35
+  #define kp  4
+  #define ki  20
+  #define kd  0
   
   PID PID_roue1(&vitesse_mesure_roue1, &vitesse_PWM1, &vitesse_PID1,kp,ki,kd, DIRECT);
   PID PID_roue2(&vitesse_mesure_roue2, &vitesse_PWM2, &vitesse_PID2,kp,ki,kd, DIRECT);

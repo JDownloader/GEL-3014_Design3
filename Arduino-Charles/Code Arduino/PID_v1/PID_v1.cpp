@@ -53,17 +53,18 @@ bool PID::Compute()
    {
       
 	  /*Compute all the working error variables*/
-	  //myLastSetpoint = 0.95 * myLastSetpoint + 0.05 * *mySetpoint;
+	  myLastSetpoint = 0.95 * myLastSetpoint + 0.05 * *mySetpoint;
 	  double input = *myInput;
-      double error =  *mySetpoint - input;
+      double error =  myLastSetpoint - input;
       ITerm+= (ki * error);
       if(ITerm > outMax) ITerm= outMax;
       //else if(ITerm < outMin) ITerm= outMin;
-	  
-	  Serial.print("Input");
-	  Serial.print(input,DEC);
-	  Serial.print("Iterm");
-	  Serial.println(ITerm);
+	  // Serial.print("Commande");
+	  // Serial.print(myLastSetpoint);
+	  // Serial.print("Input");
+	  // Serial.print(input,DEC);
+	  // Serial.print("Iterm");
+	  // Serial.println(ITerm);
 	  
       double dInput = (input - lastInput);
  
@@ -93,7 +94,7 @@ bool PID::Compute()
  **********************************************************************************/ 
  void PID::Reset()
 {
-	//ITerm = 0;
+	ITerm = 0;
 }
 
 /* SetTunings(...)*************************************************************

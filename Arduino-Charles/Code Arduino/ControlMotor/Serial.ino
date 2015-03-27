@@ -168,8 +168,10 @@ void Serie()
       break;
    case 254:
       FermetureGenerale();
+      PID_roue1.SetTunings(Vitesse, Distance, 0);
       PID_roue2.SetTunings(Vitesse, Distance, 0);
       PID_roue3.SetTunings(Vitesse, Distance, 0);
+      PID_roue4.SetTunings(Vitesse, Distance, 0);
       
       break;
    default: 
@@ -210,10 +212,10 @@ void FermetureGenerale()
     distance_roue3 = 0;
     distance_roue4 = 0;
     
-    PID_roue1.Reset();
-    PID_roue2.Reset();
-    PID_roue3.Reset();
-    PID_roue4.Reset();
+    //PID_roue1.Reset();
+    //PID_roue2.Reset();
+    //PID_roue3.Reset();
+    //PID_roue4.Reset();
     
     PID_roue1.Compute();
     PID_roue2.Compute();
