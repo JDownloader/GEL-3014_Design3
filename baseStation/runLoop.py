@@ -5,6 +5,7 @@ from tests.test_vision import FakeKinect
 from cubeFinder import CubeFinder, DemoCubeFinder
 from time import gmtime, strftime
 from flagLoop import FlagLoop
+from controller.serialCom import Robot
 
 class RunLoop:
     startTime = None;
@@ -16,6 +17,7 @@ class RunLoop:
         except NoKinectDetectedException:
             self.kinect = FakeKinect()
         self.cube_finder = DemoCubeFinder(self.kinect)
+        self.robot = Robot()
 
     def start(self):
         self.startTime = time.time()
