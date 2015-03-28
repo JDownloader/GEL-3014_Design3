@@ -1,9 +1,7 @@
 import time
-import random
 from vision.kinect import Kinect, NoKinectDetectedException
 from tests.test_vision import FakeKinect
 from cubeFinder import CubeFinder, DemoCubeFinder
-from time import gmtime, strftime
 from flagLoop import FlagLoop
 from controller.serialCom import Robot
 from contextHelper import ContextHelper
