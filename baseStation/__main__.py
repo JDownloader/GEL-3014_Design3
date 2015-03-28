@@ -6,6 +6,7 @@ from robotConnection import RobotConnection
 
 SERVER_PORT = 8000
 
+
 class MyServer(Flask):
     robot_ip_address = RobotFinder.IP_NOT_FOUND
 
@@ -38,6 +39,7 @@ def start():
     app.run_loop.start()
     return "ok"
 
+# A javaScript fonction calls this method every 250 ms
 @app.route('/context')
 def get_context():
     sample_context = app.run_loop.get_status(app.robot_ip_address)
@@ -50,6 +52,7 @@ def demo_move_robot(x, y):
     else:
         abort(500)
     return "ok"
+
 
 if __name__ == '__main__':  # pragma: no cover
     app.run(port=SERVER_PORT, use_reloader=False)

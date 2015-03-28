@@ -9,12 +9,12 @@ class RobotCommand():
 
 
 class LedColorCommand(RobotCommand):
-    def __init__(self, led_color, led_pos):
+    def __init__(self, led_color, led_position):
         self.led_color = led_color
-        self.led_pos = led_pos
+        self.led_position = led_position
 
     def perform_command(self, robot):
-        robot.led_controller.change_color(self.led_color, self.led_pos)
+        robot.led_controller.change_color(self.led_color, self.led_position)
 
 
 class LedSerialCommunicationCleanupCommand(RobotCommand):
@@ -70,9 +70,26 @@ class RotateRobotCommand(RobotCommand):
         robot.movement_controller.rotate_robot(self.rotation_direction_is_left, self.rotation_angle_in_degrees,
                                                self.speed_percentage)
 
+
 class RobotMovementSerialCommunicationCleanupCommand(RobotCommand):
     def __init__(self):
         pass
 
     def perform_command(self, robot):
         robot.movement_controller.serial_communication_cleanup()
+
+
+class MoveXCommand(RobotCommand):
+    def __init__(self, value):
+        self.value = value
+
+    def perform_command(self, robot):
+        print 'Move X: ' + str(self.value)
+
+
+class MoveYCommand(RobotCommand):
+    def __init__(self, value):
+        self.value = value
+
+    def perform_command(self, robot):
+        print 'Move Y: ' + str(self.value)

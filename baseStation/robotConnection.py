@@ -1,21 +1,47 @@
 import socket
 from socket import AF_INET, SOCK_STREAM
 from robotSrv.__main__ import SERVER_PORT
-from robotSrv.robotCommands import MoveRobotCommand
+from robotSrv.robotCommands import *
 import cPickle
 
 
 class RobotConnection():
     def __init__(self, ip_address):
-        self.my_socket = socket.socket(AF_INET, SOCK_STREAM)
-        self.my_socket.connect((ip_address, SERVER_PORT))
+        self.robot_socket = socket.socket(AF_INET, SOCK_STREAM)
+        self.robot_socket.connect((ip_address, SERVER_PORT))
 
-    def send_move_command(self, direction, distance_in_mm, speed_percentage):
-        self.my_socket.send(cPickle.dumps(MoveRobotCommand(direction, distance_in_mm, speed_percentage)))
-        # if str(x) != '0':
-        #     self.my_socket.send(cPickle.dumps(MoveXCommand(x)))
-        # if str(y) != '0':
-        #     self.my_socket.send(cPickle.dumps(MoveYCommand(y)))
-        pass
+    def build_command(self, command):
+        self.robot_socket.send(cPickle.dumps(command))
+
+    def send_move_command(self, x, y):
+        if str(x) != '0':
+            self.build_command(MoveXCommand(x))
+        if str(y) != '0':
+            self.build_command(MoveXCommand(y))
+
+    def send_led_color_change_command(self, led_color, led_position):
+        self.build_command(LedColorCommand(led_color, led_position))
+
+    def send_led_serial_communication_cleanup_command(self):
+        self.build_command(LedSerialCommunicationCleanupCommand())
+
+    def send_camera_reset_position_command(self):
+        self.build_command(CameraResetPositionCommand())
+
+    def send_change_gripper_height_command(self, is_raised):
+        self.build_command(GripperChangeVerticalPositionCommand(is_raised))
+
+    def send_gripper_pliers_opening_change_command(self, is_opened, opening_is_big):
+        self.build_command(GripperPliersOpeningCommand(is_opened, opening_is_big))
+
+    def send_move_robot_command(self, direction, distance_in_mm, speed_percentage):
+        self.build_command(MoveRobotCommand(direction, distance_in_mm, speed_percentage))
+
+    def send_rotate_robot_command(self, rotation_direction_is_left, rotation_angle_in_degrees):
+        self.build_command(RotateRobotCommand(rotation_direction_is_left, rotation_angle_in_degrees))
+
+    def send_robot_movement_serial_communication_cleanup_command(self):
+        self.build_command(RobotMovementSerialCommunicationCleanupCommand())
+
     def stop(self):
-        self.my_socket.close()
+        self.robot_socket.close()

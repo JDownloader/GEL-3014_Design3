@@ -19,7 +19,7 @@ class CubeFinder():
         image_hsv = VisionTools().get_hsv_image(image_rgb)
         for cube in self.cubes:
             cube.find_position(image_hsv, self.kinect)
-            print(cube.color + str(cube.position))
+            # print(cube.color + str(cube.position))
 
 
 class DemoCubeFinder(CubeFinder):

@@ -2,7 +2,7 @@ import json
 from flag import Flag
 
 
-class FlagLoop():
+class FlagCycle():
     def __init__(self):
         self.flag = Flag('Saudi Arabia')
 
