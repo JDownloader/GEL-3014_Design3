@@ -2,6 +2,7 @@ import random
 from tests.test_vision import FakeKinect
 from time import gmtime, strftime
 
+
 class ContextHelper:
     def __init__(self, run_loop):
         self.run_loop = run_loop

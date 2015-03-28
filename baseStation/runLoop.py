@@ -6,6 +6,7 @@ from flagLoop import FlagLoop
 from controller.serialCom import Robot
 from contextHelper import ContextHelper
 
+
 class RunLoop:
     startTime = None;
 
