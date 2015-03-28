@@ -5,14 +5,17 @@ RANGES_FOR_COLOR_FILTER = {'red': [([169, 73, 92], [179, 255, 255]), ([0, 73, 92
                            'green': [([30, 110, 110], [50, 255, 255])],
                            'blue': [([95, 80, 80], [115, 255, 255])],
                            'yellow': [([22, 130, 130], [32, 255, 255])],
-                           'orange': [([5, 80, 80], [15, 255, 255])],
+                           'orange': [([7, 80, 80], [17, 255, 255])],
                            'purple': [([120, 80, 80], [130, 255, 255])],
                            'forest_green': [([120, 30, 80], [130, 255, 255])]}
 
-PARAMETERS_FOR_FORM_FILTER = {'red': [2, 9, 3],
-                              'green': [5, 8, 3],
-                              'blue': [5, 8, 3],
-                              'yellow': [2, 4, 3]}
+PARAMETERS_FOR_FORM_FILTER = {'red': [2, 9, 3, 3],
+                              'green': [5, 8, 3, 3],
+                              'blue': [5, 8, 3, 3],
+                              'yellow': [2, 4, 3, 3],
+                              'orange': [4, 3, 3, 7],
+                              'purple': [2, 3, 3, 5],
+                              'forest_green': [2, 3, 3, 5]}
 
 TABLE_STENCIL = {'1': [np.array([[0, 0], [640, 0], [640, 289], [607, 273], [607, 210], [0, 210]], np.int32),  # Not set yet
                       np.array([[0, 293], [640, 322], [640, 480], [0, 480]], np.int32)],
@@ -20,8 +23,8 @@ TABLE_STENCIL = {'1': [np.array([[0, 0], [640, 0], [640, 289], [607, 273], [607,
                       np.array([[0, 293], [640, 322], [640, 480], [0, 480]], np.int32)],
                  '3': [np.array([[0, 0], [640, 0], [640, 301], [621, 291], [621, 220], [102, 220], [102, 273], [0, 280]], np.int32),
                       np.array([[0, 296], [640, 325], [640, 480], [0, 480]], np.int32)],
-                 '4': [np.array([[0, 0], [640, 0], [640, 289], [607, 273], [607, 210], [0, 210]], np.int32),  # Not set yet
-                      np.array([[0, 293], [640, 322], [640, 480], [0, 480]], np.int32)],
+                 '4': [np.array([[0, 0], [640, 0], [640, 293], [618, 283], [618, 220], [92, 220], [92, 282], [0, 290]], np.int32),  # Not set yet
+                      np.array([[0, 298], [640, 314], [640, 480], [0, 480]], np.int32)],
                  '5': [np.array([[0, 0], [640, 0], [640, 289], [607, 273], [607, 210], [0, 210]], np.int32),  # Not set yet
                       np.array([[0, 293], [640, 322], [640, 480], [0, 480]], np.int32)],
                  '6': [np.array([[0, 0], [640, 0], [640, 289], [607, 273], [607, 210], [0, 210]], np.int32),  # Not set yet
@@ -48,11 +51,13 @@ class FormFilter:
     def __init__(self, iteration_range):
         self.erode_iteration = np.array(iteration_range[0])
         self.dilate_iteration = np.array(iteration_range[1])
-        self.rectangle_size = iteration_range[2]
+        self.rectangle_width = iteration_range[2]
+        self.rectangle_height = iteration_range[3]
 
     def apply(self, img_mask):
-        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (self.rectangle_size, self.rectangle_size))
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (self.rectangle_width, self.rectangle_width))
         image_erode = cv2.erode(img_mask, kernel, iterations=self.erode_iteration)
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (self.rectangle_width, self.rectangle_height))
         image_dilate = cv2.dilate(image_erode, kernel, iterations=self.dilate_iteration)
         return image_dilate
 
@@ -118,8 +123,8 @@ class WhiteCube(Cube):
         self.attempt_without_position_remaining = 0
         self.white_filter = ColorFilter([([0, 0, 200], [180, 23, 255])])
         self.black_filter = ColorFilter([([0, 0, 0], [180, 256, 145])])
-        self.form_filter = FormFilter([4, 4, 2])
-        self.black_form_filter = FormFilter([0, 5, 3])
+        self.form_filter = FormFilter([4, 4, 2, 2])
+        self.black_form_filter = FormFilter([0, 5, 3, 3])
 
     def apply_filters(self, img_hsv, kinect=None):
         img_mask_white = self.white_filter.apply(img_hsv)
@@ -154,7 +159,7 @@ class BlackCube(Cube):
         self.calibration_attempt_remaining = 100
         self.attempt_without_position_remaining = 0
         self.color_filter = ColorFilter([([0, 0, 0], [180, 256, 130])])
-        self.form_filter = FormFilter([1, 0, 3])
+        self.form_filter = FormFilter([1, 0, 3, 3])
 
     def apply_filters(self, img_hsv, kinect=None):
         img_hsv = cv2.GaussianBlur(img_hsv, (5, 5), 0)
