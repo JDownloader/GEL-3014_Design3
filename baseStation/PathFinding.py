@@ -1,5 +1,5 @@
 
-class pathFinding():
+class PathFinding():
     def __init__(self):
         pass
 
