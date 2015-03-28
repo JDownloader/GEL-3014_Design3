@@ -40,7 +40,7 @@ def start():
 
 @app.route('/context')
 def get_context():
-    sample_context = app.run_loop.get_status(app.robot_ip_address)
+    sample_context = app.run_loop.get_context(app.robot_ip_address)
     return jsonify(sample_context)
 
 @app.route('/demomoverobot/<x>/<y>')

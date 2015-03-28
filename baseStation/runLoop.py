@@ -6,6 +6,7 @@ from cubeFinder import CubeFinder, DemoCubeFinder
 from time import gmtime, strftime
 from flagLoop import FlagLoop
 from controller.serialCom import Robot
+from contextHelper import ContextHelper
 
 class RunLoop:
     startTime = None;
@@ -25,31 +26,9 @@ class RunLoop:
     def get_time(self):
         if self.startTime is None:
             return 0
-        return time.time()-self.startTime;
+        return time.time()-self.startTime
 
-    def _get_current_flag(self):
-        return self.flag_loop.get_flag()
-
-    def get_status(self, robot_ip):
-        pos_y = random.randrange(0, 400, 1)
-        run_time = self.get_time()
-        sample_status = { 'top': 30,
-                          'left': pos_y,
-                          'kinect_is_fake': self.is_fake_kinect(),
-                          'chrono': strftime('%Mm%Ss', gmtime(run_time)),
-                          'robotIP': robot_ip,
-                          'flag': self._get_current_flag(),
-                          'cubes': self.get_cubes()}
-        return sample_status
-
-    def get_cubes(self):#TODO
+    def get_context(self, robot_ip):
+        context_helper = ContextHelper(self)
         self.cube_finder.refresh_position()
-        cubes_positions = []
-        for cube in self.cube_finder.cubes:
-            cubes_positions.append([cube.position[0], cube.position[1], cube.color])
-        return cubes_positions
-
-    def is_fake_kinect(self):
-        if isinstance(self.kinect, FakeKinect):
-            return True
-        return False
+        return context_helper.get_context(robot_ip)
