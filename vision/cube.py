@@ -98,8 +98,7 @@ class Cube:
         return self.position
 
     def adjust_position(self, x, y):
-        if x > self.NEGATIVE_POSITION_TOLERANCE_IN_MM \
-                and y > self.NEGATIVE_POSITION_TOLERANCE_IN_MM:
+        if self.is_valid_position(x, y):
             self.position = (x, y)
             self.attempt_without_position_remaining = self.NO_POSITION_TOLERANCE
         elif self.attempt_without_position_remaining == 0:
@@ -107,13 +106,20 @@ class Cube:
         else:
             self.attempt_without_position_remaining -= 1
 
+    def is_valid_position(self, position):
+        return position[0] > self.NEGATIVE_POSITION_TOLERANCE_IN_MM \
+                and position[1] > self.NEGATIVE_POSITION_TOLERANCE_IN_MM
+
     def _find_position_in_world(self, img_hvg, kinect):
-        img_mask = self.apply_filters(img_hvg, kinect)
-        point_centre = kinect._get_centre_object(img_mask)
+        point_centre = self._find_center_in_img(img_hvg, kinect)
         pixel_cloud = kinect.get_img_cloud_map()
         point_world = pixel_cloud[point_centre[1], point_centre[0]]
         point1_ref = [[-point_world[0]], [point_world[2]], [1]]
         return np.mat(point1_ref)
+
+    def _find_center_in_img(self, img_hvg, kinect):
+        img_mask = self.apply_filters(img_hvg, kinect)
+        return kinect._get_centre_object(img_mask)
 
 
 class WhiteCube(Cube):
