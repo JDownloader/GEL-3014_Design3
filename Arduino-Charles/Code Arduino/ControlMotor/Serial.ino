@@ -5,7 +5,17 @@ void Serie()
   Commande      = Serial.read();
   Vitesse       = Serial.read();
   Distance      = Serial.read();
-    
+  if(Vitesse >20)
+  {
+     Deceleration = 1;
+     //Serial.println("Deceleration");
+  } 
+  else
+  { 
+    Deceleration = 0;
+    //Serial.println("pas de Deceleration");
+  }
+  
   Unstarted = 0;
   
   switch ( Commande ) 
@@ -15,7 +25,7 @@ void Serie()
     case 1:
       // DROIT DEVANT !
       FermetureGenerale();
-      
+      DistanceActuelle = &distance_roue2;
       vitesse_PID2 = Vitesse;
       vitesse_PID3 = Vitesse; 
       
@@ -30,6 +40,7 @@ void Serie()
       // TRIBORD TOUTE (droite) !
       FermetureGenerale();
       
+      DistanceActuelle = &distance_roue1;
       vitesse_PID1 = Vitesse;
       vitesse_PID4 = Vitesse;
       
@@ -44,6 +55,7 @@ void Serie()
       // On se replis !!
       FermetureGenerale();
       
+      DistanceActuelle = &distance_roue2;
       vitesse_PID3 = Vitesse; 
       vitesse_PID2 = Vitesse;
       
@@ -59,6 +71,7 @@ void Serie()
       // Mouissallions à babord !!
       FermetureGenerale();
       
+      DistanceActuelle = &distance_roue4;
       vitesse_PID1 = Vitesse;
       vitesse_PID4 = Vitesse;
       
@@ -74,7 +87,7 @@ void Serie()
     case 11:
       // DANGERRRRRRR !!
       FermetureGenerale();
-      
+      DistanceActuelle = &distance_roue1;
       vitesse_PID1 = Vitesse;
    
       PID_roue1.SetMode(1);
@@ -85,7 +98,7 @@ void Serie()
     case 12:
       // DANGERRRRRRR !!
       FermetureGenerale();
-      
+      DistanceActuelle = &distance_roue2;
       vitesse_PID2 = Vitesse;
 
       PID_roue2.SetMode(1);
@@ -99,7 +112,8 @@ void Serie()
     case 13:
       // DANGERRRRRRR !!
       FermetureGenerale();
-
+      
+      DistanceActuelle = &distance_roue3;
       vitesse_PID3 = Vitesse; 
 
       PID_roue3.SetMode(1);
@@ -112,7 +126,7 @@ void Serie()
     case 14:
       // DANGERRRRRRR !!
       FermetureGenerale();
-
+      DistanceActuelle = &distance_roue4;
       vitesse_PID4 = Vitesse;
 
       PID_roue4.SetMode(1);
@@ -124,7 +138,7 @@ void Serie()
     case 101:
       // DANGERRRRRRR !!
       FermetureGenerale();
-      
+      DistanceActuelle = &distance_roue4;
       vitesse_PID1 = Vitesse;
       vitesse_PID2 = Vitesse;
       vitesse_PID3 = Vitesse; 
@@ -145,7 +159,7 @@ void Serie()
     case 102:
       // DANGERRRRRRR !!
       FermetureGenerale();
-      
+      DistanceActuelle = &distance_roue4;
       vitesse_PID1 = Vitesse;
       vitesse_PID2 = Vitesse;
       vitesse_PID3 = Vitesse; 
@@ -166,14 +180,14 @@ void Serie()
    case 99:
       FermetureGenerale();
       break;
-   case 254:
-      FermetureGenerale();
-      PID_roue1.SetTunings(Vitesse, Distance, 0);
-      PID_roue2.SetTunings(Vitesse, Distance, 0);
-      PID_roue3.SetTunings(Vitesse, Distance, 0);
-      PID_roue4.SetTunings(Vitesse, Distance, 0);
-      
-      break;
+//   case 254:
+//      FermetureGenerale();
+//      PID_roue1.SetTunings(Vitesse, Distance, 0);
+//      PID_roue2.SetTunings(Vitesse, Distance, 0);
+//      PID_roue3.SetTunings(Vitesse, Distance, 0);
+//      PID_roue4.SetTunings(Vitesse, Distance, 0);
+//      
+//      break;
    default: 
       break;
       

@@ -56,14 +56,14 @@
   double vitesse_PID3 = 0;
   double vitesse_PID4 = 0;
 
-  
+  volatile int *DistanceActuelle = 0; //Pointeur de distance
 
   
 // Constante la communication serial
   byte Commande      = 0;
   byte Vitesse       = 0;
   byte Distance      = 0;
-
+  bool Deceleration  = 0;
   
 // Variable d'état
   bool Unstarted = 1;

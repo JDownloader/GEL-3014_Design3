@@ -4,10 +4,17 @@ void loop()
   {
     Serie();    
   }
-//  if(distance_roue2>10000)
-//  {
-//    FermetureGenerale();
-//  }
+
+  if (Deceleration == 1)
+  {
+    if (*DistanceActuelle > 58*Distance)
+    {
+      vitesse_PID1 = 10;
+      vitesse_PID2 = 10;
+      vitesse_PID3 = 10;
+      vitesse_PID4 = 10;
+    }
+  }
   if(distance_roue1>(Distance*76))
   {
     vitesse_PID1 = 0;
