@@ -5,6 +5,20 @@ void Serie()
   Commande      = Serial.read();
   Vitesse       = Serial.read();
   Distance      = Serial.read();
+  
+  VitesseINIT = Vitesse;
+  if(Commande == 101 || Commande == 102)
+  {
+      CommandeDistance = Distance * 12.7;
+      Serial.println("Je suis dans rotation");
+      Serial.println(CommandeDistance);
+  }
+  else
+  {
+      CommandeDistance = Distance * 76;
+      Serial.println("JE NE SUIS PAS DANS ROTATION");
+      Serial.println(CommandeDistance);
+  }
   if(Vitesse >20)
   {
      Deceleration = 1;

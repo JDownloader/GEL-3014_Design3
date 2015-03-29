@@ -41,6 +41,7 @@
   double vitesse_mesure_roue4 = 0;
    
 // Compteurs de distance
+  volatile int CommandeDistance = 0;
   volatile int distance_roue1 = 0;
   volatile int distance_roue2 = 0;
   volatile int distance_roue3 = 0;
@@ -57,13 +58,15 @@
   double vitesse_PID4 = 0;
 
   volatile int *DistanceActuelle = 0; //Pointeur de distance
-
+  
   
 // Constante la communication serial
   byte Commande      = 0;
   byte Vitesse       = 0;
   byte Distance      = 0;
+  byte VitesseINIT   = 0;
   bool Deceleration  = 0;
+  
   
 // Variable d'état
   bool Unstarted = 1;

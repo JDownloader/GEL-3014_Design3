@@ -7,41 +7,56 @@ void loop()
 
   if (Deceleration == 1)
   {
-    if (*DistanceActuelle > 58*Distance)
+    if ((CommandeDistance-*DistanceActuelle) < VitesseINIT*16)
     {
+      Serial.println("Fin de deceleration");
+      vitesse_PID1 = 5;
+      vitesse_PID2 = 5;
+      vitesse_PID3 = 5;
+      vitesse_PID4 = 5;
+    }
+    else if (*DistanceActuelle > 0.75*CommandeDistance)
+    {
+      Serial.println("DebutDeceleration");
       vitesse_PID1 = 10;
       vitesse_PID2 = 10;
       vitesse_PID3 = 10;
       vitesse_PID4 = 10;
     }
-  }
-  if(distance_roue1>(Distance*76))
-  {
-    vitesse_PID1 = 0;
-    PID_roue1.Reset();
-    Serial.println(distance_roue1);
-    
-  }
-  if(distance_roue2>(Distance*76))
-  {
-    vitesse_PID2 = 0;
-    PID_roue2.Reset();
-    Serial.println(distance_roue2);
-    
-  }
-  if(distance_roue3>(Distance*76))
-  {
-    vitesse_PID3 = 0;
-    PID_roue3.Reset();
-    Serial.println(distance_roue3);
-  }
-  if(distance_roue4>(Distance*76))
-  {
-    vitesse_PID4 = 0;
-    PID_roue4.Reset();
-    Serial.println(distance_roue4);
-  }
 
+
+  }
+  if(*DistanceActuelle >CommandeDistance)
+  {
+     FermetureGenerale(); 
+  }
+//  if(distance_roue1>(CommandeDistance))
+//  {
+//    vitesse_PID1 = 0;
+//    PID_roue1.Reset();
+//    Serial.println(distance_roue1-CommandeDistance);
+//    
+//  }
+//  if(distance_roue2>(CommandeDistance))
+//  {
+//    vitesse_PID2 = 0;
+//    PID_roue2.Reset();
+//    Serial.println(distance_roue2-CommandeDistance);
+//    
+//  }
+//  if(distance_roue3>(CommandeDistance))
+//  {
+//    vitesse_PID3 = 0;
+//    PID_roue3.Reset();
+//    Serial.println(distance_roue3-CommandeDistance);
+//  }
+//  if(distance_roue4>(CommandeDistance))
+//  {
+//    vitesse_PID4 = 0;
+//    PID_roue4.Reset();
+//    Serial.println(distance_roue4-CommandeDistance);
+//  }
+  
   
   
   if ((millis() - previousMillis) >= periode_echantillonnage)
