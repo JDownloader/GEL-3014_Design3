@@ -5,11 +5,16 @@ import serial
 from serial.tools.list_ports import comports
 import controller.constants
 import maestro
+import time
 
 
 class BadMovementDirection(Exception):
     def __init__(self):
         pass
+
+
+class PololuSerialConnectionFailed(Exception):
+    pass
 
 
 class LedController:
@@ -30,40 +35,41 @@ class LedController:
             self.serial_communication = serial.Serial(communication_port, 9600)
 
     def change_color(self, led_color='F', led_position=9):
-        self.serial_communication.write(str(led_position) + led_color)
-        print(str(led_position) + self.COLORS_FOR_CONTROLLER.get(led_color))
+        self.serial_communication.write(str(led_position) + self.COLORS_FOR_CONTROLLER.get(led_color))
 
     def serial_communication_cleanup(self):
         self.serial_communication.close()
 
 
-class CameraController:
+class PololuConnectionCreator:
     def __init__(self):
-        communication_port = ''
+        self.pololu_serial_communication = ''
+        pololu_communication_port = ''
         for port in comports():
             if port[2].find('VID:PID=1ffb:0089') > -1:
-                communication_port = port[0]
+                pololu_communication_port = port[0]
+        try:
+            self.pololu_serial_communication = maestro.Controller(pololu_communication_port)
+        except Exception:
+            raise PololuSerialConnectionFailed()
 
+
+class CameraController:
+    def __init__(self, pololu_serial_communication):
         self.position_vertical = 0
         self.position_horizontal = 0
         self.channel_vertical = controller.constants.POLOLU_CHANNELS_PWM.get('camera_vertical')
         self.channel_horizontal = controller.constants.POLOLU_CHANNELS_PWM.get('camera_horizontal')
-        if len(communication_port) > 0:
-            self.camera_controller = maestro.Controller(communication_port)
-            self.reset_position()
+        self.reset_position(pololu_serial_communication)
 
-    def reset_position(self):
-        self.camera_controller.setTarget(self.channel_horizontal, self.position_horizontal)
-        self.camera_controller.setTarget(self.channel_vertical, self.position_vertical)
+    def reset_position(self, pololu_serial_communication):
+        pololu_serial_communication.setTarget(self.channel_horizontal, self.position_horizontal)
+        pololu_serial_communication.setTarget(self.channel_vertical, self.position_vertical)
 
 
 class GripperController:
-    def __init__(self):
-        communication_port = ''
-        for port in comports():
-            if port[2].find('VID:PID=1ffb:0089') > -1:
-                communication_port = port[0]
-
+    def __init__(self, pololu_serial_communication):
+        self.gripper_serial_communication = pololu_serial_communication
         self.channel_vertical = controller.constants.POLOLU_CHANNELS_PWM.get('gripper_vertical')
         self.channel_pliers = controller.constants.POLOLU_CHANNELS_PWM.get('gripper_pliers')
         self.min_vertical = 4*704.00
@@ -75,29 +81,28 @@ class GripperController:
         self.pos_pliers_open_big = 4*2031.00
         self.pos_pliers_open_small = 4*1156.75
         self.pos_pliers_closed = 4*850.00
-        if len(communication_port) > 0:
-            self.gripper_controller = maestro.Controller(communication_port)
-            self._set_parameters()
+        self._set_parameters()
 
     def _set_parameters(self):
-        self.gripper_controller.setRange(self.channel_vertical, self.min_vertical, self.max_vertical)
-        self.gripper_controller.setTarget(self.channel_vertical, self.pos_vertical_table)
-        self.gripper_controller.setRange(self.channel_pliers, self.min_pliers, self.max_pliers)
-        self.gripper_controller.setTarget(self.channel_pliers, self.pos_pliers_open_big)
+        if self.gripper_serial_communication:
+            self.gripper_serial_communication.setRange(self.channel_vertical, self.min_vertical, self.max_vertical)
+            self.gripper_serial_communication.setTarget(self.channel_vertical, self.pos_vertical_table)
+            self.gripper_serial_communication.setRange(self.channel_pliers, self.min_pliers, self.max_pliers)
+            self.gripper_serial_communication.setTarget(self.channel_pliers, self.pos_pliers_open_big)
 
     def change_vertical_position(self, is_raised):
         if is_raised:
-            self.gripper_controller.setTarget(self.channel_vertical, self.pos_vertical_transport_cube)
+            self.gripper_serial_communication.setTarget(self.channel_vertical, self.pos_vertical_transport_cube)
         else:
-            self.gripper_controller.setTarget(self.channel_vertical, self.pos_vertical_table)
+            self.gripper_serial_communication.setTarget(self.channel_vertical, self.pos_vertical_table)
 
     def pliers_control(self, is_opened, opening_is_big):
         if not is_opened:
-            self.gripper_controller.setTarget(self.channel_pliers, self.pos_pliers_closed)
+            self.gripper_serial_communication.setTarget(self.channel_pliers, self.pos_pliers_closed)
         elif is_opened and opening_is_big:
-            self.gripper_controller.setTarget(self.channel_pliers, self.pos_pliers_open_big)
+            self.gripper_serial_communication.setTarget(self.channel_pliers, self.pos_pliers_open_big)
         elif is_opened and not opening_is_big:
-            self.gripper_controller.setTarget(self.channel_pliers, self.pos_pliers_open_small)
+            self.gripper_serial_communication.setTarget(self.channel_pliers, self.pos_pliers_open_small)
 
 
 class RobotMovementController:
@@ -109,7 +114,7 @@ class RobotMovementController:
     def __init__(self):
         communication_port = ''
         for port in comports():
-            if port[2].find('USB VID:PID=2341:003d') > -1:
+            if port[2].find('USB VID:PID=2341:003d') > -1 or port[2].find('USB VID:PID=2a03:003d') > -1:
                 communication_port = port[0]
         if len(communication_port) > 0:
             self.serial_communication = serial.Serial(communication_port, 9600)
@@ -137,7 +142,19 @@ class RobotMovementController:
 
 class Robot:
     def __init__(self):
-        self.led_controller = LedController()
-        self.camera_controller = CameraController()
-        self.gripper_controller = GripperController()
+        self._initialize_connections()
+        try:
+            self.pololu_serial_connection = PololuConnectionCreator()
+        except PololuSerialConnectionFailed:
+            print 'Polulu connection failed'
+        else:
+            self._initialize_pololu_connections(self.pololu_serial_connection)
+        time.sleep(controller.constants.LED_COMMUNICATION_INITIALIZATION_WAIT_TIME)
+
+    def _initialize_connections(self):
         self.movement_controller = RobotMovementController()
+        self.led_controller = LedController()
+
+    def _initialize_pololu_connections(self, pololu_connection):
+        self.camera_controller = CameraController(pololu_connection.pololu_serial_communication)
+        self.gripper_controller = GripperController(pololu_connection.pololu_serial_communication)
