@@ -81,20 +81,59 @@ class WhiteCube(Cube):
     def __init__(self):
         self.color = 'white'
         self.position = None
-        self.color_filter = ColorFilter([([0, 0, 230], [180, 20, 255])])
-        self.form_filter = FormFilter((5, 3))
+        self.attempt_without_position_remaining = 0
+        self.white_filter = ColorFilter([([0, 0, 200], [180, 23, 255])])
+        self.black_filter = ColorFilter([([0, 0, 0], [180, 256, 145])])
+        self.form_filter = FormFilter([4, 4, 2])
+        self.black_form_filter = FormFilter([0, 5, 3])
 
     def apply_filters(self, img_hsv):
-        img_mask = cv2.bilateralFilter(img_hsv, 20, 75, 75)
-        img_mask = self.color_filter.apply(img_mask)
+        img_mask_white = self.white_filter.apply(img_hsv)
+        img_mask_black = self.black_filter.apply(img_hsv)
+        img_mask_black = self.black_form_filter.apply(img_mask_black)
+        img_mask = self.filter_white_cube(img_mask_white, img_mask_black)
+        img_mask = cv2.cvtColor(img_mask, cv2.COLOR_BGR2GRAY)
         img_mask = self.form_filter.apply(img_mask)
         return img_mask
+
+    def filter_white_cube(self, mask_white, mask_black):
+        b_and_w_junction = np.zeros((mask_white.shape[0], mask_white.shape[1], 3), np.uint8)
+        for i in range(0, b_and_w_junction.shape[0]):
+            for j in range(0, b_and_w_junction.shape[1] - 1):
+                # b_and_w_junction[i, j][0] = mask_white[i, j]
+                # b_and_w_junction[i, j][2] = mask_black[i, j]
+                if mask_black[i, j] and mask_white[i, j]:
+                    draw_line = False
+                    for x in range(min(b_and_w_junction.shape[1], j + 50) - 1, j, -1):
+                        if mask_black[i, x] and mask_white[i, x]:
+                            draw_line = True
+                        if draw_line and mask_white[i, x]:
+                            b_and_w_junction[i, x][1] = 255
+        return b_and_w_junction
 
 
 class BlackCube(Cube):
     def __init__(self):
-        self.color = "black"
+        self.color = 'black'
         self.position = None
+        self.always_black_mask = None
+        self.calibration_attempt_remaining = 100
+        self.attempt_without_position_remaining = 0
+        self.color_filter = ColorFilter([([0, 0, 0], [180, 256, 130])])
+        self.form_filter = FormFilter([1, 0, 3, 3])
+
+    def apply_filters(self, img_hsv, kinect=None):
+        img_hsv = cv2.GaussianBlur(img_hsv, (5, 5), 0)
+        img_mask = self.color_filter.apply(img_hsv)
+        if self.always_black_mask is None:
+            self.always_black_mask = img_mask
+        elif self.calibration_attempt_remaining > 0:
+            self.always_black_mask = cv2.bitwise_or(self.always_black_mask, img_mask)
+            self.calibration_attempt_remaining -= 1
+        else:
+            img_mask = cv2.bitwise_xor(img_mask, self.always_black_mask)
+        img_mask = self.form_filter.apply(img_mask)
+        return img_mask
 
 
 
