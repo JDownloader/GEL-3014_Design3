@@ -7,7 +7,7 @@ RANGES_FOR_COLOR_FILTER = {'red': [([169, 73, 92], [179, 255, 255]), ([0, 73, 92
                            'yellow': [([22, 130, 130], [32, 255, 255])],
                            'orange': [([7, 80, 80], [17, 255, 255])],
                            'purple': [([120, 80, 80], [130, 255, 255])],
-                           'forest_green': [([120, 30, 80], [130, 255, 255])]}
+                           'forest_green': [([55, 25, 80], [75, 255, 255])]}
 
 PARAMETERS_FOR_FORM_FILTER = {'red': [2, 9, 3, 3],
                               'green': [5, 8, 3, 3],
@@ -70,7 +70,9 @@ class FormStencil:
             self.poly_lines.append(poly_line_reshaped)
 
     def apply(self, img_mask):
-        cv2.fillPoly(img_mask, self.poly_lines, (0, 0, 0))
+        img_result = np.copy(img_mask)
+        cv2.fillPoly(img_result, self.poly_lines, (0, 0, 0))
+        return img_result
 
 
 class Cube:
@@ -88,18 +90,19 @@ class Cube:
         img_mask = self.color_filter.apply(img_hsv)
         img_mask = self.form_filter.apply(img_mask)
         if kinect is not None:
-            FormStencil(TABLE_STENCIL.get(kinect.table)).apply(img_mask)
+            img_mask = FormStencil(TABLE_STENCIL.get(kinect.table)).apply(img_mask)
         return img_mask
 
     def find_position(self, img_hvg, kinect):
         position_in_world = self._find_position_in_world(img_hvg, kinect)
         position = kinect._apply_matrix_transformation(position_in_world)
-        self.adjust_position(int(position[0]*1000), int(position[1]*1000+40))
+        new_position = (int(position[0]*1000), int(position[1]*1000+40))
+        self.adjust_position(new_position)
         return self.position
 
-    def adjust_position(self, x, y):
-        if self.is_valid_position(x, y):
-            self.position = (x, y)
+    def adjust_position(self, position):
+        if self.is_valid_position(position):
+            self.position = position
             self.attempt_without_position_remaining = self.NO_POSITION_TOLERANCE
         elif self.attempt_without_position_remaining == 0:
             self.position = (-500, -500)
@@ -108,7 +111,7 @@ class Cube:
 
     def is_valid_position(self, position):
         return position[0] > self.NEGATIVE_POSITION_TOLERANCE_IN_MM \
-                and position[1] > self.NEGATIVE_POSITION_TOLERANCE_IN_MM
+            and position[1] > self.NEGATIVE_POSITION_TOLERANCE_IN_MM
 
     def _find_position_in_world(self, img_hvg, kinect):
         point_centre = self._find_center_in_img(img_hvg, kinect)
