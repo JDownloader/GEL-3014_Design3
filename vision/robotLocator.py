@@ -11,8 +11,7 @@ class RobotLocator():
         self.position = RobotPosition()
 
     def get_position(self, kinect):
-        img = kinect.grab_new_image()
-        img_hsv = VisionTools().get_hsv_image(img)
+        img_hsv = self.get_masked_hsv(kinect)
         purple_corner = Cube('purple')
         green_corner = Cube('forest_green')
         purple_position = purple_corner.find_position(img_hsv, kinect)
@@ -20,14 +19,21 @@ class RobotLocator():
         if purple_corner.is_valid_position(purple_position):
             self.test_other_corners(img_hsv, kinect, purple_corner)
         elif green_corner.is_valid_position(green_position):
-            self.test_other_corners(img_hsv, kinect, green_corner)
+            self.test_other_corners(img_hsv, kinect, green_corner, math.pi)
         return self.position
 
-    def test_other_corners(self, img_hsv, kinect, found_corner):
+    def get_masked_hsv(self, kinect):
+        img = kinect.grab_new_image()
+        img_hsv = VisionTools().get_hsv_image(img)
+        polyline = np.array([[0, 280], [640, 280], [640, 480], [0, 480]], np.int32)
+        stencil = FormStencil([polyline])
+        return stencil.apply(img_hsv)
+
+    def test_other_corners(self, img_hsv, kinect, found_corner, angle_modificator=0):
         found_corner_x_position = found_corner._find_center_in_img(img_hsv, kinect)[0]
         maybe_orange_position = self.find_orange_position(img_hsv, kinect, found_corner_x_position)
         if self.position.is_valid_position(maybe_orange_position):#  TODO
-            self.position.set_from_points(maybe_orange_position, found_corner.position)
+            self.position.set_from_points(found_corner.position, maybe_orange_position, angle_modificator)
 
     def find_orange_position(self,img_hsv, kinect, found_corner_x_position):
         maybe_left_corner_position = self.find_left_orange_corner(img_hsv, kinect, found_corner_x_position)
@@ -86,14 +92,9 @@ class RobotPosition(Position):
     def __init__(self):
         Position.__init__(self, x=None, y=None, angle=None)
 
-    def set_from_points(self, point_1, point_2):
+    def set_from_points(self, point_1, point_2, angle_modificator):
         self.set_angle_from_points(point_1, point_2)
-        if point_1[0] > point_2[0]:
-            self._set_from_points_ordered(point_1, point_2)
-        else:
-            self._set_from_points_ordered(point_2, point_1)
-
-    def _set_from_points_ordered(self, point_1, point_2):
-        x_value = point_1[0] - self.ROBOT_DIMENSION / 2 * abs(math.cos(self.angle))
-        y_value = point_1[0] + self.ROBOT_DIMENSION / 2 * abs(math.cos(self.angle))
+        self.angle += angle_modificator
+        x_value = point_1[0] - self.ROBOT_DIMENSION / 2 * math.sin(self.angle)
+        y_value = point_1[0] + self.ROBOT_DIMENSION / 2 * math.sin(self.angle)
         self.position = (int(x_value), int(y_value))
