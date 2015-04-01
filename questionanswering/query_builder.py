@@ -18,9 +18,15 @@ class QueryBuilder:
         specific_query = StringQuery(category, data)
         self.append_query(specific_query)
 
+    def with_category_only(self, category):
+        query = StringQuery(category, '')
+        self.query_items.append(query.category)
+
+    def with_regex_query(self, regex):
+        self.query_items.append(RegexQuery(regex).regex_query)
+
     def build(self):
         query = NestedQuery(self.query_items)
-        # print query.complete_query
         return json.dumps(query.complete_query, sort_keys=True)
 
     def extract_day(self,independence_date):

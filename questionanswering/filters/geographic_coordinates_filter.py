@@ -11,8 +11,7 @@ def process(question, query_builder):
 def extract_geographic_coordinates(mappedQuestion):
     sentence =  mappedQuestion.items()
     grammar = "NP: {<CD>*?<NNP>}"
-    parser = nltk.RegexpParser(grammar)
-    result = parser.parse(sentence)
+    result = nltk.RegexpParser(grammar).parse(sentence)
 
     coordinates = []
     for subtree in result.subtrees():

@@ -9,7 +9,9 @@ def fetchQuestion():
     #         "What country has Yaounde as its capital?",  "In 1923, we proclaimed our independence.", "My latitude is 16 00 S and my longitude is 167 00 E.", "My population growth rate is between 1.44% and 1.47%.",
     #        "My national symbol is the elephant.", "My latitude is 16 00 S and my longitude is 167 00 E.", "My internet country code is .br.",  "My independence was declared in August 1971.",
     #         "My death rate is greater than 13 death/1000 and my capital starts with Mos.", "My capital name starts with Moga.", "My capital name starts with Ath and ends with ens.","22 September 1960 is the date of independence of this country." ]
-    return "My national symbol is the elephant."
+
+    return  "My public debt is 7.9% of GDP. "
+
 
 def main():
 

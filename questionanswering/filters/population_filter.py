@@ -1,11 +1,17 @@
+from collections import OrderedDict
 from questionanswering import bidictionnary
-import  nltk
+import nltk
 
 def process(question, query_builder):
     mapped_question = next(question)
     if ('population' in mapped_question) & ('growth' not in mapped_question):
-        population = extract_population(mapped_question)
-        query_builder.with_category_data('population', population)
+        if('greater' in mapped_question) & ('than' in mapped_question):
+            population_regex = extract_greater_than_population_number(mapped_question)
+            query_builder.with_category_only('population')
+            query_builder.with_regex_query(population_regex)
+        else :
+            population = extract_population(mapped_question)
+            query_builder.with_category_data('population', population)
     yield mapped_question
 
 def extract_population(mapped_question):
@@ -28,6 +34,20 @@ def extract_population_from_spaced_number(mapped_question):
     numbers = []
     for subtree in result.subtrees():
         if subtree.label() == 'NP':
-            numbers = [key for key in dict(subtree.leaves())]
+            numbers = [key for key in OrderedDict(subtree.leaves())]
 
     return ','.join(numbers)
+
+def extract_greater_than_population_number(mapped_question):
+    final_regex = ''
+    minimum_population_number = extract_population_from_spaced_number(mapped_question)
+    print minimum_population_number
+    for index, number in enumerate(minimum_population_number):
+        if number is ',':
+            final_regex += ','
+        else:
+            if index is 0:
+                final_regex = '[' + number + '-9' + ']'
+            else:
+                final_regex += '[0-9]'
+    return final_regex

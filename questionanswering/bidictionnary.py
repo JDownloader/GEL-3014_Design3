@@ -1,6 +1,7 @@
-__author__ = 'Tea'
+from collections import OrderedDict
 
 class Bidict(dict):
+
     def key_with_value(self, value, default=None):
         for key, val in self.iteritems():
             if val == value:

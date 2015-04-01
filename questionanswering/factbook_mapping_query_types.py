@@ -7,7 +7,7 @@ class StringQuery:
 class NestedQuery:
 
     def __init__(self, items):
-        self.complete_query = {"query":{"bool":{"must":[{"nested":{"path":"fields","query":{"bool":{"must":[items]}}}}]}}}
+        self.complete_query = {"query":{"bool":{"must":[{"nested":{"path":"fields","query":{"bool":{"must":items}}}}]}}}
 
 class RegexQuery:
 
