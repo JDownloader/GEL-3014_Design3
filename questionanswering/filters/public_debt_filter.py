@@ -9,5 +9,4 @@ def process(question, query_builder):
 
 def extract_public_dept(mapped_question):
     reverse_dict = bidictionnary.Bidict(mapped_question)
-    print reverse_dict
     return reverse_dict.key_with_value('CD')

@@ -10,7 +10,7 @@ def fetchQuestion():
     #        "My national symbol is the elephant.", "My latitude is 16 00 S and my longitude is 167 00 E.", "My internet country code is .br.",  "My independence was declared in August 1971.",
     #         "My death rate is greater than 13 death/1000 and my capital starts with Mos.", "My capital name starts with Moga.", "My capital name starts with Ath and ends with ens.","22 September 1960 is the date of independence of this country." ]
 
-    return  "My public debt is 7.9% of GDP. "
+    return "What country has illicit drugs activities including a transshipment point for cocaine from South America to North America and illicit cultivation of cannabis?"
 
 
 def main():

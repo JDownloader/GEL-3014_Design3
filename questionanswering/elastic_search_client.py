@@ -5,7 +5,7 @@ import requests
 OK_STATUS_CODE = 200
 
 class ElasticSearchClient :
-    def __init__(self, url = "http://localhost:", port = "9200", index = "recentfactbook"):
+    def __init__(self, url = "http://localhost:", port = "9200", index = "atlas"):
         self.url = url
         self.port = port
         self.index = index

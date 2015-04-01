@@ -2,14 +2,14 @@ from questionanswering import bidictionnary
 import nltk
 
 def process(question, query_builder):
-    mappedQuestion = next(question)
-    if ('latitude' in mappedQuestion) | ('longitude' in mappedQuestion):
-        geographic_coordinates = extract_geographic_coordinates(mappedQuestion)
+    mapped_question = next(question)
+    if ('latitude' in mapped_question) | ('longitude' in mapped_question):
+        geographic_coordinates = extract_geographic_coordinates(mapped_question)
         query_builder.with_category_data('geographic coordinates', ' '.join(geographic_coordinates))
-    yield mappedQuestion
+    yield mapped_question
 
-def extract_geographic_coordinates(mappedQuestion):
-    sentence =  mappedQuestion.items()
+def extract_geographic_coordinates(mapped_question):
+    sentence = mapped_question.items()
     grammar = "NP: {<CD>*?<NNP>}"
     result = nltk.RegexpParser(grammar).parse(sentence)
 
