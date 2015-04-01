@@ -93,7 +93,7 @@ class Cube:
             img_mask = FormStencil(TABLE_STENCIL.get(kinect.table)).apply(img_mask)
         return img_mask
 
-    def find_position(self, img_hvg, kinect):
+    def find_position(self, img_hvg, kinect, x_shift=0):
         position_in_world = self._find_position_in_world(img_hvg, kinect)
         position = kinect._apply_matrix_transformation(position_in_world)
         new_position = (int(position[0]*1000), int(position[1]*1000+40))
@@ -113,10 +113,10 @@ class Cube:
         return position[0] > self.NEGATIVE_POSITION_TOLERANCE_IN_MM \
             and position[1] > self.NEGATIVE_POSITION_TOLERANCE_IN_MM
 
-    def _find_position_in_world(self, img_hvg, kinect):
+    def _find_position_in_world(self, img_hvg, kinect, x_shift=0):
         point_centre = self._find_center_in_img(img_hvg, kinect)
         pixel_cloud = kinect.get_img_cloud_map()
-        point_world = pixel_cloud[point_centre[1], point_centre[0]]
+        point_world = pixel_cloud[point_centre[1] + x_shift, point_centre[0]]
         point1_ref = [[-point_world[0]], [point_world[2]], [1]]
         return np.mat(point1_ref)
 
