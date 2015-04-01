@@ -27,6 +27,13 @@ class VisionRobot():
         image = self.camera.remmaping_image()
         return image
 
+    def findAngleCube(self, square):
+        if len(square) == 6:
+            rightAngle = camera.get_angle_cube(square, 3)
+        elif len(square) == 4:
+            rightAngle = camera.get_angle_cube(square, 2)
+        return rightAngle
+
     def findSquareCube(self, image, cube):
         if cube.color == "white":
             square = self.camera.find_square_cube_white(image)
@@ -40,12 +47,10 @@ class VisionRobot():
         return square
 
 
-    def findAnglesCube(self, square):
-        if len(square) == 6:
-            rightAngle = camera.get_angle_cube(square, 3)
-        elif len(square) == 4:
-            rightAngle = camera.get_angle_cube(square, 2)
-        return rightAngle
+
+
+    # def define_corner_ref(self, square):
+    #     if square[]
 
 
 if __name__ == "__main__":
@@ -61,23 +66,24 @@ if __name__ == "__main__":
     while cap.isOpened():
 
         cap.grab()
-
+        # cube = WhiteCube()
+        # image = cv2.imread('cuboW2.png')
         cube = Cube('blue')
         image = cv2.imread('essaiCube15.png')
-        try:
-
-            height, width, depth = image.shape
-            dst_ima = camera.remmaping_image(image)
-            square = vision.findSquareCube(dst_ima, cube)
-            if len(square)==6 or len(square)==4:
-                angle = vision.findAnglesCube(square)
 
 
-            cv2.drawContours(dst_ima, [square], 0, (0, 0, 255), 2)
-            cv2.imshow("BGR", dst_ima)
+        height, width, depth = image.shape
+        dst_ima = camera.remmaping_image(image)
+        square = vision.findSquareCube(dst_ima, cube)
+        if len(square)==6 or len(square)==4:
+            angle = vision.findAngleCube(square)
 
-        except:
-            pass
+
+
+        cv2.drawContours(dst_ima, [square], 0, (0, 0, 255), 2)
+        cv2.imshow("BGR", dst_ima)
+
+
 
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
@@ -87,5 +93,9 @@ if __name__ == "__main__":
     cap.release()
     cv2.destroyAllWindows()
 
+
+
+print square
+print angle
 
 

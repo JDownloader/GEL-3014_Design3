@@ -85,11 +85,19 @@ class Camera():
         if largest_contour is not None:
             cnt_len = cv2.arcLength(largest_contour, True)
             cnt = cv2.approxPolyDP(largest_contour, 0.02*cnt_len, True)
-        return cnt
+            new_cnt = self.define_contour_array(cnt)
+        return new_cnt
+
+    def define_contour_array(self, contour):
+        contour_array = np.array(np.array(contour[0]))
+        for x  in xrange(1,len(contour)):
+            contour_array = np.concatenate((contour_array,np.array(contour[x])),axis=0)
+        return contour_array
+
 
     def get_angle_cube(self, contour, corner):
-        oposite_side = abs(contour[corner][0][1]-contour[corner+1][0][1])
-        adjacent_side = abs(contour[corner][0][0]-contour[corner+1][0][0])
+        oposite_side = abs(contour[corner][1]-contour[corner+1][1])
+        adjacent_side = abs(contour[corner][0]-contour[corner+1][0])
         angle = math.atan2(oposite_side, adjacent_side)
         angle = angle*180/math.pi
         return angle
