@@ -51,7 +51,7 @@ class RunLoop:
         actual_position = ''
         self.move_robot_to_atlas_zone()
         return self.flag_loop.get_flag()
-    
+
     def construct_flag(self, flag, robot_connection):
         flag_cycle = FlagCycle(flag, robot_connection)
         flag_cycle.start()

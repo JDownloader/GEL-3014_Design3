@@ -1,5 +1,5 @@
 import random
-from tests.test_vision import FakeKinect
+from tests.test_vision_kinect import FakeKinect
 from time import gmtime, strftime
 
 

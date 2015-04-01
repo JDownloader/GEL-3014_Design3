@@ -47,34 +47,39 @@ class RobotLocator():
             maybe_second_corner_position = self.find_left_orange_corner(img_hsv, kinect, found_corner_x_position)
 
         if self.position.is_valid_position(maybe_first_corner_position):#  TODO
-            print 'first'
             if angle_modificator == 0:
+                found_corner.find_position(img_hsv, kinect, 2)
                 self.position.set_from_points(maybe_first_corner_position, found_corner.position, 0)
                 # print 'purple first'
             else:
                 self.position.set_from_points(maybe_first_corner_position, found_corner.position, math.pi/2)
+                found_corner.find_position(img_hsv, kinect, -2)
                 # print 'green first'
         elif self.position.is_valid_position(maybe_second_corner_position):#  TODO
             if angle_modificator == 0:
+                found_corner.find_position(img_hsv, kinect, -2)
                 self.position.set_from_points(maybe_second_corner_position, found_corner.position, math.pi*3/2)
                 # print 'purple second'
             else:
+                found_corner.find_position(img_hsv, kinect, 2)
                 self.position.set_from_points(maybe_second_corner_position, found_corner.position, math.pi)
                 # print 'green second'
 
     def find_left_orange_corner(self,img_hsv, kinect, x_limit):
         polyline = np.array([[0, 0], [x_limit, 0], [x_limit, 480], [0, 480]], np.int32)
-        return self.find_orange_corner(img_hsv, kinect, polyline)
+        return self.find_orange_corner(img_hsv, kinect, polyline, True)
 
     def find_right_orange_corner(self, img_hsv, kinect, x_limit):
         polyline = np.array([[x_limit, 0], [640, 0], [640, 480], [x_limit, 480]], np.int32)
-        return self.find_orange_corner(img_hsv, kinect, polyline)
+        return self.find_orange_corner(img_hsv, kinect, polyline, False)
 
-    def find_orange_corner(self, img_hsv, kinect, polyline):
+    def find_orange_corner(self, img_hsv, kinect, polyline, is_left):
         stencil = FormStencil([polyline])
         img_hsv_mask = stencil.apply(img_hsv)
         orange_corner = Cube('orange')
-        return orange_corner.find_position(img_hsv_mask, kinect)
+        if is_left:
+            return orange_corner.find_position(img_hsv_mask, kinect, 2)
+        return orange_corner.find_position(img_hsv_mask, kinect, -2)
 
 
 class Position():
