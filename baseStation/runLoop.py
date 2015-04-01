@@ -1,6 +1,6 @@
 import time
 from vision.kinect import Kinect, NoKinectDetectedException
-from tests.test_vision import FakeKinect
+from tests.test_vision_kinect import FakeKinect
 from cubeFinder import CubeFinder, DemoCubeFinder
 from contextProvider import ContextHelper
 from flagProcessor import FlagProcessor
@@ -14,6 +14,7 @@ import pathfinding.constants
 from movementProcessor import MovementProcessor
 
 
+
 class RunLoop:
     startTime = None;
 
@@ -24,7 +25,7 @@ class RunLoop:
         self.movement_processor = None
         self.robot_position = Point(0, 0)
         try:
-            self.kinect = Kinect()
+            self.kinect = Kinect('2')
         except NoKinectDetectedException:
             self.kinect = FakeKinect()
         self.cube_finder = DemoCubeFinder(self.kinect)
@@ -50,7 +51,7 @@ class RunLoop:
         actual_position = ''
         self.move_robot_to_atlas_zone()
         return self.flag_loop.get_flag()
-
+    
     def construct_flag(self, flag, robot_connection):
         flag_cycle = FlagCycle(flag, robot_connection)
         flag_cycle.start()
@@ -61,4 +62,3 @@ class RunLoop:
     def move_forward_robot_center_to_point(self, actual_robot_center_position, target_position):
         path = self.pathfinder.pathfind_to_point(actual_robot_center_position, target_position)
         self.movement_processor.physical_movement_processor(path)
-

@@ -1,4 +1,4 @@
-from vision.cube import Cube
+from vision.cube import Cube, WhiteCube
 from vision.visiontools import VisionTools
 
 
@@ -15,7 +15,7 @@ class CubeFinder():
             self.cubes.append(cube)
 
     def refresh_position(self):
-        image_rgb = self.kinect.grab_new_image()
+        image_rgb = self.kinect.grab_new_image(True)
         image_hsv = VisionTools().get_hsv_image(image_rgb)
         for cube in self.cubes:
             cube.find_position(image_hsv, self.kinect)
@@ -29,3 +29,4 @@ class DemoCubeFinder(CubeFinder):
         self.add_cube(Cube('green'))
         self.add_cube(Cube('blue'))
         self.add_cube(Cube('yellow'))
+        self.add_cube(WhiteCube())
