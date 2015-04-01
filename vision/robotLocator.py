@@ -11,19 +11,27 @@ class RobotLocator():
         self.position = RobotPosition()
 
     def get_position(self, kinect):
+        for x in range(0, 1):
+            self.position = RobotPosition()
+            self.attempt_get_position(kinect)
+            if self.position.is_valid():
+                break
+        return self.position
+
+    def attempt_get_position(self, kinect):
         img_hsv = self.get_masked_hsv(kinect)
         purple_corner = Cube('purple')
         green_corner = Cube('forest_green')
         purple_position = purple_corner.find_position(img_hsv, kinect)
         green_position = green_corner.find_position(img_hsv, kinect)
         if purple_corner.is_valid_position(purple_position):
-            self.test_other_corners(img_hsv, kinect, purple_corner)
+            self.test_other_corners(img_hsv, kinect, purple_corner, 0)
         elif green_corner.is_valid_position(green_position):
-            self.test_other_corners(img_hsv, kinect, green_corner, math.pi)
+            self.test_other_corners(img_hsv, kinect, green_corner, math.pi / 2)
         return self.position
 
     def get_masked_hsv(self, kinect):
-        img = kinect.grab_new_image()
+        img = kinect.grab_new_image(bilateral_filter_activated=True)
         img_hsv = VisionTools().get_hsv_image(img)
         polyline = np.array([[0, 280], [640, 280], [640, 480], [0, 480]], np.int32)
         stencil = FormStencil([polyline])
@@ -31,18 +39,28 @@ class RobotLocator():
 
     def test_other_corners(self, img_hsv, kinect, found_corner, angle_modificator=0):
         found_corner_x_position = found_corner._find_center_in_img(img_hsv, kinect)[0]
-        maybe_orange_position = self.find_orange_position(img_hsv, kinect, found_corner_x_position)
-        if self.position.is_valid_position(maybe_orange_position):#  TODO
-            self.position.set_from_points(found_corner.position, maybe_orange_position, angle_modificator)
+        if angle_modificator == 0:
+            maybe_first_corner_position = self.find_left_orange_corner(img_hsv, kinect, found_corner_x_position)
+            maybe_second_corner_position = self.find_right_orange_corner(img_hsv, kinect, found_corner_x_position)
+        else:
+            maybe_first_corner_position = self.find_right_orange_corner(img_hsv, kinect, found_corner_x_position)
+            maybe_second_corner_position = self.find_left_orange_corner(img_hsv, kinect, found_corner_x_position)
 
-    def find_orange_position(self,img_hsv, kinect, found_corner_x_position):
-        maybe_left_corner_position = self.find_left_orange_corner(img_hsv, kinect, found_corner_x_position)
-        maybe_right_corner_position = self.find_right_orange_corner(img_hsv, kinect, found_corner_x_position)
-        if self.position.is_valid_position(maybe_left_corner_position):#  TODO
-            return maybe_left_corner_position
-        elif self.position.is_valid_position(maybe_right_corner_position):#  TODO
-            return maybe_right_corner_position
-        return (-500, -500)
+        if self.position.is_valid_position(maybe_first_corner_position):#  TODO
+            print 'first'
+            if angle_modificator == 0:
+                self.position.set_from_points(maybe_first_corner_position, found_corner.position, 0)
+                # print 'purple first'
+            else:
+                self.position.set_from_points(maybe_first_corner_position, found_corner.position, math.pi/2)
+                # print 'green first'
+        elif self.position.is_valid_position(maybe_second_corner_position):#  TODO
+            if angle_modificator == 0:
+                self.position.set_from_points(maybe_second_corner_position, found_corner.position, math.pi*3/2)
+                # print 'purple second'
+            else:
+                self.position.set_from_points(maybe_second_corner_position, found_corner.position, math.pi)
+                # print 'green second'
 
     def find_left_orange_corner(self,img_hsv, kinect, x_limit):
         polyline = np.array([[0, 0], [x_limit, 0], [x_limit, 480], [0, 480]], np.int32)
@@ -64,7 +82,7 @@ class Position():
     NO_POSITION_TOLERANCE = 4
 
     def __init__(self, x=None, y=None, angle=None):
-        self.position = (x,y)
+        self.position = (x, y)
         self.angle = angle
 
     def set_angle_from_points(self, point_1, point_2):
@@ -72,10 +90,16 @@ class Position():
         delta_y = point_1[0] - point_2[0]
         self.angle = math.atan2(delta_y, delta_x)
 
+    def set_position(self, x, y):
+        self.position = (x, y)
+
     def get_angle_in_deg(self):
         if self.angle is None:
             return None
         return self.angle * 180 / math.pi
+
+    def is_valid(self):
+        self.is_valid_position(self.position)
 
     def is_valid_position(self, position):
         if position is None:
@@ -84,6 +108,12 @@ class Position():
             return False
         return position[0] > self.NEGATIVE_POSITION_TOLERANCE_IN_MM \
             and position[1] > self.NEGATIVE_POSITION_TOLERANCE_IN_MM
+
+    def normalize_angle(self):
+        if self.angle < 0:
+            self.angle += 2 * math.pi
+        elif self.angle > 2 * math.pi:
+            self.angle -= 2 * math.pi
 
 
 class RobotPosition(Position):
@@ -95,6 +125,13 @@ class RobotPosition(Position):
     def set_from_points(self, point_1, point_2, angle_modificator):
         self.set_angle_from_points(point_1, point_2)
         self.angle += angle_modificator
-        x_value = point_1[0] - self.ROBOT_DIMENSION / 2 * math.sin(self.angle)
-        y_value = point_1[0] + self.ROBOT_DIMENSION / 2 * math.sin(self.angle)
-        self.position = (int(x_value), int(y_value))
+        diagonal = math.sqrt(2) * self.ROBOT_DIMENSION / 2
+        if angle_modificator < math.pi:
+            x_value = point_1[0] + diagonal * math.cos(self.angle + math.pi/float(4))
+            y_value = point_1[1] - diagonal * math.sin(self.angle + math.pi/float(4))
+        else:
+
+            x_value = point_1[0] - diagonal * math.cos(self.angle + math.pi/float(4))
+            y_value = point_1[1] + diagonal * math.sin(self.angle + math.pi/float(4))
+        self.position = (int(round(x_value)), int(round(y_value)))
+        self.normalize_angle()
