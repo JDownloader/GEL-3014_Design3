@@ -11,19 +11,20 @@ def process(question, query_builder):
 def extract_illicit_drugs_statement(mapped_question):
     sentence = mapped_question.items()
     print sentence
-    grammar = "NP: {<JJ>*}"
+    grammar = "NP: {<DT>*}"
     result = nltk.RegexpParser(grammar).parse(sentence)
 
     key_word = ''
     for subtree in result.subtrees():
         if subtree.label() == 'NP':
             reverse_dict = bidictionnary.Bidict(dict(subtree.leaves()))
-            key_word = reverse_dict.key_with_value('JJ')
+            key_word = reverse_dict.key_with_value('DT')
 
     return truncate_sentence_from_key_word(key_word, mapped_question)
 
 def truncate_sentence_from_key_word(key_word, sentence):
+
     statement = sentence.items()[sentence.keys().index(key_word):len(sentence.items())]
-    reverse_dict = bidictionnary.Bidict(statement)
-    return reverse_dict.keys_with_values(['JJ', 'NN', 'CC','VB'])
+    statement_map = [key for key,value in statement]
+    return statement_map
 

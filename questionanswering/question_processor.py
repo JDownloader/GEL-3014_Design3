@@ -7,7 +7,8 @@ from query_builder import QueryBuilder
 from filters import capital_filter, independence_date_filter, country_code_filter, national_symbol_filter, \
     urban_areas_filter, religion_filter, geographic_coordinates_filter, national_anthem_filter, \
     unemployment_rate_filter, population_growth_rate_filter, total_area_filter, population_filter,\
-    telephone_lines_filter, language_filter, public_debt_filter, illicit_drugs_filter, industires_filter, importation_filter
+    telephone_lines_filter, language_filter, public_debt_filter, illicit_drugs_filter, industires_filter, \
+    importation_filter, inflation_rate_filter
 class QuestionProcessor :
     def __init__(self):
         self.answer = ""
@@ -20,7 +21,7 @@ class QuestionProcessor :
                           unemployment_rate_filter.process, population_growth_rate_filter.process, total_area_filter.process,
                           population_filter.process, telephone_lines_filter.process, language_filter.process,
                           public_debt_filter.process, illicit_drugs_filter.process, industires_filter.process,
-                          importation_filter.process,
+                          importation_filter.process, inflation_rate_filter.process,
                           self.fetch_answer]
         pipeline = combine_pipeline(question, query_builder, pipeline_steps)
         consume(pipeline)
