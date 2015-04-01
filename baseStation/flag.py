@@ -14,12 +14,23 @@ class Flag():
         data = json.load(json_data)
         self.flag_matrix = data[country]
 
-    def get_matrix(self):
+    def get_matrix_for_ui(self):
         tiles = [None]*self.NUMBER_OF_TILES_IN_FLAG
         i = 0
         for tile in tiles:
             if self.cubes_of_tiles[i] is None and self.flag_matrix[i] is not None:
                 tiles[i] = self.flag_matrix[i]+'_p'
+            else:
+                tiles[i] = self.flag_matrix[i]
+            i += 1
+        return tiles
+
+    def get_matrix(self):
+        tiles = [None]*self.NUMBER_OF_TILES_IN_FLAG
+        i = 0
+        for tile in tiles:
+            if self.cubes_of_tiles[i] is None and self.flag_matrix[i] is not None:
+                tiles[i] = self.flag_matrix[i]
             else:
                 tiles[i] = self.flag_matrix[i]
             i += 1

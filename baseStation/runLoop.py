@@ -2,29 +2,39 @@ import time
 from vision.kinect import Kinect, NoKinectDetectedException
 from tests.test_vision import FakeKinect
 from cubeFinder import CubeFinder, DemoCubeFinder
-from PathFinding import PathFinding
-from controller.serialCom import Robot
-from contextHelper import ContextHelper
-from flagCycle import FlagCycle
-from controller.serialCom import Robot
+from contextProvider import ContextHelper
+from flagProcessor import FlagProcessor
+from baseStation.flagCycle import *
+from baseStation.robotConnection import RobotConnection
+import exceptions
 import constants
+from pathfinding.pathfinding import Pathfinding
+from pathfinding.point import Point
+import pathfinding.constants
+from movementProcessor import MovementProcessor
+
 
 class RunLoop:
     startTime = None;
 
     def __init__(self):
-        self.flag_loop = FlagCycle()
+        self.flag_loop = FlagProcessor()
+        self.pathfinder = Pathfinding()
+        self.flag_cycle = FlagCycle
+        self.movement_processor = None
+        self.robot_position = Point(0, 0)
         try:
             self.kinect = Kinect()
         except NoKinectDetectedException:
             self.kinect = FakeKinect()
         self.cube_finder = DemoCubeFinder(self.kinect)
-        self.robot = Robot()
 
-    def start(self):
+    def start(self, robot_connection):
         self.startTime = time.time()
+        self.movement_processor = MovementProcessor(robot_connection)
+        self.move_robot_to_atlas_zone()
         answer = self.fetch_answer()
-        self.construct_flag(answer)
+        self.construct_flag(answer, robot_connection)
 
     def get_time(self):
         if self.startTime is None:
@@ -38,13 +48,17 @@ class RunLoop:
 
     def fetch_answer(self):
         actual_position = ''
-        self.move_to(actual_position, constants.ATLAS_ZONE)
-        flags = FlagCycle()
-        return flags.get_flag()
+        self.move_robot_to_atlas_zone()
+        return self.flag_loop.get_flag()
 
-    def construct_flag(self, flag):
-        pass
+    def construct_flag(self, flag, robot_connection):
+        flag_cycle = FlagCycle(flag, robot_connection)
+        flag_cycle.start()
 
-    def move_to(actual_position, target_position):
-        pathFinder = PathFinding()
-        path = pathFinder.process_path_to(actual_position, target_position)
+    def move_robot_to_atlas_zone(self):
+        self.move_forward_robot_center_to_point(self.robot_position, pathfinding.constants.ATLAS_ZONE_COORDINATES)
+
+    def move_forward_robot_center_to_point(self, actual_robot_center_position, target_position):
+        path = self.pathfinder.pathfind_to_point(actual_robot_center_position, target_position)
+        self.movement_processor.physical_movement_processor(path)
+

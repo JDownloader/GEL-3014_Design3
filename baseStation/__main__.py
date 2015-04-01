@@ -36,7 +36,11 @@ def hello():
 
 @app.route('/start')
 def start():
-    app.run_loop.start()
+    if app.robot_connection is not None:
+        app.run_loop.start(app.robot_connection)
+    else:
+        abort(500)
+
     return "ok"
 
 # A javaScript fonction calls this method every 250 ms
