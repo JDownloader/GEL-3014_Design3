@@ -4,6 +4,18 @@ from camera import Camera
 from cube import *
 
 
+class FormStencil:
+    def __init__(self, poly_lines):
+        self.poly_lines = []
+        for poly_line in poly_lines:
+            poly_line_reshaped = poly_line.reshape((-1, 1, 2))
+            self.poly_lines.append(poly_line_reshaped)
+
+    def apply(self, img_mask):
+        img_result = np.copy(img_mask)
+        cv2.fillPoly(img_result, self.poly_lines, (0, 0, 0))
+        return img_result
+
 class VisionRobot():
 
     def __init__(self, a_camera):
@@ -27,14 +39,13 @@ class VisionRobot():
 
         return square
 
+
     def findAnglesCube(self, square):
         if len(square) == 6:
             rightAngle = camera.get_angle_cube(square, 3)
-            leftAngle = camera.get_angle_cube(square, 2)
-        elif len(square) == 4 or len(square)==5:
-            rightAngle = camera.get_angle_cube(square, 1)
-            leftAngle = camera.get_angle_cube(square, 0)
-        return leftAngle, rightAngle
+        elif len(square) == 4:
+            rightAngle = camera.get_angle_cube(square, 2)
+        return rightAngle
 
 
 if __name__ == "__main__":
@@ -51,17 +62,23 @@ if __name__ == "__main__":
 
         cap.grab()
 
-        #flags, image = cap.read()
         cube = Cube('blue')
         image = cv2.imread('essaiCube15.png')
-        height, width, depth = image.shape
-        dst_ima = camera.remmaping_image(image)
-        square = vision.findSquareCube(dst_ima, cube)
-        angles = vision.findAnglesCube(square)
+        try:
+
+            height, width, depth = image.shape
+            dst_ima = camera.remmaping_image(image)
+            square = vision.findSquareCube(dst_ima, cube)
+            if len(square)==6 or len(square)==4:
+                angle = vision.findAnglesCube(square)
 
 
-        cv2.drawContours(dst_ima, [square], 0, (0, 0, 255), 2)
-        cv2.imshow("BGR", dst_ima)
+            cv2.drawContours(dst_ima, [square], 0, (0, 0, 255), 2)
+            cv2.imshow("BGR", dst_ima)
+
+        except:
+            pass
+
 
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
@@ -70,5 +87,5 @@ if __name__ == "__main__":
     cap.release()
     cv2.destroyAllWindows()
 
-print angles
+
 

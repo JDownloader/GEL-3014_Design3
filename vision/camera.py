@@ -6,6 +6,7 @@ import time
 
 CAMERA_MATRIX = [[555.81341097, 0. ,323.81267756], [0., 555.07406939, 244.96419131], [0., 0.,1.]]
 DIST_COEFS = [[0.26812386, -1.12309446,  0.00970802, -0.00178942,  0.97162928]]
+POLYLINE = np.array([[0, 250], [640, 250], [640, 480], [0, 480]], np.int32)
 ANGLE = 45
 
 class FormStencil:
@@ -29,9 +30,10 @@ class NoCameraDetectedException(Exception):
 class Camera():
 
     def __init__(self):
-        self.capt_obj = cv2.VideoCapture(1)
+        self.capt_obj = cv2.VideoCapture(0)
         self.camera_matrix = np.array(CAMERA_MATRIX)
         self.distortion_matrix = np.array(DIST_COEFS)
+        self.polyline = POLYLINE
         flags, img = self.capt_obj.read()
         if flags is False:
             raise NoCameraDetectedException()
@@ -53,17 +55,21 @@ class Camera():
         img = cv2.GaussianBlur(img_rgb, (5, 5), 0)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         img_binary = cube.color_filter.apply(img)
-        dilation = np.ones((2, 2), "uint8")
+        dilation = np.ones((3, 3), "uint8")
         img_binary = cv2.dilate(img_binary, dilation)
+        img_binary = self.apply_polyline(img_binary)
         return img_binary
 
     def apply_filter_black_cube(self, img_rgb):
         img = cv2.GaussianBlur(img_rgb, (5, 5), 0)
         img2gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
         ret, mask = cv2.threshold(img2gray, 100, 255, cv2.THRESH_BINARY)
-        polyline = np.array([[0, 250], [640, 250], [640, 480], [0, 480]], np.int32)
-        stencil = FormStencil([polyline])
-        mask= stencil.apply(mask)
+        mask = self.apply_polyline(mask)
+        return mask
+
+    def apply_polyline(self, image):
+        stencil = FormStencil([self.polyline])
+        mask = stencil.apply(image)
         return mask
 
     def find_contour_cube(self, img_binary):
@@ -109,9 +115,10 @@ class Camera():
 
     def find_square_cube_white(self, image):
         img_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        img_gray = self.apply_polyline(img_gray)
         squares = self._find_squares(img_gray)
         square = self._filterSquares(squares)
-        return square[0]
+        return square[1]
 
     def _angle_cos(self, p0, p1, p2):
         d1, d2 = (p0-p1).astype('float'), (p2-p1).astype('float')
