@@ -104,7 +104,7 @@
 
 	document.getElementById("startButton").addEventListener("click", startRun);
 	function startRun(){
-		$.getJSON('/context').then(function(data) {
+		$.getJSON('/start').then(function(data) {
 			console.log( "Data: " + data );
 		}, function(status) { //error detection....
 			console.log( "Request Failed: " + status );
