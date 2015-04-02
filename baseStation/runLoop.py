@@ -58,7 +58,7 @@ class RunLoop:
 
     def move_robot_to_atlas_zone(self):
         self.move_robot_forward_to_point(self.robot_status.position,
-                                                pathfinding.constants.ATLAS_ZONE_COORDINATES)
+                                         pathfinding.constants.ATLAS_ZONE_COORDINATES)
 
     def move_robot_forward_to_point(self, actual_robot_position, target_position):
         path = self.pathfinder.pathfind_to_point(actual_robot_position, target_position)
