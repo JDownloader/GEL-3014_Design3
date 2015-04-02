@@ -56,8 +56,8 @@ class PololuConnectionCreator:
 
 class CameraController:
     def __init__(self, pololu_serial_communication):
-        self.position_vertical = 0
-        self.position_horizontal = 0
+        self.position_vertical = int(4 * 1047.5)
+        self.position_horizontal = int(4 * 1550)
         self.channel_vertical = controller.constants.POLOLU_CHANNELS_PWM.get('camera_vertical')
         self.channel_horizontal = controller.constants.POLOLU_CHANNELS_PWM.get('camera_horizontal')
         self.reset_position(pololu_serial_communication)
@@ -72,23 +72,27 @@ class GripperController:
         self.gripper_serial_communication = pololu_serial_communication
         self.channel_vertical = controller.constants.POLOLU_CHANNELS_PWM.get('gripper_vertical')
         self.channel_pliers = controller.constants.POLOLU_CHANNELS_PWM.get('gripper_pliers')
-        self.min_vertical = 4*704.00
-        self.max_vertical = 4*2096.00
-        self.pos_vertical_transport_cube = 4*1785.00
-        self.pos_vertical_table = 4*1264.75
-        self.min_pliers = 4*454.25
-        self.max_pliers = 4*2374.50
-        self.pos_pliers_open_big = 4*2031.00
-        self.pos_pliers_open_small = 4*1156.75
-        self.pos_pliers_closed = 4*850.00
+        self.min_vertical = int(4*704.00)
+        self.max_vertical = int(4*2096.00)
+        self.pos_vertical_transport_cube = int(4*1785.00)
+        self.pos_vertical_table = int(4*1264.75)
+        self.vertical_speed = 20
+        self.min_pliers = int(4*454.25)
+        self.max_pliers = int(4*2374.50)
+        self.pos_pliers_open_big = int(4*2031.00)
+        self.pos_pliers_open_small = int(4*1156.75)
+        self.pos_pliers_closed = int(4*850.00)
+        self.pliers_speed = 30
         self._set_parameters()
 
     def _set_parameters(self):
         if self.gripper_serial_communication:
             self.gripper_serial_communication.setRange(self.channel_vertical, self.min_vertical, self.max_vertical)
-            self.gripper_serial_communication.setTarget(self.channel_vertical, self.pos_vertical_table)
+            self.gripper_serial_communication.setSpeed(self.channel_vertical, self.vertical_speed)
+            self.gripper_serial_communication.setTarget(self.channel_vertical, self.pos_vertical_transport_cube)
             self.gripper_serial_communication.setRange(self.channel_pliers, self.min_pliers, self.max_pliers)
-            self.gripper_serial_communication.setTarget(self.channel_pliers, self.pos_pliers_open_big)
+            self.gripper_serial_communication.setSpeed(self.channel_pliers, self.pliers_speed)
+            self.gripper_serial_communication.setTarget(self.channel_pliers, self.pos_pliers_closed)
 
     def change_vertical_position(self, is_raised):
         if is_raised:
@@ -128,13 +132,12 @@ class RobotMovementController:
         self.serial_communication.write(str(chr(int(distance_in_mm / 10))))
 
     def rotate_robot(self, rotation_direction_is_left, rotation_angle_in_degrees, speed_percentage):
-        rotation_angle_in_steps = int(rotation_angle_in_degrees * 109 / 90)
         if rotation_direction_is_left:
             self.serial_communication.write(str(chr(101)))
         else:
             self.serial_communication.write(str(chr(102)))
         self.serial_communication.write(str(chr(speed_percentage)))
-        self.serial_communication.write(str(chr(rotation_angle_in_steps)))
+        self.serial_communication.write(str(chr(rotation_angle_in_degrees)))
 
     def serial_communication_cleanup(self):
         self.serial_communication.close()

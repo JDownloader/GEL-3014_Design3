@@ -1,7 +1,9 @@
 import socket
 from socket import AF_INET, SOCK_STREAM
-from robotCommands import RobotCommand
 import cPickle
+from time import sleep
+
+from controller.serialCom import Robot
 
 SERVER_PORT = 8001
 
@@ -15,6 +17,7 @@ class RobotSocket():
         self.connection_available = True
         self.my_socket = socket.socket(AF_INET, SOCK_STREAM)
         self.my_socket.bind((self.HOST, port))
+        self.robot = Robot()
 
     def connection_stopped(self):
         self.connection_available = False
@@ -38,7 +41,7 @@ class RobotSocket():
                 self.server_available = False
             else:
                 command = cPickle.loads(msg)
-                command.perform_command(None)
+                command.perform_command(self.robot)
 
 
 if __name__ == '__main__':
