@@ -135,3 +135,8 @@ class RobotPosition(Position):
             y_value = point_1[1] + diagonal * math.sin(self.angle + math.pi/float(4))
         self.position = (int(round(x_value)), int(round(y_value)))
         self.normalize_angle()
+
+    def update_with_pathfinding_tuple(self, pathfinding_tuple):
+        self.angle += math.radians(pathfinding_tuple[0])
+        self.position = (self.position[0] + math.sin(self.angle) * pathfinding_tuple[1],
+                         self.position[1] + math.cos(self.angle) * pathfinding_tuple[1])
