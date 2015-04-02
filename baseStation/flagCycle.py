@@ -1,7 +1,6 @@
 import time
 from robotConnection import RobotConnection
 from pathfinding.pathfinding import Pathfinding
-from pathfinding.point import Point
 
 
 class FlagCycle:
@@ -13,15 +12,18 @@ class FlagCycle:
     def start(self):
         for cube_index, cube in enumerate(self.flag_matrix):
             if cube is not None:
-                self.fetch_cube(str(cube), cube_index)
                 pass
+        self.fetch_cube(str('yellow'), 4)
 
     def fetch_cube(self, cube_color, cube_position_in_flag):
         print 'je fais semblant que je suis arrive au cube'
         self.robot_connection.send_led_color_change_command(cube_color, cube_position_in_flag)
-        self.robot_connection.send_change_gripper_height_command(False)
         self.robot_connection.send_gripper_pliers_opening_change_command(True, True)
-        time.sleep(3)
-        self.robot_connection.send_gripper_pliers_opening_change_command(False, True)
-        time.sleep(3)
+        time.sleep(1)
+        self.robot_connection.send_change_gripper_height_command(False)
+        time.sleep(2)
+        self.robot_connection.send_gripper_pliers_opening_change_command(True, False)
+        time.sleep(1)
+        self.robot_connection.send_gripper_pliers_opening_change_command(False, False)
+        time.sleep(2)
         self.robot_connection.send_change_gripper_height_command(True)
