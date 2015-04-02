@@ -26,7 +26,7 @@ class RunLoop:
         self.movement_processor = None
         self.robot_status = None
         try:
-            self.kinect = Kinect('2')
+            self.kinect = Kinect('4')
         except NoKinectDetectedException:
             self.kinect = FakeKinect()
         self.cube_finder = DemoCubeFinder(self.kinect)
@@ -34,6 +34,9 @@ class RunLoop:
     def start(self, robot_connection):
         self.startTime = time.time()
         self.robot_status = RobotStatus(robot_connection)
+        while not self.robot_status.position.is_valid():
+            self.robot_status.update_position_with_kinect(self.kinect)
+            self.robot_status.update_position_with_kinect(self.kinect)
         self.movement_processor = MovementProcessor(robot_connection)
         answer = self.fetch_answer()
         self.construct_flag(answer)
@@ -46,16 +49,17 @@ class RunLoop:
     def get_context(self, robot_ip):
         context_helper = ContextHelper(self)
         self.cube_finder.refresh_position()
-        if self.robot_status is not None:
-            self.robot_status.update_position_with_kinect(self.kinect)
+        # if self.robot_status is not None:
+        #     self.robot_status.update_position_with_kinect(self.kinect)
+        #     print self.robot_status.position
         return context_helper.get_context(robot_ip)
 
     def fetch_answer(self):
-        # self.move_robot_to_atlas_zone()
+        self.move_robot_to_atlas_zone()
         return self.flag_loop.get_flag()
     
     def construct_flag(self, flag):
-        flag_cycle = FlagCycle(flag, self.robot_status.robot_connection)
+        flag_cycle = FlagCycle(flag, self.robot_status, self.kinect)
         flag_cycle.start()
 
     def move_robot_to_atlas_zone(self):

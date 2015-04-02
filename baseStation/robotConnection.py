@@ -3,7 +3,6 @@ from socket import AF_INET, SOCK_STREAM
 from robotSrv.__main__ import SERVER_PORT
 from robotSrv.robotCommands import *
 import cPickle
-import time
 
 
 class RobotConnection():

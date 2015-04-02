@@ -117,9 +117,9 @@ class Position():
         return False
 
     def normalize_angle(self):
-        if self.angle < 0:
+        if self.angle < math.pi:
             self.angle += 2 * math.pi
-        elif self.angle > 2 * math.pi:
+        elif self.angle > math.pi:
             self.angle -= 2 * math.pi
 
 
@@ -147,3 +147,4 @@ class RobotPosition(Position):
         self.angle += math.radians(pathfinding_tuple[0])
         self.position = (self.position[0] + math.sin(self.angle) * pathfinding_tuple[1],
                          self.position[1] + math.cos(self.angle) * pathfinding_tuple[1])
+        self.normalize_angle()

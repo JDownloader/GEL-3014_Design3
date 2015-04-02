@@ -38,12 +38,8 @@ class Pathfinding:
 
     def determine_rotation_angle(self, robot_current_angle_in_degrees, target_angle_in_degrees):
         rotation_angle = target_angle_in_degrees - robot_current_angle_in_degrees
-        print 'current angle', robot_current_angle_in_degrees
-        print 'target angle', target_angle_in_degrees
-        print 'Angle calculee avannt correction', rotation_angle
         if rotation_angle < -180:
             rotation_angle = rotation_angle + 360
         elif rotation_angle > 180:
             rotation_angle = rotation_angle - 360
-        print 'angle calculee apres correction', rotation_angle
         return int(rotation_angle)
