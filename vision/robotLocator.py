@@ -11,7 +11,7 @@ class RobotLocator():
         self.position = RobotPosition()
 
     def get_position(self, kinect):
-        for x in range(0, 1):
+        for x in range(0, 5):
             self.position = RobotPosition()
             self.attempt_get_position(kinect)
             if self.position.is_valid():
@@ -104,15 +104,17 @@ class Position():
         return self.angle * 180 / math.pi
 
     def is_valid(self):
-        self.is_valid_position(self.position)
+        return self.is_valid_position(self.position)
 
     def is_valid_position(self, position):
         if position is None:
             return False
         if position[0] is None or position[1] is None:
             return False
-        return position[0] > self.NEGATIVE_POSITION_TOLERANCE_IN_MM \
-            and position[1] > self.NEGATIVE_POSITION_TOLERANCE_IN_MM
+        if position[0] > self.NEGATIVE_POSITION_TOLERANCE_IN_MM \
+                and position[1] > self.NEGATIVE_POSITION_TOLERANCE_IN_MM:
+            return True
+        return False
 
     def normalize_angle(self):
         if self.angle < 0:

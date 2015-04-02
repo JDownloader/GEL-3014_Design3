@@ -16,9 +16,10 @@ class ContextHelper:
         angle = random.randrange(0, 359, 45)
         run_time = self.run_loop.get_time()
         position = self.get_position_data()
-        sample_status = { 'top': position.position[1],
-                          'left': position.position[0],
-                          'angle': position.get_angle_in_deg(),
+        print position.position
+        sample_status = { 'top': 600-position.position[1]*0.27,
+                          'left': 302-position.position[0]*0.27,
+                          'angle': 360 - position.get_angle_in_deg(),
                           'kinect_is_fake': self.is_fake_kinect(),
                           'chrono': strftime('%Mm%Ss', gmtime(run_time)),
                           'robotIP': robot_ip,
@@ -39,6 +40,8 @@ class ContextHelper:
 
     def get_position_data(self):
         position = RobotPosition()
+        position.position = (-500, -500)
+        position.angle = 0
         if self.run_loop.robot_status is not None \
                 and self.run_loop.robot_status.position.angle is not None:
             position = self.run_loop.robot_status.position
