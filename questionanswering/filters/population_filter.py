@@ -46,8 +46,8 @@ def extract_greater_than_population_number(mapped_question):
         if number is ',':
             final_regex += ','
         else:
-            if index is 0:
-                final_regex = '[' + number + '-9' + ']'
+            if (index is 0) | (index is 2):
+                final_regex += '[' + number + '-9' + ']'
             else:
                 final_regex += '[0-9]'
     return final_regex

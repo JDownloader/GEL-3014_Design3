@@ -10,7 +10,7 @@ def fetchQuestion():
     #        "My national symbol is the elephant.", "My latitude is 16 00 S and my longitude is 167 00 E.", "My internet country code is .br.",  "My independence was declared in August 1971.",
     #         "My death rate is greater than 13 death/1000 and my capital starts with Mos.", "My capital name starts with Moga.", "My capital name starts with Ath and ends with ens.","22 September 1960 is the date of independence of this country." ]
 
-    return   "What country has an inflation rate between 0.3% and 0.5%?"
+    return "What country has a population greater than 1 300 692 576?"
 
 
 def main():
