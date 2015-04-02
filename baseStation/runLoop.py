@@ -46,6 +46,8 @@ class RunLoop:
     def get_context(self, robot_ip):
         context_helper = ContextHelper(self)
         self.cube_finder.refresh_position()
+        if self.robot_status is not None:
+            self.robot_status.update_position_with_kinect(self.kinect)
         return context_helper.get_context(robot_ip)
 
     def fetch_answer(self):

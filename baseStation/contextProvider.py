@@ -1,6 +1,7 @@
 import random
 from tests.test_vision_kinect import FakeKinect
 from time import gmtime, strftime
+from vision.robotLocator import RobotPosition
 
 
 class ContextHelper:
@@ -14,9 +15,10 @@ class ContextHelper:
         pos_y = random.randrange(0, 400, 1)
         angle = random.randrange(0, 359, 45)
         run_time = self.run_loop.get_time()
-        sample_status = { 'top': 30,
-                          'left': 30,
-                          'angle': 0,
+        position = self.get_position_data()
+        sample_status = { 'top': position.position[1],
+                          'left': position.position[0],
+                          'angle': position.get_angle_in_deg(),
                           'kinect_is_fake': self.is_fake_kinect(),
                           'chrono': strftime('%Mm%Ss', gmtime(run_time)),
                           'robotIP': robot_ip,
@@ -34,3 +36,10 @@ class ContextHelper:
         if isinstance(self.run_loop.kinect, FakeKinect):
             return True
         return False
+
+    def get_position_data(self):
+        position = RobotPosition()
+        if self.run_loop.robot_status is not None \
+                and self.run_loop.robot_status.position.angle is not None:
+            position = self.run_loop.robot_status.position
+        return position
