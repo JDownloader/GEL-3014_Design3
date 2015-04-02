@@ -268,23 +268,23 @@
         }
 
         this.setPosition = function(x, y, angle){
-            var MAX_X = 302;
-            var MAX_Y = 600;
-            var diagonal = 35.355;
-            this.body.set('left', MAX_X - x);
-            this.body.set('top', MAX_Y - y);
+            var x_pos = x;
+            var y_pos = y;
+            //console.log(x_pos);
+            this.body.set('left', x_pos);
+            this.body.set('top', y_pos);
             this.body.set('angle', angle);
-            this.purpleCorner.set('left', MAX_X - x);
-            this.purpleCorner.set('top', MAX_Y - y);
+            this.purpleCorner.set('left', x_pos);
+            this.purpleCorner.set('top', y_pos);
             this.purpleCorner.set('angle', angle);
-            this.greenCorner.set('left', MAX_X - x);
-            this.greenCorner.set('top', MAX_Y - y);
+            this.greenCorner.set('left', x_pos);
+            this.greenCorner.set('top', y_pos);
             this.greenCorner.set('angle', angle);
-            this.orange1Corner.set('left', MAX_X - x);
-            this.orange1Corner.set('top', MAX_Y - y);
+            this.orange1Corner.set('left', x_pos);
+            this.orange1Corner.set('top', y_pos);
             this.orange1Corner.set('angle', angle);
-            this.orange2Corner.set('left', MAX_X - x);
-            this.orange2Corner.set('top', MAX_Y - y);
+            this.orange2Corner.set('left', x_pos);
+            this.orange2Corner.set('top', y_pos);
             this.orange2Corner.set('angle', angle);
             return null;
         }
