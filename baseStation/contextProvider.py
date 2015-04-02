@@ -12,9 +12,11 @@ class ContextHelper:
 
     def get_context(self, robot_ip):
         pos_y = random.randrange(0, 400, 1)
+        angle = random.randrange(0, 359, 45)
         run_time = self.run_loop.get_time()
         sample_status = { 'top': 30,
-                          'left': pos_y,
+                          'left': 30,
+                          'angle': 0,
                           'kinect_is_fake': self.is_fake_kinect(),
                           'chrono': strftime('%Mm%Ss', gmtime(run_time)),
                           'robotIP': robot_ip,

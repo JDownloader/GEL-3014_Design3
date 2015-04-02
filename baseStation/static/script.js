@@ -43,14 +43,6 @@
 
 	//planCanvas
 
-	var robot = new fabric.Rect({
-		width: 50, height: 50, left: 150, top: 100, angle: 45,
-		stroke: '#eee',
-		strokeWidth: 10,
-		fill: 'rgba(0,0,200,0.5)',
-		hasControls: false,
-	});
-
 	var planCubes = new Array();
 	for (i = 0; i < 10; i++){
 		var cube = new fabric.Rect({
@@ -73,14 +65,16 @@
 		hasControls: false,
 	});
 
-	function setRobotPosition(left, top) {
-		robot.set('left', left);
-		robot.set('top', top);
+	function setRobotPosition(data) {
+        var x =robot.setPosition(data.left, data.top, data.angle);
 		planCanvas.calcOffset();
 		planCanvas.renderAll();
 	}
 
-	planCanvas.add(robot, greenLines);
+	var robot = new RobotForm();
+    robot.addToCanvas(planCanvas);
+	planCanvas.add(greenLines);
+
 	planCanvas.on({
 		'object:moving': onChange,
 		'object:scaling': onChange,
@@ -108,9 +102,9 @@
 
 	//Events
 
-	document.getElementById("btn1").addEventListener("click", startRun);
+	document.getElementById("startButton").addEventListener("click", startRun);
 	function startRun(){
-		$.getJSON('/demomoverobot').then(function(data) {
+		$.getJSON('/context').then(function(data) {
 			console.log( "Data: " + data );
 		}, function(status) { //error detection....
 			console.log( "Request Failed: " + status );
@@ -159,7 +153,7 @@
 
 	function refreshInterface(){
 		$.getJSON('/context').then(function(data) {
-			setRobotPosition(data.left, data.top);
+			setRobotPosition(data);
 			setContext(data);
 			setFlag(data.flag);
 			setCubes(data.cubes);
@@ -231,6 +225,70 @@
 	}
 
 	//Classes
+
+	function RobotForm () {
+        this.body = new fabric.Rect({
+            width: 50, height: 50, left: 150, top: 100, angle: 45,
+            stroke: '#eee',
+            strokeWidth: 10,
+            fill: 'rgba(0,0,200,0.5)',
+            hasControls: false,
+            originX: 'center',
+            originY: 'center'
+        });
+        this.purpleCorner = new fabric.Rect({
+            width: 20, height: 20, left: 150, top: 100, angle: 45,
+            fill: 'rgba(128,0,128,1)',
+            hasControls: false,
+        });
+        this.greenCorner = new fabric.Rect({
+            width: 20, height: 20, left: 150, top: 100, angle: 45,
+            fill: 'rgba(0,128,0,1)',
+            hasControls: false,
+            originY: 'bottom',
+            originX: 'right'
+        });
+        this.orange1Corner = new fabric.Rect({
+            width: 20, height: 20, left: 150, top: 100, angle: 45,
+            fill: 'rgba(255,140,0,1)',
+            hasControls: false,
+            originY: 'bottom',
+            originX: 'left'
+        });
+        this.orange2Corner = new fabric.Rect({
+            width: 20, height: 20, left: 150, top: 100, angle: 45,
+            fill: 'rgba(255,140,0,1)',
+            hasControls: false,
+            originY: 'top',
+            originX: 'right'
+        });
+
+        this.addToCanvas = function(canvas){
+            canvas.add(this.body, this.purpleCorner, this.greenCorner, this.orange1Corner, this.orange2Corner);
+        }
+
+        this.setPosition = function(x, y, angle){
+            var MAX_X = 302;
+            var MAX_Y = 600;
+            var diagonal = 35.355;
+            this.body.set('left', MAX_X - x);
+            this.body.set('top', MAX_Y - y);
+            this.body.set('angle', angle);
+            this.purpleCorner.set('left', MAX_X - x);
+            this.purpleCorner.set('top', MAX_Y - y);
+            this.purpleCorner.set('angle', angle);
+            this.greenCorner.set('left', MAX_X - x);
+            this.greenCorner.set('top', MAX_Y - y);
+            this.greenCorner.set('angle', angle);
+            this.orange1Corner.set('left', MAX_X - x);
+            this.orange1Corner.set('top', MAX_Y - y);
+            this.orange1Corner.set('angle', angle);
+            this.orange2Corner.set('left', MAX_X - x);
+            this.orange2Corner.set('top', MAX_Y - y);
+            this.orange2Corner.set('angle', angle);
+            return null;
+        }
+    }
 
 	function RobotContextHandler () {
 		this.valid = null;
