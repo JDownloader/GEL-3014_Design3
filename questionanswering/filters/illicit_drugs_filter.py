@@ -10,7 +10,7 @@ def process(question, query_builder):
 
 def extract_illicit_drugs_statement(mapped_question):
     sentence = mapped_question.items()
-    grammar = "NP: {<DT>*}"
+    grammar = "NP: {<DT>*}" 
     result = nltk.RegexpParser(grammar).parse(sentence)
 
     key_word = ''
