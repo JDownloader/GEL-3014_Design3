@@ -11,7 +11,7 @@ def fetchQuestion():
     #         "My death rate is greater than 13 death/1000 and my capital starts with Mos.", "My capital name starts with Moga.", "My capital name starts with Ath and ends with ens.","22 September 1960 is the date of independence of this country." ]
 
 
-    return      "What country has religions including hindu, muslim, Christian, and sikh?"
+    return      "What country has illicit drugs activities including a transshipment point for cocaine from South America to North America and illicit cultivation of cannabis?"
 
 
 def main():
