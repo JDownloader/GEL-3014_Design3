@@ -2,56 +2,49 @@ import time
 import math
 from camera import Camera
 from cube import *
-
-
-class FormStencil:
-    def __init__(self, poly_lines):
-        self.poly_lines = []
-        for poly_line in poly_lines:
-            poly_line_reshaped = poly_line.reshape((-1, 1, 2))
-            self.poly_lines.append(poly_line_reshaped)
-
-    def apply(self, img_mask):
-        img_result = np.copy(img_mask)
-        cv2.fillPoly(img_result, self.poly_lines, (0, 0, 0))
-        return img_result
+from numpy import ndarray
 
 class VisionRobot():
 
     def __init__(self, a_camera):
         self.camera = a_camera
 
-    def getImage(self):
+    def get_image(self):
         cap = self.camera.getCapt()
         image = cap.read()
         image = self.camera.remmaping_image()
         return image
 
-    def findAngleCube(self, square):
-        if len(square) == 6:
-            rightAngle = camera.get_angle_cube(square, 3)
-        elif len(square) == 4:
-            rightAngle = camera.get_angle_cube(square, 2)
-        return rightAngle
-
-    def findSquareCube(self, image, cube):
-        if cube.color == "white":
-            square = self.camera.find_square_cube_white(image)
-        elif cube.color == "black":
-            newimage = self.camera.apply_filter_black_cube(image)
-            square = self.camera.find_contour_cube(newimage)
-        else:
-            newimage = self.camera.apply_filter_color_cubes(image, cube)
-            square = self.camera.find_contour_cube(newimage)
-
+    def find_square_cube(self, image, cube):
+        new_image = self.camera.apply_filter_black_cube(image)
+        square = self.camera.find_contour_cube(new_image)
         return square
 
+    def find_angle_cube(self, square):
+        corner = self.define_corner_number(square)
+        if corner == 1 and len(square)>=6:
+            angle = camera.get_angle_cube(square, corner)
+            right_angle = 90 - angle
+        elif corner != 1 and len(square) >= 6:
+            right_angle = camera.get_angle_cube(square, corner)
+        elif corner == 1 and len(square) == 4:
+            right_angle = camera.get_angle_cube(square, corner)
+        return right_angle
 
+    def define_corner_number(self, square):
+        size_square = len(square)
+        if size_square >= 6:
+            if abs(square[0][0] - square[1][0]) < 50:
+                corner = size_square -1
+            else:
+                corner = 1
+        elif size_square == 4:
+            corner = 1
+        return corner
 
-
-    # def define_corner_ref(self, square):
-    #     if square[]
-
+    def mouse_click_callback(self, event, x, y, flags, param):
+        if event == cv2.EVENT_LBUTTONDBLCLK:
+            print "Click at %d, %d" % (x, y)
 
 if __name__ == "__main__":
 
@@ -62,40 +55,32 @@ if __name__ == "__main__":
     camera = Camera()
     cap = camera.getCapt()
     vision = VisionRobot(camera)
+    mouse = vision.mouse_click_callback
+    cv2.setMouseCallback('BGR', mouse)
 
     while cap.isOpened():
 
-        cap.grab()
-        # cube = WhiteCube()
-        # image = cv2.imread('cuboW2.png')
-        cube = Cube('blue')
-        image = cv2.imread('essaiCube15.png')
+        # Take each frame
+        # _, frame = cap.read()
+        # flags_i, frame = cap.retrieve(None, cv2.CAP_OPENNI_BGR_IMAGE)
+        cube = BlackCube()
+        image = cv2.imread('cuboN1.png')
 
+        image = camera.remmaping_image(image)
+        corners = vision.find_square_cube(image, cube)
+        mask = np.zeros(image.shape,dtype=np.uint8)
+        white = (255,255,255)
+        cv2.fillPoly(mask,corners,white)
+        masked_image = cv2.bitwise_and(image,mask)
+        #cv2.drawContours(masked_image,corners,-1,(0,255,0),6)
+        new_corners = camera.define_contour_array(corners)
+        angle = vision.find_angle_cube(new_corners)
+        cv2.imshow('BGR',masked_image)
 
-        height, width, depth = image.shape
-        dst_ima = camera.remmaping_image(image)
-        square = vision.findSquareCube(dst_ima, cube)
-        if len(square)==6 or len(square)==4:
-            angle = vision.findAngleCube(square)
-
-
-
-        cv2.drawContours(dst_ima, [square], 0, (0, 0, 255), 2)
-        cv2.imshow("BGR", dst_ima)
-
-
-
-
-        if cv2.waitKey(1) & 0xFF == ord('q'):
+        k = cv2.waitKey(5) & 0xFF
+        if k == 27:
             break
 
-
-    cap.release()
     cv2.destroyAllWindows()
 
-
-
-print square
-print angle
-
-
+print "angle", angle

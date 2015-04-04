@@ -52,19 +52,19 @@ class Camera():
         return img_dst
 
     def apply_filter_color_cubes(self, img_rgb, cube):
-        img = cv2.GaussianBlur(img_rgb, (5, 5), 0)
+        img = cv2.GaussianBlur(img_rgb, (3, 3), 10)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
         img_binary = cube.color_filter.apply(img)
         dilation = np.ones((3, 3), "uint8")
         img_binary = cv2.dilate(img_binary, dilation)
-        img_binary = self.apply_polyline(img_binary)
+        #img_binary = self.apply_polyline(img_binary)
         return img_binary
 
     def apply_filter_black_cube(self, img_rgb):
-        img = cv2.GaussianBlur(img_rgb, (5, 5), 0)
+        img = cv2.GaussianBlur(img_rgb, (3, 3), 10)
         img2gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-        ret, mask = cv2.threshold(img2gray, 100, 255, cv2.THRESH_BINARY)
-        mask = self.apply_polyline(mask)
+        ret, mask = cv2.threshold(img2gray, 127, 255, 0)
+        #mask = self.apply_polyline(mask)
         return mask
 
     def apply_polyline(self, image):
@@ -72,32 +72,33 @@ class Camera():
         mask = stencil.apply(image)
         return mask
 
-    def find_contour_cube(self, img_binary):
-        edges = cv2.Canny(img_binary, 300, 300)
-        contours, hierarchy = cv2.findContours(edges, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+    def find_contour_cube(self, image):
+        contours, hierarchy = cv2.findContours(image,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
+        cnt = contours[0]
+        biggest = None
         max_area = 0
-        largest_contour = None
-        for contour in contours:
-            area = cv2.contourArea(contour)
-            if area > max_area:
-                max_area = area
-                largest_contour = contour
-        if largest_contour is not None:
-            cnt_len = cv2.arcLength(largest_contour, True)
-            cnt = cv2.approxPolyDP(largest_contour, 0.02*cnt_len, True)
-            new_cnt = self.define_contour_array(cnt)
-        return new_cnt
+        for i in contours:
+            area = cv2.contourArea(i)
+            if area > 5000 and area < 100000 :
+                peri = cv2.arcLength(i,True)
+                approx = cv2.approxPolyDP(i,0.02*peri,True)
+                if area > max_area and len(approx)==4:
+                    biggest = approx
+                    max_area = area
+
+        corners = np.array([approx],dtype=np.int32)
+        return corners
 
     def define_contour_array(self, contour):
-        contour_array = np.array(np.array(contour[0]))
-        for x  in xrange(1,len(contour)):
-            contour_array = np.concatenate((contour_array,np.array(contour[x])),axis=0)
+        contour_array = np.array(np.array(contour[0][0]))
+        for x  in xrange(1,len(contour[0])):
+            contour_array = np.concatenate((contour_array,np.array(contour[0][x])),axis=0)
         return contour_array
 
 
     def get_angle_cube(self, contour, corner):
-        oposite_side = abs(contour[corner][1]-contour[corner+1][1])
-        adjacent_side = abs(contour[corner][0]-contour[corner+1][0])
+        oposite_side = abs(contour[0][1]-contour[corner][1])
+        adjacent_side = abs(contour[0][0]-contour[corner][0])
         angle = math.atan2(oposite_side, adjacent_side)
         angle = angle*180/math.pi
         return angle
@@ -126,7 +127,8 @@ class Camera():
         img_gray = self.apply_polyline(img_gray)
         squares = self._find_squares(img_gray)
         square = self._filterSquares(squares)
-        return square[1]
+        square = np.array([square[1]],dtype=np.int32)
+        return square
 
     def _angle_cos(self, p0, p1, p2):
         d1, d2 = (p0-p1).astype('float'), (p2-p1).astype('float')
