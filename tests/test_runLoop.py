@@ -6,7 +6,7 @@ class TestRunLoop(TestCase):
     def setUp(self):
         self.empty_run_loop = RunLoop()
         self.stated_run_loop = RunLoop()
-        self.stated_run_loop.start()
+        self.stated_run_loop.start_timer()
 
     def test_new_should_not_return_time(self):
         self.assertEqual(0, self.empty_run_loop.get_time())

@@ -42,26 +42,27 @@ if __name__ == "__main__":
         image_hsv1 = cv2.cvtColor(image_rgb1, cv2.COLOR_BGR2HSV)
         image_hsv2 = cv2.cvtColor(image_rgb1, cv2.COLOR_BGR2HSV)
 
-        print '***'
-        robot_position = robot_locator.get_position(ma_kinect)
-        print robot_position.get_angle_in_deg()
-        print robot_position.position
-        print '***'
+        # print '***'
+        # robot_position = robot_locator.get_position(ma_kinect)
+        # print robot_position.get_angle_in_deg()
+        # print robot_position.position
+        # print '***'
         # formFilter = FormStencil(TABLE_STENCIL.get('4'))
         # image_mask2 = formFilter.apply(image_mask2)
         # greenCorner = Cube('forest_green')
-        orange_corner = Cube('orange')
-        image_mask1 = orange_corner.apply_filters(image_hsv1, ma_kinect)
-        green_corner = Cube('purple')
-        image_mask2 = green_corner.apply_filters(image_hsv1, ma_kinect)
-        purple_corner = Cube('forest_green')
-        image_mask3 = purple_corner.apply_filters(image_hsv1, ma_kinect)
+        # orange_corner = Cube('orange')
+        # image_mask1 = orange_corner.apply_filters(image_hsv1, ma_kinect)
+        # green_corner = Cube('purple')
+        # image_mask2 = green_corner.apply_filters(image_hsv1, ma_kinect)
+        # purple_corner = Cube('forest_green')
+        # image_mask3 = purple_corner.apply_filters(image_hsv1, ma_kinect)
 
+        image_mask3 = WhiteCube().apply_filters(image_hsv1,ma_kinect)
         cv2.imshow('BGR1', image_rgb1)
         # cv2.imshow('BGR2', image_rgb2)
-        cv2.imshow('orange', image_mask1)
-        cv2.imshow('purple', image_mask2)
-        cv2.imshow('green', image_mask3)
+        # cv2.imshow('orange', image_mask1)
+        # cv2.imshow('purple', image_mask2)
+        cv2.imshow('white', image_mask3)
 
         time.sleep(0.3)
         key = cv2.waitKey(5) & 0xFF

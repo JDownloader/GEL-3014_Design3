@@ -15,7 +15,6 @@ from robotStatus import RobotStatus
 import math
 
 
-
 class RunLoop:
     startTime = None;
 
@@ -32,11 +31,14 @@ class RunLoop:
         self.cube_finder = DemoCubeFinder(self.kinect)
 
     def start(self, robot_connection):
-        self.startTime = time.time()
+        self.start_timer()
         self.robot_status = RobotStatus(robot_connection)
         self.movement_processor = MovementProcessor(robot_connection)
         answer = self.fetch_answer()
         self.construct_flag(answer)
+
+    def start_timer(self):
+        self.startTime = time.time()
 
     def get_time(self):
         if self.startTime is None:
