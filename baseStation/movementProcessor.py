@@ -4,7 +4,7 @@ class MovementProcessor:
     def __init__(self, robot_connection):
         self.robot_connection = robot_connection
 
-    def physical_movement_processor(self, pathfinding_tuple, robot_angle_and_position, movement_direction='forward',
+    def move_to(self, pathfinding_tuple, robot_angle_and_position, movement_direction='forward',
                                     movement_speed=100):
         if pathfinding_tuple[0] != 0:
             if pathfinding_tuple[0] > 0:
