@@ -9,7 +9,6 @@ import pathfinding.constants
 from movementProcessor import MovementProcessor
 from robotStatus import RobotStatus
 
-
 class RunLoop:
     startTime = None
 
@@ -26,7 +25,7 @@ class RunLoop:
         self.cube_finder = DemoCubeFinder(self.kinect)
 
     def start(self, robot_connection):
-        self.startTime = time.time()
+        self.start_timer()
         self.robot_status = RobotStatus(robot_connection)
         while not self.robot_status.position.is_valid():
             self.robot_status.update_position_with_kinect(self.kinect)
@@ -34,6 +33,9 @@ class RunLoop:
         self.movement_processor = MovementProcessor(robot_connection)
         answer = self.fetch_answer()
         self.construct_flag(answer)
+
+    def start_timer(self):
+        self.startTime = time.time()
 
     def get_time(self):
         if self.startTime is None:
