@@ -5,12 +5,12 @@ def process(question, query_builder):
     mapped_question = next(question)
     if ('import' in mapped_question):
         if ('partners' in mapped_question):
-            partners = extract_importation_partners(mapped_question)
+            partners = extract_importation_information(mapped_question)
             query_builder.with_category_data('Imports - partners', ' '.join(partners))
     yield mapped_question
 
 
-def extract_importation_partners(mappedSentence):
+def extract_importation_information(mappedSentence):
     sentence = mappedSentence.items()
     grammar = "NP: {<NNS>* <NNP>*}"
     result = nltk.RegexpParser(grammar).parse(sentence)

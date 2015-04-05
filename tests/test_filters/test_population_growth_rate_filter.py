@@ -9,7 +9,6 @@ from questionanswering.query_builder import QueryBuilder
 SENTENCE_CONTAINING_POPULATION_GROWTH_RATE_1 = "My population growth rate is between 1.44% and 1.47%."
 SENTENCE_CONTAINING_POPULATION_GROWTH_RATE_2 = "What country has a population growth rate of 1.46%?"
 
-POPULATION_GROWTH_RATE_1 = '.dz'
 POPULATION_GROWTH_RATE_2 = ['1.46']
 
 SENTENCE_NOT_CONTAINING_POPULATION_GROWTH_RATE = 'My telephone lines in use are 1.217 million.'

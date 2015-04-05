@@ -8,7 +8,6 @@ def process(question, query_builder):
     yield mappedQuestion
 
 def extract_urban_areas(mappedQuestion):
-    print mappedQuestion
     reverse_dict = bidictionnary.Bidict(mappedQuestion)
     urban_areas = reverse_dict.keys_with_value('NNP')
     if not urban_areas:

@@ -41,7 +41,6 @@ def extract_population_from_spaced_number(mapped_question):
 def extract_greater_than_population_number(mapped_question):
     final_regex = ''
     minimum_population_number = extract_population_from_spaced_number(mapped_question)
-    print minimum_population_number
     for index, number in enumerate(minimum_population_number):
         if number is ',':
             final_regex += ','

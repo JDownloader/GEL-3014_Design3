@@ -7,7 +7,7 @@ from query_builder import QueryBuilder
 from filters import capital_filter, independence_date_filter, country_code_filter, national_symbol_filter, \
     urban_areas_filter, religion_filter, geographic_coordinates_filter, national_anthem_filter, \
     unemployment_rate_filter, population_growth_rate_filter, total_area_filter, population_filter,\
-    telephone_lines_filter, language_filter, public_debt_filter, illicit_drugs_filter, industires_filter, \
+    telephone_lines_filter, language_filter, public_debt_filter, illicit_drugs_filter, industries_filter, \
     importation_filter, inflation_rate_filter, electricity_production_filter
 class QuestionProcessor :
     def __init__(self):
@@ -29,6 +29,7 @@ class QuestionProcessor :
     def fetch_answer(self, question, query_builder):
         next(question)
         query = query_builder.build()
+        print query
         client = elastic_search_client.ElasticSearchClient()
         response = client.post_request(query)
 
@@ -47,7 +48,7 @@ def consume(iter):
 
 def dissect_sentence(question, query_builder):
     # first use only to download nltk dictionnaries
-    # nltk.download('punkls
+    # nltk.download('punkt')
     # nltk.download('maxent_treebank_pos_tagger')
     tokenized_question = nltk.word_tokenize(question)
     tokenized_and_tagged_question = nltk.pos_tag(tokenized_question)
