@@ -1,23 +1,17 @@
-import time
 from vision.kinect import Kinect, NoKinectDetectedException
 from tests.test_vision_kinect import FakeKinect
 from cubeFinder import CubeFinder, DemoCubeFinder
 from contextProvider import ContextHelper
 from flagProcessor import FlagProcessor
 from baseStation.flagCycle import *
-from baseStation.robotConnection import RobotConnection
-import exceptions
-import constants
 from pathfinding.pathfinding import Pathfinding
 import pathfinding.constants
 from movementProcessor import MovementProcessor
 from robotStatus import RobotStatus
-import math
-
 
 
 class RunLoop:
-    startTime = None;
+    startTime = None
 
     def __init__(self):
         self.flag_loop = FlagProcessor()
@@ -49,9 +43,8 @@ class RunLoop:
     def get_context(self, robot_ip):
         context_helper = ContextHelper(self)
         self.cube_finder.refresh_position()
-        # if self.robot_status is not None:
-        #     self.robot_status.update_position_with_kinect(self.kinect)
-        #     print self.robot_status.position
+        if self.robot_status is not None:
+            self.robot_status.update_position_with_kinect(self.kinect)
         return context_helper.get_context(robot_ip)
 
     def fetch_answer(self):
@@ -67,5 +60,5 @@ class RunLoop:
                                          pathfinding.constants.ATLAS_ZONE_COORDINATES)
 
     def move_robot_forward_to_point(self, actual_robot_position, target_position):
-        path = self.pathfinder.pathfind_to_point(actual_robot_position, target_position)
+        path = self.pathfinder.find_path_to_point(actual_robot_position, target_position)
         self.movement_processor.physical_movement_processor(path, self.robot_status.position)

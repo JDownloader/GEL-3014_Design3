@@ -11,10 +11,8 @@ class MovementProcessor:
                 self.robot_connection.send_rotate_robot_command(True, pathfinding_tuple[0])
             else:
                 self.robot_connection.send_rotate_robot_command(False, abs(pathfinding_tuple[0]))
-            wait = raw_input()
         if pathfinding_tuple[1] != 0:
             time.sleep(2)
             self.robot_connection.send_move_robot_command(movement_direction, pathfinding_tuple[1], movement_speed)
-            wait = raw_input()
 
         robot_angle_and_position.update_with_pathfinding_tuple(pathfinding_tuple)

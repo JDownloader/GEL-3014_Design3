@@ -1,25 +1,23 @@
 import math
 import constants
-import numpy
 
 
 class Pathfinding:
     def __init__(self):
         pass
 
-    def pathfind_to_cube_buffer_zone(self, robot_position, cube_center):
-        unbuffered_path = self.pathfind_to_point(robot_position, cube_center)
+    def find_path_to_cube_buffer_zone(self, robot_position, cube_center):
+        unbuffered_path = self.find_path_to_point(robot_position, cube_center)
         distance_with_buffer = unbuffered_path[1] - constants.CUBE_BUFFER_RADIUS
         return (int(unbuffered_path[0]), int(distance_with_buffer))
 
-    def pathfind_to_cube(self, cube_angle_compared_to_robot):
-        # rotation
+    def find_path_to_cube(self, cube_angle_compared_to_robot):
         pass
 
-    def pathfind_to_point(self, robot_position, point):
+    def find_path_to_point(self, robot_position, point):
         delta_x = float(point[0] - robot_position.position[0])
         delta_y = float(point[1] - robot_position.position[1])
-        # We assume the robot is facing away from the kinect, 90 degrees from the x axis.
+        # We assume 0 degree is when the robot is facing away from the kinect, 90 degrees from the x axis.
         # For a positive angle, the robot must rotate to its left (anti-clockwise)
         target_angle = 0
         if delta_y == 0:

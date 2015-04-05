@@ -4,7 +4,6 @@ import numpy as np
 from cube import Cube, WhiteCube, BlackCube, FormFilter, FormStencil, TABLE_STENCIL, ColorFilter, RANGES_FOR_COLOR_FILTER,PARAMETERS_FOR_FORM_FILTER
 from visiontools import VisionTools
 import time, datetime
-from opencv2 import filterSquares, find_squares
 import math
 from tests.test_vision_kinect import FakeKinect
 import robotLocator
