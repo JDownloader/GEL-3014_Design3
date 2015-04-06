@@ -1,48 +1,29 @@
-import socket
-from socket import AF_INET, SOCK_STREAM
-from robotCommands import RobotCommand
-import cPickle
+import os
+from flask import Flask, abort, redirect, url_for, jsonify
 
 SERVER_PORT = 8001
 
 
-class RobotSocket():
-    MAX_CONNECTION = 1
-    HOST = '0.0.0.0'
+class RobotServer(Flask):
+    base_station_ip_address = ''
 
-    def __init__(self, port):
-        self.server_available = True
-        self.connection_available = True
-        self.my_socket = socket.socket(AF_INET, SOCK_STREAM)
-        self.my_socket.bind((self.HOST, port))
+    def __init__(self, *args, **kwargs):
+        super(RobotServer, self).__init__(*args, **kwargs)
+        self.base_station_connection = None
 
-    def connection_stopped(self):
-        self.connection_available = False
+    def set_robot_ip_address(self, ip):
+        self.base_station_ip_address = ip
 
-    def start_listen_loop(self):
-        self.my_socket.listen(self.MAX_CONNECTION)
-        while self.server_available:
-            my_connection, addr = self.my_socket.accept()
-            print 'Got connection from', addr
-            self.listen_connection_loop(my_connection)
-        my_connection.close()
+app = RobotServer(__name__)
+app.config.from_object(__name__)
 
-    def stop(self):
-        self.my_socket.close()
+def root_dir():
+    return os.path.abspath(os.path.dirname(__file__))
 
-    def listen_connection_loop(self, my_connection):
-        while self.connection_available:
-            msg = my_connection.recv(2048)
-            if not msg:
-                self.connection_available = False
-                self.server_available = False
-            else:
-                command = cPickle.loads(msg)
-                command.perform_command(None)
+@app.route('/')
+def hello():
+    return 'ok'
 
 
-if __name__ == '__main__':
-    my_socket = RobotSocket(SERVER_PORT)
-    my_socket.start_listen_loop()
-    my_socket.stop()
-
+if __name__ == '__main__':  # pragma: no cover
+    app.run(port=SERVER_PORT, use_reloader=False)
