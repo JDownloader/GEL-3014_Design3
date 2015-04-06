@@ -21,7 +21,7 @@ def root_dir():
     return os.path.abspath(os.path.dirname(__file__))
 
 @app.route('/')
-def hello():
+def start():
     return 'ok'
 
 

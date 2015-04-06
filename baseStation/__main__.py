@@ -1,15 +1,16 @@
 import os.path
 from flask import Flask, abort, redirect, url_for, jsonify
-from robotFinder import RobotFinder
+from robotIPFinder import RobotFinder
 from runLoop import RunLoop
 import requests
-from robotConnection import RobotConnection
+from vision.robotLocator import RobotLocator
+from tests.test_vision_kinect import FakeKinect
 
 SERVER_PORT = 8000
 
 
 class BaseStationServer(Flask):
-    robot_ip_address = 'http://127.0.0.1:8001/'
+    robot_ip_address = 'http://10.248.177.53:8001/'
     # robot_ip_address = RobotFinder.IP_NOT_FOUND
 
     def __init__(self, *args, **kwargs):
@@ -38,8 +39,15 @@ def hello():
 
 @app.route('/start')
 def start():
-    response = requests.get(app.robot_ip_address + '/')
+    response = requests.get(app.robot_ip_address)
     return response.status_code
+
+@app.route('/robotPosition')
+def fetchRobotPosition():
+    robotLocator = RobotLocator()
+    # return str(robotLocator.get_position(FakeKinect()))
+    return jsonify(angle = 'patate',
+                   position = 'patate')
 
 
 # A javaScript fonction calls this method every 250 ms
@@ -59,4 +67,4 @@ def get_context():
 
 if __name__ == '__main__':  # pragma: no cover
     app.run(port=SERVER_PORT, use_reloader=False)
-    thread_robot_finder.stop()
+    # thread_robot_finder.stop()

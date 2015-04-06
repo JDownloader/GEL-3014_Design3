@@ -1,5 +1,5 @@
 from unittest import TestCase
-from baseStation.robotFinder import RobotFinder
+from baseStation.robotIPFinder import RobotFinder
 
 
 class TestRobotFinder(TestCase):
