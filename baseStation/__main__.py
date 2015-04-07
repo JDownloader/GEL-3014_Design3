@@ -47,8 +47,8 @@ def start():
     if app.robot_ip_address == RobotFinder.IP_NOT_FOUND:
         abort(500)
     else:
-        data = {'ip':app.robot_ip_address}
-        response = requests.post(app.robot_ip_address + 'basestationip', data=data)
+        data = {'ip':'192.168.0.32'}
+        response = requests.post('http://' + app.robot_ip_address + ':8001' + '/basestationip', data=data)
     return 'ok'
 
 
