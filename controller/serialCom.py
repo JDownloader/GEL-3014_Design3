@@ -123,15 +123,33 @@ class RobotMovementController:
         if len(communication_port) > 0:
             self.serial_communication = serial.Serial(communication_port, 9600)
 
-    def move_robot(self, direction, distance_in_mm, speed_percentage):
+    def move_robot(self, direction, distance_in_mm):
+        distance_in_cm = distance_in_mm / 10
+        if distance_in_cm >= 40:
+            speed_percentage = 75
+        elif 25 < distance_in_cm > 40:
+            speed_percentage = 50
+        elif 15 > distance_in_cm >= 25:
+            speed_percentage = 25
+        elif 5 > distance_in_cm >= 15:
+            speed_percentage = 10
+        else:
+            speed_percentage = 5
+
         try:
             self.serial_communication.write(str(chr(self.ARDUINO_SERIAL_DIRECTION_STRING.get(direction))))
         except Exception:
             raise BadMovementDirection()
         self.serial_communication.write(str(chr(speed_percentage)))
-        self.serial_communication.write(str(chr(int(distance_in_mm / 10))))
+        self.serial_communication.write(str(chr(int(distance_in_cm))))
 
-    def rotate_robot(self, rotation_direction_is_left, rotation_angle_in_degrees, speed_percentage):
+        self.serial_communication.flushInput()
+        while self.serial_communication.readline() != 'fini':
+            pass
+
+    def rotate_robot(self, rotation_direction_is_left, rotation_angle_in_degrees):
+        speed_percentage = 25
+
         if rotation_direction_is_left:
             self.serial_communication.write(str(chr(101)))
         else:
@@ -139,8 +157,12 @@ class RobotMovementController:
         self.serial_communication.write(str(chr(speed_percentage)))
         self.serial_communication.write(str(chr(rotation_angle_in_degrees)))
 
-    def serial_communication_cleanup(self):
-        self.serial_communication.close()
+        self.serial_communication.flushInput()
+        while self.serial_communication.readline() != 'fini':
+            pass
+
+    def stop_all_movement(self):
+        pass
 
 
 class Robot:
@@ -162,11 +184,11 @@ class Robot:
         self.camera_controller = CameraController(pololu_connection.pololu_serial_communication)
         self.gripper_controller = GripperController(pololu_connection.pololu_serial_communication)
 
-    def move_to(self, direction, distance_in_mm, speed_percentage):
-        self.movement_controller.move_robot(direction, distance_in_mm, speed_percentage=75)
+    def move(self, direction, distance_in_mm):
+        self.movement_controller.move_robot(direction, distance_in_mm)
 
-    def rotate(self, rotation_direction_is_left, rotation_angle_in_degrees, speed_percentage=50):
-        self.movement_controller.rotate_robot(rotation_direction_is_left, rotation_angle_in_degrees, speed_percentage)
+    def rotate(self, rotation_direction_is_left, rotation_angle_in_degrees):
+        self.movement_controller.rotate_robot(rotation_direction_is_left, rotation_angle_in_degrees)
 
     def move_gripper_vertically(self, wanted_position_is_raised):
         self.gripper_controller.change_vertical_position(wanted_position_is_raised)

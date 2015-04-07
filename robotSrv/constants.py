@@ -1,2 +1,4 @@
 
-GET_ROBOT_POSITION_URL = 'robotposition'
+ROBOT_POSITION_RESSOURCE = 'robotposition'
+
+FLAG_RESSOURCE = 'flag'
