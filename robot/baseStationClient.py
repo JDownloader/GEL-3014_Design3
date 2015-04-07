@@ -2,6 +2,7 @@ import requests
 import constants as cte
 import json
 
+
 class BaseStationClient():
     def __init__(self, application):
         self.app = application

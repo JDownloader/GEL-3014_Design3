@@ -1,10 +1,7 @@
-__author__ = 'Gabriel'
-
-
 import serial
 from serial.tools.list_ports import comports
 import controller.constants
-import maestro
+from maestro import Controller
 import time
 
 
@@ -49,7 +46,7 @@ class PololuConnectionCreator:
             if port[2].find('VID:PID=1ffb:0089') > -1:
                 pololu_communication_port = port[0]
         try:
-            self.pololu_serial_communication = maestro.Controller(pololu_communication_port)
+            self.pololu_serial_communication = Controller(pololu_communication_port)
         except Exception:
             raise PololuSerialConnectionFailed()
 
@@ -99,6 +96,8 @@ class GripperController:
             self.gripper_serial_communication.setTarget(self.channel_vertical, self.pos_vertical_transport_cube)
         else:
             self.gripper_serial_communication.setTarget(self.channel_vertical, self.pos_vertical_table)
+        while self.gripper_serial_communication.isMoving(self.channel_vertical):
+            pass
 
     def pliers_control(self, is_opened, opening_is_big):
         if not is_opened:
@@ -107,6 +106,9 @@ class GripperController:
             self.gripper_serial_communication.setTarget(self.channel_pliers, self.pos_pliers_open_big)
         elif is_opened and not opening_is_big:
             self.gripper_serial_communication.setTarget(self.channel_pliers, self.pos_pliers_open_small)
+        while self.gripper_serial_communication.isMoving(self.channel_pliers):
+            pass
+
 
 
 class RobotMovementController:
@@ -147,8 +149,11 @@ class RobotMovementController:
         while self.serial_communication.readline() != 'fini':
             pass
 
-    def rotate_robot(self, rotation_direction_is_left, rotation_angle_in_degrees):
-        speed_percentage = 25
+    def rotate_robot(self, rotation_direction_is_left, rotation_angle_in_degrees, rotation_speed_is_slow):
+        if rotation_speed_is_slow:
+            speed_percentage = 10
+        else:
+            speed_percentage = 25
 
         if rotation_direction_is_left:
             self.serial_communication.write(str(chr(101)))
@@ -162,7 +167,9 @@ class RobotMovementController:
             pass
 
     def stop_all_movement(self):
-        pass
+        self.serial_communication.write(str(chr(99)))
+        self.serial_communication.write(str(chr(0)))
+        self.serial_communication.write(str(chr(0)))
 
 
 class Robot:
@@ -187,8 +194,9 @@ class Robot:
     def move(self, direction, distance_in_mm):
         self.movement_controller.move_robot(direction, distance_in_mm)
 
-    def rotate(self, rotation_direction_is_left, rotation_angle_in_degrees):
-        self.movement_controller.rotate_robot(rotation_direction_is_left, rotation_angle_in_degrees)
+    def rotate(self, rotation_direction_is_left, rotation_angle_in_degrees, movement_speed_is_slow=False):
+        self.movement_controller.rotate_robot(rotation_direction_is_left, rotation_angle_in_degrees,
+                                              movement_speed_is_slow)
 
     def move_gripper_vertically(self, wanted_position_is_raised):
         self.gripper_controller.change_vertical_position(wanted_position_is_raised)
@@ -198,3 +206,6 @@ class Robot:
 
     def change_led_color(self, led_color, led_position):
         self.led_controller.change_color(led_color, led_position)
+
+    def stop_movement(self):
+        self.movement_controller.stop_all_movement()
