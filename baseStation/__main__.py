@@ -1,7 +1,7 @@
 import os.path
 from flask import Flask, abort, redirect, url_for, jsonify
+from baseStation.contextProvider import ContextProvider
 from robotIPFinder import RobotFinder
-from runLoop import RunLoop
 from vision.robotLocator import RobotLocator
 import requests
 import json
@@ -14,9 +14,9 @@ SERVER_PORT = 8000
 
 
 class BaseStationServer(Flask):
-    robot_ip_address = 'http://127.0.0.1:8001/'
+    # robot_ip_address = 'http://127.0.0.1:8001/'
     # robot_ip_address = 'http://10.248.177.53:8001/'
-    # robot_ip_address = RobotFinder.IP_NOT_FOUND
+    robot_ip_address = ''
 
     def __init__(self, *args, **kwargs):
         super(BaseStationServer, self).__init__(*args, **kwargs)
@@ -24,6 +24,7 @@ class BaseStationServer(Flask):
         # self.robot_connection = None
 
     def set_robot_ip_address(self, ip):
+        print ip
         self.robot_ip_address = ip
         # self.robot_connection = RobotConnection(self.robot_ip_address)
 
@@ -31,8 +32,8 @@ app = BaseStationServer(__name__)
 app.config.from_object(__name__)
 # since it will only be use by software engineer, debug on is ok
 app.debug = True
-# thread_robot_finder = RobotFinder(app.set_robot_ip_address)
-# thread_robot_finder.start()
+thread_robot_finder = RobotFinder(app.set_robot_ip_address)
+thread_robot_finder.start()
 
 
 def root_dir():
@@ -44,7 +45,7 @@ def hello():
 
 @app.route('/start')
 def start():
-    data = {'ip':'10.248.177.53'}
+    data = {'ip':'192.168.0.32'}
     response = requests.post(app.robot_ip_address + 'basestationip', data=data)
     return 'ok'
 
@@ -75,9 +76,8 @@ def fetch_flag():
 # A javaScript fonction calls this method every 250 ms
 @app.route('/context')
 def get_context():
-    # context = app.run_loop.get_context(app.robot_ip_address)
-    # return jsonify(context)
-    return 'ok'
+    context = ContextProvider().get_context(app.robot_ip_address)
+    return jsonify(context)
 
 def fetch_question():
     return json.loads(requests.get(cte.ATLAS_WEB_SERVER_URL, verify=False).text)['question']
@@ -97,5 +97,5 @@ def is_right_answer(answer):
         return False
 
 if __name__ == '__main__':  # pragma: no cover
-    app.run(host='0.0.0.0',port=SERVER_PORT, use_reloader=False)
-    # thread_robot_finder.stop()
+    app.run(host='0.0.0.0', port=SERVER_PORT, use_reloader=False)
+    thread_robot_finder.stop()
