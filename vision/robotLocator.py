@@ -1,5 +1,6 @@
 import cv2
-from cube import Cube, FormStencil
+# from angletest2 import green_corner
+from cube import Cube, FormStencil, FormFilter
 from kinect import Kinect
 from visiontools import VisionTools
 import numpy as np
@@ -80,6 +81,28 @@ class RobotLocator():
         if is_left:
             return orange_corner.find_position(img_hsv_mask, kinect, 2)
         return orange_corner.find_position(img_hsv_mask, kinect, -2)
+
+    def get_rgb_calibration(self, img_hsv, form_filter=False):
+        rgb_result = np.zeros((img_hsv.shape[0], img_hsv.shape[1], 3), np.uint8)
+        orange_cube = Cube('orange')
+        green_cube = Cube('forest_green')
+        purple_cube = Cube('purple')
+        if form_filter:
+            orange_cube.form_filter = FormFilter([0, 0, 1, 1])
+            green_cube.form_filter = FormFilter([0, 0, 1, 1])
+            purple_cube.form_filter = FormFilter([0, 0, 1, 1])
+        orange_filter = orange_cube.apply_filters(img_hsv)
+        green_filter = green_cube.apply_filters(img_hsv)
+        purple_filter = purple_cube.apply_filters(img_hsv)
+        for i in range(180, rgb_result.shape[0]-205):
+            for j in range(0, rgb_result.shape[1]):
+                rgb_result[i, j][1] += int(orange_filter[i, j] * 0.5)
+                rgb_result[i, j][2] += orange_filter[i, j]
+                rgb_result[i, j][0] += int(purple_filter[i, j] * 0.5)
+                rgb_result[i, j][2] += int(purple_filter[i, j] * 0.5)
+                rgb_result[i, j][1] += int(green_filter[i, j] * 0.25)
+        return rgb_result
+
 
 
 class Position():
