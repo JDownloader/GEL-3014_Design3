@@ -13,7 +13,7 @@ class RunLoop:
     startTime = None
 
     def __init__(self):
-        self.flag_loop = FlagProcessor()
+        self.flag_loop = FlagProcessor('Australia')
         self.pathfinder = Pathfinding()
         self.flag_cycle = FlagCycle
         self.movement_processor = None
