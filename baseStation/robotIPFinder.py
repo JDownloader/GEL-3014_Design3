@@ -5,8 +5,8 @@ import re
 
 
 class RobotFinder(Thread):
-    ROBOT_MAC = "a0:a8:cd:62:c3:75"
-    IP_NOT_FOUND = "0.0.0.0"
+    ROBOT_MAC = 'a0:a8:cd:62:c3:75'
+    IP_NOT_FOUND = '0.0.0.0'
     SLEEP_TIME_IN_MINS = 5
     ip_address = IP_NOT_FOUND
 
@@ -28,12 +28,12 @@ class RobotFinder(Thread):
         return ip_address
 
     def _get_arp_pipe(self):
-        return os.popen2("/usr/sbin/arp -a","");
+        return os.popen2('/usr/sbin/arp -a', '');
 
     def _parse_answer(self, lines_of_arp_exit):
         ip_address = self.IP_NOT_FOUND
-        reg_ip = re.compile("\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3}")
-        reg_mac = re.compile("((?:[0-9A-f]{1,2}[:]){5}(?:[0-9A-f]{1,2}))")
+        reg_ip = re.compile('(?:\()(\d{1,3}.\d{1,3}.\d{1,3}.\d{1,3})(?:\))')
+        reg_mac = re.compile('((?:[0-9A-f]{1,2}[:]){5}(?:[0-9A-f]{1,2}))')
         for lineOfArpExit in lines_of_arp_exit:
             found_mac = reg_mac.findall(lineOfArpExit);
             found_ip = reg_ip.findall(lineOfArpExit);
