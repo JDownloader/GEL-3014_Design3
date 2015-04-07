@@ -2,15 +2,17 @@ import os.path
 from flask import Flask, abort, redirect, url_for, jsonify
 from robotIPFinder import RobotFinder
 from runLoop import RunLoop
-import requests
 from vision.robotLocator import RobotLocator
+import requests
+import json
 from tests.test_vision_kinect import FakeKinect
 
 SERVER_PORT = 8000
 
 
 class BaseStationServer(Flask):
-    robot_ip_address = 'http://10.248.177.53:8001/'
+    robot_ip_address = 'http://127.0.0.1:8001/'
+    # robot_ip_address = 'http://10.248.177.53:8001/'
     # robot_ip_address = RobotFinder.IP_NOT_FOUND
 
     def __init__(self, *args, **kwargs):
@@ -39,15 +41,21 @@ def hello():
 
 @app.route('/start')
 def start():
-    response = requests.get(app.robot_ip_address)
-    return response.status_code
+    data = {'ip':'10.248.177.53'}
+    response = requests.post(app.robot_ip_address + 'basestationip', data=data)
+    return 'ok'
 
-@app.route('/robotPosition')
+
+
+@app.route('/robotposition')
 def fetchRobotPosition():
     robotLocator = RobotLocator()
     # return str(robotLocator.get_position(FakeKinect()))
-    return jsonify(angle = 'patate',
-                   position = 'patate')
+    return jsonify(angle = '10', position = '(10,10)')
+
+@app.route('/flag')
+def fetchFlag():
+    return jsonify(angle = '10', position = '(10,10)')
 
 
 # A javaScript fonction calls this method every 250 ms
@@ -56,15 +64,7 @@ def get_context():
     sample_context = app.run_loop.get_context(app.robot_ip_address)
     return jsonify(sample_context)
 
-# @app.route('/demomoverobot/<x>/<y>')
-# def demo_move_robot(x, y):
-#     if app.robot_connection is not None:
-#         app.robot_connection.send_move_command(x, y)
-#     else:
-#         abort(500)
-#     return "ok"
-
 
 if __name__ == '__main__':  # pragma: no cover
-    app.run(port=SERVER_PORT, use_reloader=False)
+    app.run(host='0.0.0.0',port=SERVER_PORT, use_reloader=False)
     # thread_robot_finder.stop()
