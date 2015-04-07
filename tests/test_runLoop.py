@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from robotAI.runLoop import RunLoop
+from robot.runLoop import RunLoop
 
 
 class TestRunLoop(TestCase):

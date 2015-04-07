@@ -6,10 +6,11 @@ import pathfinding.constants as tableConsts
 
 
 class RobotAI:
-    def __init__(self):
+    def __init__(self, base_station_client):
         self.pathfinder = Pathfinding()
         self.robot = Robot()
         self.robot_angle_and_position = RobotPosition()
+        self.base_station = base_station_client
 
     def run_sequence(self):
         flag_matrix = self.resolve_atlas_enigma()
@@ -60,10 +61,10 @@ class RobotAI:
             self.robot.change_led_color('off', cube_index)
 
     def receive_flag_from_base_station(self):
-        pass
+        print self.base_station.fetch_flag()
 
     def update_robot_position_from_kinect(self):
-        pass
+        self.base_station.fetch_robot_position()
 
     def receive_cube_position_from_kinect(self):
         pass

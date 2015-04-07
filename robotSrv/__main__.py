@@ -3,9 +3,10 @@ from flask import Flask, abort, redirect, url_for, jsonify, request
 import requests
 import constants as cte
 import json
+from robot.baseStationClient import BaseStationClient
+from robot.robotAI import RobotAI
 
 SERVER_PORT = 8001
-
 
 class RobotServer(Flask):
     base_station_ip_address = ''
@@ -22,13 +23,11 @@ app.config.from_object(__name__)
 def root_dir():
     return os.path.abspath(os.path.dirname(__file__))
 
-def get_robot_position_from_base_station():
-    response = requests.get(app.base_station_ip_address + cte.GET_ROBOT_POSITION_URL)
-    return json.loads(response.text)['position']
-
 @app.route('/')
 def start():
-    get_robot_position_from_base_station()
+    robot = RobotAI(BaseStationClient(app))
+    robot.receive_flag_from_base_station()
+    # get_robot_position_from_base_station()
     return 'ok'
 
 @app.route('/basestationip', methods=['POST'])

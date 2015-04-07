@@ -55,6 +55,11 @@ def fetch_robot_position():
     # return str(robotLocator.get_position(FakeKinect()))
     return jsonify(angle = '10', position = '(10,10)')
 
+@app.route('/cubeposition')
+def fetch_robot_position():
+    # return str(robotLocator.get_position(FakeKinect()))
+    return jsonify(angle = '10', position = '(10,10)')
+
 @app.route('/flag')
 def fetch_flag():
     flag = ''
@@ -70,8 +75,9 @@ def fetch_flag():
 # A javaScript fonction calls this method every 250 ms
 @app.route('/context')
 def get_context():
-    context = app.run_loop.get_context(app.robot_ip_address)
-    return jsonify(context)
+    # context = app.run_loop.get_context(app.robot_ip_address)
+    # return jsonify(context)
+    return 'ok'
 
 def fetch_question():
     return json.loads(requests.get(cte.ATLAS_WEB_SERVER_URL, verify=False).text)['question']
