@@ -3,6 +3,7 @@ from pathfinding.pathfinding import Pathfinding
 from controller.serialCom import Robot
 from vision.robotLocator import RobotPosition
 import pathfinding.constants as tableConsts
+import numpy
 
 
 class RobotAI:
@@ -15,6 +16,7 @@ class RobotAI:
         flag_matrix = self.resolve_atlas_enigma()
         self.display_flag_for_five_seconds(flag_matrix)
         self.move_robot_to(tableConsts.SAFE_POINT)
+        self.update_robot_position_from_kinect()
         self.construct_flag(flag_matrix)
 
     def resolve_atlas_enigma(self):
@@ -25,12 +27,12 @@ class RobotAI:
         return self.receive_flag_from_base_station()
 
     def construct_flag(self, flag_matrix):
-        self.move_robot_to(tableConsts.SAFE_POINT)
         for cube_index, cube in enumerate(flag_matrix):
             if cube:
                 self.grab_cube(str(cube), cube_index)
                 self.place_cube(cube_index)
                 self.move_robot_to(tableConsts.SAFE_POINT)
+                self.update_robot_position_from_kinect()
 
     def grab_cube(self, cube, cube_index):
         self.robot.change_led_color(cube, cube_index)
@@ -39,15 +41,22 @@ class RobotAI:
 
     def place_cube(self, cube_index):
         self.move_robot_to(tableConsts.DOCK_POINT)
+        self.update_robot_position_from_kinect()
+        self.move_robot_to(tableConsts.DOCK_POINT)
         self.rotate_robot_to_target(180)
         self.drop_cube_at_intended_point(cube_index)
 
     def drop_cube_at_intended_point(self, cube_index):
         cube_movement_dictionary = tableConsts.CUBE_DROP_MOVEMENTS_LIST[cube_index]
         if cube_movement_dictionary.get('direction') != 'forward':
-            self.robot.move_to(cube_movement_dictionary.get('direction'),
-                               cube_movement_dictionary.get('width_distance'), 50)
-        self.robot.move_to('forward', cube_movement_dictionary.get('length_distance'), 50)
+            self.robot.move(cube_movement_dictionary.get('direction'),
+                               cube_movement_dictionary.get('width_distance'))
+        self.robot.move('forward', cube_movement_dictionary.get('length_distance'))
+        self.robot.move_gripper_vertically(False)
+        self.robot.change_pliers_opening(True, False)
+        self.robot.move('reverse', cube_movement_dictionary.get('length_distance'))
+        self.robot.move_gripper_vertically(True)
+        self.robot.change_pliers_opening(True, True)
 
     def approach_cube(self):
         pass
@@ -91,6 +100,8 @@ class RobotAI:
                 self.robot.rotate(False, abs(tuple_result_from_pathfinding[0]))
             time.sleep(3)
         if tuple_result_from_pathfinding[1] != 0:
-            self.robot.move_to(movement_direction, tuple_result_from_pathfinding[1], movement_speed)
+            self.robot.move(movement_direction, tuple_result_from_pathfinding[1])
             time.sleep(5)
         self.robot_angle_and_position.update_with_pathfinding_tuple(tuple_result_from_pathfinding)
+
+

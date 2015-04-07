@@ -63,4 +63,4 @@ class RunLoop:
 
     def move_robot_forward_to_point(self, actual_robot_position, target_position):
         path = self.pathfinder.find_path_to_point(actual_robot_position, target_position)
-        self.movement_processor.move_to(path, self.robot_status.position)
+        self.movement_processor.move(path, self.robot_status.position)
