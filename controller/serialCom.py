@@ -161,3 +161,18 @@ class Robot:
     def _initialize_pololu_connections(self, pololu_connection):
         self.camera_controller = CameraController(pololu_connection.pololu_serial_communication)
         self.gripper_controller = GripperController(pololu_connection.pololu_serial_communication)
+
+    def move_to(self, direction, distance_in_mm, speed_percentage):
+        self.movement_controller.move_robot(direction, distance_in_mm, speed_percentage=75)
+
+    def rotate(self, rotation_direction_is_left, rotation_angle_in_degrees, speed_percentage=50):
+        self.movement_controller.rotate_robot(rotation_direction_is_left, rotation_angle_in_degrees, speed_percentage)
+
+    def move_gripper_vertically(self, wanted_position_is_raised):
+        self.gripper_controller.change_vertical_position(wanted_position_is_raised)
+
+    def change_pliers_opening(self, wanted_position_is_opened, opening_is_big=False):
+        self.gripper_controller.pliers_control(wanted_position_is_opened, opening_is_big)
+
+    def change_led_color(self, led_color, led_position):
+        self.led_controller.change_color(led_color, led_position)

@@ -144,10 +144,7 @@ class RobotPosition(Position):
         self.normalize_angle()
 
     def update_with_pathfinding_tuple(self, pathfinding_tuple):
-        print 'angle originale:', math.degrees(self.angle)
-        print 'angle a ajouter:', pathfinding_tuple[0]
         self.angle += math.radians(pathfinding_tuple[0])
         self.position = (self.position[0] + math.sin(self.angle) * pathfinding_tuple[1],
                          self.position[1] + math.cos(self.angle) * pathfinding_tuple[1])
         self.normalize_angle()
-        print 'angle final:', math.degrees(self.angle)

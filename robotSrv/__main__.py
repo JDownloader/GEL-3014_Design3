@@ -22,8 +22,15 @@ def root_dir():
 
 @app.route('/')
 def hello():
+    print 'allo'
+    return 'ok'
+
+@app.route('/baseStationIP/<ip>')
+def allo(ip):
+    print ip
+    print 'allo'
     return 'ok'
 
 
 if __name__ == '__main__':  # pragma: no cover
-    app.run(port=SERVER_PORT, use_reloader=False)
+    app.run(host='0.0.0.0', port=SERVER_PORT, use_reloader=False)

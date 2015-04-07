@@ -1,9 +1,9 @@
 import os.path
-from flask import Flask, abort, redirect, url_for, jsonify
-from robotFinder import RobotFinder
-from runLoop import RunLoop
+from flask import Flask, redirect, url_for, jsonify
 import requests
-from robotConnection import RobotConnection
+
+from robotAI.runLoop import RunLoop
+
 
 SERVER_PORT = 8000
 

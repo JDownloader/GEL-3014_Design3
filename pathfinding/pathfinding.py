@@ -3,8 +3,6 @@ import constants
 
 
 class Pathfinding:
-    def __init__(self):
-        pass
 
     def find_path_to_cube_buffer_zone(self, robot_position, cube_center):
         unbuffered_path = self.find_path_to_point(robot_position, cube_center)

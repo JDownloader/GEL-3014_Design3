@@ -1,22 +1,12 @@
 import time
-from robotConnection import RobotConnection
 from pathfinding.pathfinding import Pathfinding
-from movementProcessor import MovementProcessor
 import pathfinding.constants
 import math
-from cubeFinder import CubeFinder
-from vision.cube import Cube
 
 
-class FlagCycle:
-    def __init__(self, flag_matrix, robot_status, kinect):
-        self.flag_matrix = flag_matrix
-        self.robot_status = robot_status
-        self.robot_connection = robot_status.robot_connection
-        self.pathfinder = Pathfinding()
-        self.cube_finder = CubeFinder(kinect)
+class FlagConstructionCycle:
 
-    def start(self):
+    def flag_construction_sequence(self, flag_matrix, robot):
         for cube_index, cube in enumerate(self.flag_matrix):
             if cube is not None:
                 self.fetch_cube(str(cube), cube_index)
@@ -25,7 +15,7 @@ class FlagCycle:
         movement_processor = MovementProcessor(self.robot_connection)
         self.robot_connection.send_led_color_change_command(cube_color, cube_position_in_flag)
         pathfind_to_wait_position_tuple = self.pathfinder.find_path_to_point(self.robot_status.position,
-                                                                      pathfinding.constants.WAIT_ZONE)
+                                                                      pathfinding.constants.SAFE_POINT)
         movement_processor.move_to(pathfind_to_wait_position_tuple, self.robot_status.position,
                                                        movement_speed=75)
 
@@ -42,7 +32,7 @@ class FlagCycle:
         self.robot_connection.send_change_gripper_height_command(True)
         time.sleep(1)
         pathfind_tuple_pre_drop_point = self.pathfinder.find_path_to_point(self.robot_status.position,
-                                                                          pathfinding.constants.PRE_DROP_POINT)
+                                                                          pathfinding.constants.DOCK_POINT)
         movement_processor.move_to(pathfind_tuple_pre_drop_point, self.robot_status.position,
                                                        movement_speed=75)
         pathfind_tuple_to_drop_angle = (self.pathfinder.determine_rotation_angle(math.degrees(self.robot_status.position.angle), 180),
