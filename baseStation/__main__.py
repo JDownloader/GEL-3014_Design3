@@ -56,7 +56,7 @@ def fetch_robot_position():
     return jsonify(angle = '10', position = '(10,10)')
 
 @app.route('/cubeposition')
-def fetch_robot_position():
+def fetch_cube_position():
     # return str(robotLocator.get_position(FakeKinect()))
     return jsonify(angle = '10', position = '(10,10)')
 
