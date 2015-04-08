@@ -149,8 +149,8 @@ class Position():
 class RobotPosition(Position):
     ROBOT_DIMENSION = 220
 
-    def __init__(self):
-        Position.__init__(self, x=None, y=None, angle=None)
+    def __init__(self, x=None, y=None, angle=None):
+        Position.__init__(self, x, y, angle)
 
     def set_from_points(self, point_1, point_2, angle_modificator):
         self.set_angle_from_points(point_1, point_2)
