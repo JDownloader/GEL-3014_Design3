@@ -72,9 +72,11 @@ def fetch_flag():
         question = fetch_question()
         answer = fetch_answer(question)
         if is_right_answer(answer):
-            app.base_station.change_question(question, answer)
+            print 'will be back'
+            # app.base_station.change_question(question, answer)
             flag_processor = flagProcessor.FlagProcessor(answer)
             flag = flag_processor.get_flag()
+            print flag
             break
     return jsonify(flag=flag)
 
@@ -105,9 +107,10 @@ def fetch_answer(question):
 def is_right_answer(answer):
     print answer
     answer_is_good = raw_input('Is this the right answer ? (y/n) : ')
-    if answer_is_good is 'y':
+    if answer_is_good[0] is 'y':
         return True
     else:
+        print 'Will retry...'
         return False
 
 if __name__ == '__main__':  # pragma: no cover
