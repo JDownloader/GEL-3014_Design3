@@ -131,7 +131,7 @@ class WhiteCube(Cube):
         self.position = None
         self.attempt_without_position_remaining = 0
         self.white_filter = ColorFilter([([0, 0, 190], [180, 25, 255])])
-        self.black_filter = ColorFilter([([0, 0, 0], [180, 256, 137])])
+        self.black_filter = ColorFilter([([0, 0, 0], [180, 256, 120])])
         self.form_filter = FormFilter([4, 4, 3, 2])
         self.black_form_filter = FormFilter([0, 5, 3, 3])
 

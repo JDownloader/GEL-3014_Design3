@@ -8,6 +8,10 @@ from robot.robotAI import RobotAI
 
 SERVER_PORT = 8001
 
+
+here = os.path.abspath(os.path.dirname(__file__))
+
+
 class RobotServer(Flask):
     base_station_ip_address = ''
 
@@ -20,21 +24,18 @@ class RobotServer(Flask):
 app = RobotServer(__name__)
 app.config.from_object(__name__)
 
-def root_dir():
-    return os.path.abspath(os.path.dirname(__file__))
-
 @app.route('/')
 def start():
     robot = RobotAI(BaseStationClient(app))
-    robot.receive_flag_from_base_station()
+    robot.run_sequence()
     # get_robot_position_from_base_station()
     return 'ok'
 
 @app.route('/basestationip', methods=['POST'])
 def recieve_base_stationIP():
     if request.method == 'POST':
-        # app.base_station_ip_address = request.form.get('ip', None)
-        app.base_station_ip_address = 'http://127.0.0.1:8000/'
+        app.base_station_ip_address = request.form.get('ip', None)
+        # app.base_station_ip_address = 'http://127.0.0.1:8000/'
     return 'ok'
 
 
