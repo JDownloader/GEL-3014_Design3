@@ -9,19 +9,13 @@ class ContextProvider:
         self.base_station = base_station
 
     def _get_current_flag(self):
-        pass
-        # return self.run_loop.flag_loop.get_flag()
+        return self.base_station.flag.get_matrix_for_ui()
 
     def get_context(self, robot_ip):
         self.base_station.cube_finder.refresh_position()
-        pos_y = random.randrange(0, 400, 1)
+        pos_y = random.randrange(0, 400, 10)
         angle = random.randrange(0, 359, 45)
-        # run_time = self.run_loop.get_time()
-        # position = self.get_position_data()
-        # sample_status = { 'robotIP': robot_ip,
-        #                   'flag': self._get_current_flag(),
-        #                   'cubes': self.get_cubes_data()}
-        position = RobotPosition(0,0,0)
+        position = RobotPosition(0, pos_y, angle)
         sample_status = { 'top': 600-position.position[1]*0.27,
                           'left': 302-position.position[0]*0.27,
                           'angle': 360 - position.get_angle_in_deg(),
@@ -29,6 +23,8 @@ class ContextProvider:
                           # 'chrono': strftime('%Mm%Ss', gmtime(tim)),
                           'chrono': '',
                           'robotIP': robot_ip,
+                          'question': self.base_station.question,
+                          'answer': self.base_station.answer,
                           'flag': self._get_current_flag(),
                           'cubes': self.get_cubes_data()}
         return sample_status

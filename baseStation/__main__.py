@@ -72,6 +72,7 @@ def fetch_flag():
         question = fetch_question()
         answer = fetch_answer(question)
         if is_right_answer(answer):
+            app.base_station.change_question(question, answer)
             flag_processor = flagProcessor.FlagProcessor(answer)
             flag = flag_processor.get_flag()
             break
@@ -84,7 +85,16 @@ def get_context():
     return jsonify(context)
 
 def fetch_question():
-    return json.loads(requests.get(cte.ATLAS_WEB_SERVER_URL, verify=False).text)['question']
+    question = ''
+    for url in cte.ATLAS_WEB_SERVER_URLS:
+        try:
+            response = requests.get(url, verify=False, timeout=0.1)
+            if response.status_code == 200:
+                question = response.text
+                break
+        except Exception:
+            pass
+    return json.loads(question)['question']
 
 def fetch_answer(question):
     print "question : " + question

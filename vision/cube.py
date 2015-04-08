@@ -134,6 +134,7 @@ class WhiteCube(Cube):
         self.black_filter = ColorFilter([([0, 0, 0], [180, 256, 120])])
         self.form_filter = FormFilter([4, 4, 3, 2])
         self.black_form_filter = FormFilter([0, 5, 3, 3])
+        self.max_pixel_length = 50
 
     def apply_filters(self, img_hsv, kinect=None):
         img_mask_white = self.white_filter.apply(img_hsv)
@@ -161,19 +162,20 @@ class WhiteCube(Cube):
 
 
 class BlackCube(Cube):
+    CALIBRATION_ATTEMPT = 20
     def __init__(self):
         self.color = 'black'
         self.position = None
         self.always_black_mask = None
-        self.calibration_attempt_remaining = 100
+        self.calibration_attempt_remaining = self.CALIBRATION_ATTEMPT
         self.attempt_without_position_remaining = 0
-        self.color_filter = ColorFilter([([0, 0, 0], [180, 256, 130])])
-        self.form_filter = FormFilter([1, 0, 3, 3])
+        self.color_filter = ColorFilter([([0, 0, 0], [180, 256, 120])])
+        self.form_filter = FormFilter([3, 1, 3, 3])
 
     def apply_filters(self, img_hsv, kinect=None):
-        img_hsv = cv2.GaussianBlur(img_hsv, (5, 5), 0)
         img_mask = self.color_filter.apply(img_hsv)
-        if self.always_black_mask is None:
+        if self.calibration_attempt_remaining > self.CALIBRATION_ATTEMPT-5:
+            self.calibration_attempt_remaining -= 1
             self.always_black_mask = img_mask
         elif self.calibration_attempt_remaining > 0:
             self.always_black_mask = cv2.bitwise_or(self.always_black_mask, img_mask)
