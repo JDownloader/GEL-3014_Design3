@@ -30,7 +30,7 @@ class NoCameraDetectedException(Exception):
 class Camera():
 
     def __init__(self):
-        self.capt_obj = cv2.VideoCapture(0)
+        self.capt_obj = cv2.VideoCapture(1)
         self.camera_matrix = np.array(CAMERA_MATRIX)
         self.distortion_matrix = np.array(DIST_COEFS)
         self.polyline = POLYLINE
@@ -72,7 +72,7 @@ class Camera():
         mask = stencil.apply(image)
         return mask
 
-    def find_contour_cube(self, image):
+    def find_contour_cube_black(self, image):
         contours, hierarchy = cv2.findContours(image,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
         cnt = contours[0]
         biggest = None
@@ -85,9 +85,33 @@ class Camera():
                 if area > max_area and len(approx)==4:
                     biggest = approx
                     max_area = area
+        #corners = np.array([approx],dtype=np.int32)
+        return approx
 
-        corners = np.array([approx],dtype=np.int32)
-        return corners
+    def find_largest_contour_color(self, img_binary):
+        contours, hierarchy = cv2.findContours(img_binary, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
+        max_area = 0
+        largest_contour = None
+        for contour in contours:
+            area = cv2.contourArea(contour)
+            if area > max_area:
+                max_area = area
+                largest_contour = contour
+        return largest_contour
+
+
+    def get_moment(self, largest_contour):
+        moment = None
+        if largest_contour is not None:
+            moment = cv2.moments(largest_contour)
+        return moment
+
+    def find_marker_image(self, moment, largest_contour):
+        marker = None
+        if moment is not None:
+            if moment["m00"] > 1000: # / scale_down:
+                marker = cv2.minAreaRect(largest_contour)
+        return marker
 
     def define_contour_array(self, contour):
         contour_array = np.array(np.array(contour[0][0]))
@@ -127,7 +151,7 @@ class Camera():
         img_gray = self.apply_polyline(img_gray)
         squares = self._find_squares(img_gray)
         square = self._filterSquares(squares)
-        square = np.array([square[1]],dtype=np.int32)
+        square = np.array([square[0]],dtype=np.int32)
         return square
 
     def _angle_cos(self, p0, p1, p2):
