@@ -64,7 +64,7 @@ class VisionRobot():
         height, width, depth = image.shape
         centreX = int(moment['m10']/moment['m00'])
         centreY = int(moment['m01']/moment['m00'])
-        if (centreX == width/2):
+        if ((width/2) - 10 <= centreX <=  (width/2) +10):
             is_centre = True
         else :
             is_centre = False
@@ -104,15 +104,17 @@ if __name__ == "__main__":
         ##flags_i, image = cap.retrieve(None, cv2.CAP_OPENNI_BGR_IMAGE)
 
         height, width, depth = image.shape
-        cube = Cube("red")
-        #cube = WhiteCube()
-        cube = WhiteCube()
+        cube = Cube("blue")
+        # cube = WhiteCube()
         image = camera.remmaping_image(image)
         contour = vision.find_contour_cube(image, cube)
         try:
             if contour is not None:
                 moment = camera.get_moment(contour)
                 #is_centre = vision.verifier_centre_image(image, moment)
+                # if is_centre:
+                #     print 'found center!'
+                #     break
                 centreX = int(moment['m10']/moment['m00'])
                 centreY = int(moment['m01']/moment['m00'])
                 if ((width/2) - 10 <= centreX <=  (width/2) +10):
