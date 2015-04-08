@@ -1,4 +1,4 @@
 
-ROBOT_POSITION_RESSOURCE = 'robotposition'
+ROBOT_POSITION_RESSOURCE = '/robotposition'
 
-FLAG_RESSOURCE = 'flag'
+FLAG_RESSOURCE = '/flag'

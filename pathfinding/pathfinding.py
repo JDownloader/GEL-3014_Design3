@@ -15,6 +15,9 @@ class Pathfinding:
     def find_path_to_point(self, robot_position, point):
         delta_x = float(point[0] - robot_position.position[0])
         delta_y = float(point[1] - robot_position.position[1])
+        print 'delta x ' + str(delta_x)
+        print 'delta_y ' + str(delta_y)
+        print 'angle ' + str(robot_position.angle)
         # We assume 0 degree is when the robot is facing away from the kinect, 90 degrees from the x axis.
         # For a positive angle, the robot must rotate to its left (anti-clockwise)
         target_angle = 0
@@ -25,7 +28,7 @@ class Pathfinding:
                 target_angle = -90
         else:
             target_angle = math.degrees(math.atan2(delta_x, delta_y))
-        rotation = self.determine_rotation_angle(math.degrees(robot_position.angle), target_angle)
+        rotation = self.determine_rotation_angle((robot_position.angle), target_angle)
         distance = self.calculate_hypotenuse(delta_x, delta_y)
         return (int(rotation), int(distance))
 
