@@ -134,6 +134,7 @@ class WhiteCube(Cube):
         self.black_filter = ColorFilter([([0, 0, 0], [180, 256, 120])])
         self.form_filter = FormFilter([4, 4, 3, 2])
         self.black_form_filter = FormFilter([0, 5, 3, 3])
+        self.max_pixel_length = 50
 
     def apply_filters(self, img_hsv, kinect=None):
         img_mask_white = self.white_filter.apply(img_hsv)
@@ -152,12 +153,20 @@ class WhiteCube(Cube):
                 # b_and_w_junction[i, j][2] = mask_black[i, j]
                 if mask_black[i, j] and mask_white[i, j]:
                     draw_line = False
-                    for x in range(min(b_and_w_junction.shape[1], j + 50) - 1, j, -1):
+                    for x in range(min(b_and_w_junction.shape[1], j + self.max_pixel_length) - 1, j, -1):
                         if mask_black[i, x] and mask_white[i, x]:
                             draw_line = True
                         if draw_line and mask_white[i, x]:
                             b_and_w_junction[i, x][1] = 255
         return b_and_w_junction
+
+
+class WhiteCubeForInBoardCamera(WhiteCube):
+    def __init__(self):
+        WhiteCube.__init__(self)
+        self.black_form_filter = FormFilter([0, 3, 4, 4])
+        self.white_filter = ColorFilter([([0, 0, 150], [180, 40, 255])])
+        self.max_pixel_length = 200
 
 
 class BlackCube(Cube):
