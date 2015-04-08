@@ -34,9 +34,6 @@ class LedController:
     def change_color(self, led_color='F', led_position=9):
         self.serial_communication.write(str(led_position) + self.COLORS_FOR_CONTROLLER.get(led_color))
 
-    def serial_communication_cleanup(self):
-        self.serial_communication.close()
-
 
 class PololuConnectionCreator:
     def __init__(self):
@@ -123,48 +120,44 @@ class RobotMovementController:
             if port[2].find('USB VID:PID=2341:003d') > -1 or port[2].find('USB VID:PID=2a03:003d') > -1:
                 communication_port = port[0]
         if len(communication_port) > 0:
-            self.serial_communication = serial.Serial(communication_port, 9600)
+            self.serial_communication = serial.Serial(communication_port, baudrate=9600, timeout=7)
 
     def move_robot(self, direction, distance_in_mm):
-        distance_in_cm = distance_in_mm / 10
+        distance_in_cm = int(distance_in_mm / 10)
         if distance_in_cm >= 40:
             speed_percentage = 75
-        elif 25 < distance_in_cm > 40:
+        elif 25 < distance_in_cm <= 40:
             speed_percentage = 50
-        elif 15 > distance_in_cm >= 25:
-            speed_percentage = 25
-        elif 5 > distance_in_cm >= 15:
-            speed_percentage = 10
+        elif 15 < distance_in_cm <= 25:
+            speed_percentage = 30
         else:
-            speed_percentage = 5
-
+            speed_percentage = 10
         try:
             self.serial_communication.write(str(chr(self.ARDUINO_SERIAL_DIRECTION_STRING.get(direction))))
         except Exception:
             raise BadMovementDirection()
         self.serial_communication.write(str(chr(speed_percentage)))
         self.serial_communication.write(str(chr(int(distance_in_cm))))
-
         self.serial_communication.flushInput()
-        while self.serial_communication.readline() != 'fini':
-            pass
+        read = self.serial_communication.read(size=1)
+        self.serial_communication.flushInput()
 
     def rotate_robot(self, rotation_direction_is_left, rotation_angle_in_degrees, rotation_speed_is_slow):
         if rotation_speed_is_slow:
             speed_percentage = 10
         else:
             speed_percentage = 25
-
         if rotation_direction_is_left:
             self.serial_communication.write(str(chr(101)))
         else:
             self.serial_communication.write(str(chr(102)))
         self.serial_communication.write(str(chr(speed_percentage)))
         self.serial_communication.write(str(chr(rotation_angle_in_degrees)))
-
         self.serial_communication.flushInput()
-        while self.serial_communication.readline() != 'fini':
-            pass
+        read = self.serial_communication.read(size=1)
+        self.serial_communication.flushInput()
+
+
 
     def stop_all_movement(self):
         self.serial_communication.write(str(chr(99)))
