@@ -13,8 +13,6 @@ SERVER_PORT = 8000
 
 
 class BaseStationServer(Flask):
-    # robot_ip_address = 'http://127.0.0.1:8001/'
-    # robot_ip_address = 'http://10.248.177.53:8001/'
     robot_ip_address = RobotFinder.IP_NOT_FOUND
 
     def __init__(self, *args, **kwargs):
@@ -33,6 +31,7 @@ app.config.from_object(__name__)
 app.debug = True
 thread_robot_finder = RobotFinder(app.set_robot_ip_address)
 thread_robot_finder.start()
+app.set_robot_ip_address('127.0.0.1')
 
 
 def root_dir():
