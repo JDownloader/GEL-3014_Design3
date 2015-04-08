@@ -1,12 +1,13 @@
 import os.path
 from flask import Flask, abort, redirect, url_for, jsonify
-from baseStation.contextProvider import ContextProvider
+from contextProvider import ContextProvider
 from robotIPFinder import RobotFinder
 from vision.robotLocator import RobotLocator
 import requests
 import json
 import constants as cte
 from questionanswering.question_processor import QuestionProcessor
+from baseStation import BaseStation
 import flagProcessor
 
 SERVER_PORT = 8000
@@ -17,6 +18,8 @@ class BaseStationServer(Flask):
 
     def __init__(self, *args, **kwargs):
         super(BaseStationServer, self).__init__(*args, **kwargs)
+        self.base_station = BaseStation()
+        self.context_provider = ContextProvider(self.base_station)
         # self.run_loop = RunLoop()
         # self.robot_connection = None
 
@@ -77,7 +80,7 @@ def fetch_flag():
 # A javaScript fonction calls this method every 250 ms
 @app.route('/context')
 def get_context():
-    context = ContextProvider().get_context(app.robot_ip_address)
+    context = app.context_provider.get_context(app.robot_ip_address)
     return jsonify(context)
 
 def fetch_question():
