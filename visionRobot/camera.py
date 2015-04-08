@@ -3,23 +3,12 @@ import cv2
 import numpy as np
 import math
 import time
+from vision.cube import FormStencil
 
 CAMERA_MATRIX = [[555.81341097, 0. ,323.81267756], [0., 555.07406939, 244.96419131], [0., 0.,1.]]
 DIST_COEFS = [[0.26812386, -1.12309446,  0.00970802, -0.00178942,  0.97162928]]
 POLYLINE = np.array([[0, 250], [640, 250], [640, 480], [0, 480]], np.int32)
 ANGLE = 45
-
-class FormStencil:
-    def __init__(self, poly_lines):
-        self.poly_lines = []
-        for poly_line in poly_lines:
-            poly_line_reshaped = poly_line.reshape((-1, 1, 2))
-            self.poly_lines.append(poly_line_reshaped)
-
-    def apply(self, img_mask):
-        img_result = np.copy(img_mask)
-        cv2.fillPoly(img_result, self.poly_lines, (0, 0, 0))
-        return img_result
 
 
 class NoCameraDetectedException(Exception):
@@ -30,7 +19,7 @@ class NoCameraDetectedException(Exception):
 class Camera():
 
     def __init__(self):
-        self.capt_obj = cv2.VideoCapture(1)
+        self.capt_obj = cv2.VideoCapture(0)
         self.camera_matrix = np.array(CAMERA_MATRIX)
         self.distortion_matrix = np.array(DIST_COEFS)
         self.polyline = POLYLINE
@@ -77,7 +66,6 @@ class Camera():
         cnt = contours[0]
         biggest = None
         max_area = 0
-        approx = ''
         for i in contours:
             area = cv2.contourArea(i)
             if area > 5000 and area < 100000 :
@@ -100,13 +88,6 @@ class Camera():
                 largest_contour = contour
         return largest_contour
 
-
-    def get_moment(self, largest_contour):
-        moment = None
-        if largest_contour is not None:
-            moment = cv2.moments(largest_contour)
-        return moment
-
     def find_marker_image(self, moment, largest_contour):
         marker = None
         if moment is not None:
@@ -119,6 +100,7 @@ class Camera():
         for x  in xrange(1,len(contour[0])):
             contour_array = np.concatenate((contour_array,np.array(contour[0][x])),axis=0)
         return contour_array
+
 
     def get_angle_cube(self, contour, corner):
         oposite_side = abs(contour[0][1]-contour[corner][1])
@@ -146,63 +128,5 @@ class Camera():
 
         return distance
 
-    def find_square_cube_white(self, image):
-        img_gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-        img_gray = self.apply_polyline(img_gray)
-        squares = self._find_squares(img_gray)
-        square = self._filterSquares(squares)
-        if square:
-            square = np.array([square[1]],dtype=np.int32)
-        return square
 
-    def _angle_cos(self, p0, p1, p2):
-        d1, d2 = (p0-p1).astype('float'), (p2-p1).astype('float')
-        return abs( np.dot(d1, d2) / np.sqrt( np.dot(d1, d1)*np.dot(d2, d2) ) )
-
-    def _find_squares(self, img):
-        img = cv2.GaussianBlur(img, (5, 5), 0)
-        squares = []
-        for gray in cv2.split(img):
-            for thrs in xrange(0, 255, 26):
-                if thrs == 0:
-                    bin = cv2.Canny(gray, 0, 50, apertureSize=5)
-                    bin = cv2.dilate(bin, None)
-                else:
-                    retval, bin = cv2.threshold(gray, thrs, 255, cv2.THRESH_BINARY)
-                contours, hierarchy = cv2.findContours(bin, cv2.RETR_LIST, cv2.CHAIN_APPROX_SIMPLE)
-                max_area = 0
-                largest_contour = None
-                for cnt in contours:
-                    cnt_len = cv2.arcLength(cnt, True)
-                    cnt = cv2.approxPolyDP(cnt, 0.02*cnt_len, True)
-                    if len(cnt) == 4 and cv2.contourArea(cnt) > 1000 and cv2.isContourConvex(cnt):
-                        cnt = cnt.reshape(-1, 2)
-                        max_cos = np.max([self._angle_cos( cnt[i], cnt[(i+1) % 4], cnt[(i+2) % 4] ) for i in xrange(4)])
-                        if max_cos < 0.3:
-                            squares.append(cnt)
-        return squares
-
-
-    def _getPerimeter(self, square):
-        return math.fabs(square[1][1] - square[0][1]) + math.fabs(square[2][1] - square[3][1]) +\
-               math.fabs(square[0][0] - square[3][0]) + math.fabs(square[1][0] - square[2][0])
-
-
-    def _filterSquares(self, squares):
-        biggest = None
-        max_area = 0
-        approx = ''
-        newSquares = []
-        for square in squares:
-            area = cv2.contourArea(square)
-            if square[0][0] != 1 and square[0][1] != 1:
-                if area > 6000 and area < 100000 :
-                    newSquares.append(square)
-
-        # for square in squares:
-        #     if square[0][0] != 1 and square[0][1] != 1:
-        #         perimeter = self._getPerimeter(square)
-        #         if (perimeter < 300 and perimeter > 20):
-        #             newSquares.append(square)
-        return newSquares
 
