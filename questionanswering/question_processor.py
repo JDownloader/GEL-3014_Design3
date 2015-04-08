@@ -29,6 +29,7 @@ class QuestionProcessor:
     def fetch_answer(self, question, query_builder):
         next(question)
         query = query_builder.build()
+        print query
         client = elastic_search_client.ElasticSearchClient()
         response = client.post_request(query)
 
