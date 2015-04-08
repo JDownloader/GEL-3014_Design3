@@ -5,6 +5,7 @@ from robotIPFinder import RobotFinder
 from vision.robotLocator import RobotLocator
 import requests
 import json
+from vision.kinect import Kinect
 import constants as cte
 from questionanswering.question_processor import QuestionProcessor
 import flagProcessor
@@ -21,6 +22,8 @@ class BaseStationServer(Flask):
         super(BaseStationServer, self).__init__(*args, **kwargs)
         # self.run_loop = RunLoop()
         # self.robot_connection = None
+        self.robotLocator = RobotLocator()
+        self.kinect = Kinect('3')
 
     def set_robot_ip_address(self, ip):
         print ip
@@ -54,9 +57,12 @@ def start():
 
 @app.route('/robotposition')
 def fetch_robot_position():
-    robotLocator = RobotLocator()
-    # return str(robotLocator.get_position(FakeKinect()))
-    return jsonify(angle = '10', position = '(10,10)')
+    position = app.robotLocator.get_position(app.kinect)
+    # stuff = (position.get_angle_in_deg(), (position.position[0], position.position[1]))
+    # print stuff
+    return jsonify(angle=position.get_angle_in_deg(),
+                   position=(position.position[0], position.position[1]))
+    # return jsonify(angle = '10', position = '(10,10)')
 
 @app.route('/cubeposition')
 def fetch_cube_position():
@@ -68,6 +74,7 @@ def fetch_flag():
     flag = ''
     for cycle in xrange(cte.NUMBER_OF_WRONG_ANSWER_ALLOWED):
         question = fetch_question()
+        print question
         answer = fetch_answer(question)
         if is_right_answer(answer):
             flag_processor = flagProcessor.FlagProcessor(answer)
@@ -82,6 +89,7 @@ def get_context():
     return jsonify(context)
 
 def fetch_question():
+    print requests.get(cte.ATLAS_WEB_SERVER_URL, verify=False).text
     return json.loads(requests.get(cte.ATLAS_WEB_SERVER_URL, verify=False).text)['question']
 
 def fetch_answer(question):

@@ -124,7 +124,7 @@ class Position():
     def get_angle_in_deg(self):
         if self.angle is None:
             return None
-        return self.angle * 180 / math.pi
+        return int(round(self.angle * 180 / math.pi))
 
     def is_valid(self):
         return self.is_valid_position(self.position)
