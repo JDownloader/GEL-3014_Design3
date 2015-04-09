@@ -1,6 +1,6 @@
 import os.path
 from flask import Flask, abort, redirect, url_for, jsonify
-from baseStation.contextProvider import ContextProvider
+from contextProvider import ContextProvider
 from robotIPFinder import RobotFinder
 from vision.robotLocator import RobotLocator
 import requests
@@ -8,6 +8,7 @@ import json
 from vision.kinect import Kinect
 import constants as cte
 from questionanswering.question_processor import QuestionProcessor
+from baseStation import BaseStation
 import flagProcessor
 from tests.test_vision_kinect import FakeKinect
 
@@ -19,6 +20,8 @@ class BaseStationServer(Flask):
 
     def __init__(self, *args, **kwargs):
         super(BaseStationServer, self).__init__(*args, **kwargs)
+        self.base_station = BaseStation()
+        self.context_provider = ContextProvider(self.base_station)
         # self.run_loop = RunLoop()
         # self.robot_connection = None
         self.robotLocator = RobotLocator()
@@ -77,20 +80,31 @@ def fetch_flag():
         print question
         answer = fetch_answer(question)
         if is_right_answer(answer):
+            print 'will be back'
+            # app.base_station.change_question(question, answer)
             flag_processor = flagProcessor.FlagProcessor(answer)
             flag = flag_processor.get_flag()
+            print flag
             break
     return jsonify(flag=flag)
 
 # A javaScript fonction calls this method every 250 ms
 @app.route('/context')
 def get_context():
-    context = ContextProvider().get_context(app.robot_ip_address)
+    context = app.context_provider.get_context(app.robot_ip_address)
     return jsonify(context)
 
 def fetch_question():
-    print requests.get(cte.ATLAS_WEB_SERVER_URL, verify=False).text
-    return json.loads(requests.get(cte.ATLAS_WEB_SERVER_URL, verify=False).text)['question']
+    question = ''
+    for url in cte.ATLAS_WEB_SERVER_URLS:
+        try:
+            response = requests.get(url, verify=False, timeout=0.1)
+            if response.status_code == 200:
+                question = response.text
+                break
+        except Exception:
+            pass
+    return json.loads(question)['question']
 
 def fetch_answer(question):
     print "question : " + question
@@ -101,9 +115,10 @@ def fetch_answer(question):
 def is_right_answer(answer):
     print answer
     answer_is_good = raw_input('Is this the right answer ? (y/n) : ')
-    if answer_is_good is 'y':
+    if answer_is_good[0] is 'y':
         return True
     else:
+        print 'Will retry...'
         return False
 
 if __name__ == '__main__':  # pragma: no cover

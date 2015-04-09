@@ -169,6 +169,8 @@
 
 	function setContext(data){
 		document.getElementById("chrono").innerHTML = data.chrono;
+		document.getElementById("question").innerHTML = data.question;
+		document.getElementById("answer").innerHTML = data.answer;
 		robotContextHandler.updateContext(data);
 	}
 
