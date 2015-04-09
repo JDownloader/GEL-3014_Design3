@@ -28,8 +28,8 @@ class RobotLocator():
         return self.position
 
     def merge_position(self, position_1, position_2):
-        pos_x = int((position_1.position[0]+position_2.position[1])/2)
-        pos_y = int((position_1.position[0]+position_2.position[1])/2)
+        pos_x = int((position_1.position[0]+position_2.position[0])/2)
+        pos_y = int((position_1.position[1]+position_2.position[1])/2)
         angle = float((position_1.angle+position_2.angle)/float(2))
         return RobotPosition(pos_x, pos_y, angle)
 
