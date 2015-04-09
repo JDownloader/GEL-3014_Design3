@@ -22,14 +22,10 @@ class BaseStationServer(Flask):
         super(BaseStationServer, self).__init__(*args, **kwargs)
         self.base_station = BaseStation()
         self.context_provider = ContextProvider(self.base_station)
-        # self.run_loop = RunLoop()
-        # self.robot_connection = None
-        self.robotLocator = RobotLocator()
-        self.kinect = Kinect('4')
+        self.robot_locator = RobotLocator()
     def set_robot_ip_address(self, ip):
         print ip
         self.robot_ip_address = ip
-        # self.robot_connection = RobotConnection(self.robot_ip_address)
 
 app = BaseStationServer(__name__)
 app.config.from_object(__name__)
@@ -52,15 +48,14 @@ def start():
     if app.robot_ip_address == RobotFinder.IP_NOT_FOUND:
         abort(500)
     else:
-        # data = {'ip':'192.168.0.32'}
-        data = {'ip':'127.0.0.1'}
+        data = {'ip': app.robot_ip_address}
         response = requests.post('http://' + app.robot_ip_address + ':8001' + '/basestationip', data=data)
     return 'ok'
 
 
 @app.route('/robotposition')
 def fetch_robot_position():
-    position = app.robotLocator.get_position(app.kinect)
+    position = app.robot_locator.get_position(app.base_station.kinect)
     # stuff = (position.get_angle_in_deg(), (position.position[0], position.position[1]))
     # print stuff
     return jsonify(angle=position.get_angle_in_deg(),
@@ -80,8 +75,7 @@ def fetch_flag():
         print question
         answer = fetch_answer(question)
         if is_right_answer(answer):
-            print 'will be back'
-            # app.base_station.change_question(question, answer)
+            app.base_station.change_question(question, answer)
             flag_processor = flagProcessor.FlagProcessor(answer)
             flag = flag_processor.get_flag()
             print flag
@@ -122,5 +116,5 @@ def is_right_answer(answer):
         return False
 
 if __name__ == '__main__':  # pragma: no cover
-    app.run(host='0.0.0.0', port=SERVER_PORT, use_reloader=False)
+    app.run(host='0.0.0.0', port=SERVER_PORT, use_reloader=False, threaded=False)
     thread_robot_finder.stop()

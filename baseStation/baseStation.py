@@ -1,6 +1,6 @@
 from vision.kinect import Kinect, NoKinectDetectedException
 from tests.test_vision_kinect import FakeKinect
-from cubeFinder import DemoCubeFinder
+from cubeFinder import DemoCubeFinder, CubeFinder
 from flag import Flag
 
 
@@ -10,7 +10,7 @@ class BaseStation():
             self.kinect = Kinect('4')
         except NoKinectDetectedException:
             self.kinect = FakeKinect()
-        self.cube_finder = DemoCubeFinder(self.kinect)
+        self.cube_finder = CubeFinder(self.kinect)
         self.flag = Flag('Canada')
         self.question = ''
         self.answer = ''
