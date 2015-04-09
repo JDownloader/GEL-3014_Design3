@@ -148,6 +148,12 @@ class Position():
         elif self.angle > math.pi:
             self.angle -= 2 * math.pi
 
+    def normalize_angle_degree(self):
+        if self.angle < -180:
+            self.angle += 360
+        elif self.angle > 180:
+            self.angle -= 360
+
 
 class RobotPosition(Position):
     ROBOT_DIMENSION = 220
@@ -174,14 +180,14 @@ class RobotPosition(Position):
         self.position = (self.position[0] + math.sin(math.radians(self.angle)) * pathfinding_tuple[1],
                              self.position[1] + math.cos(math.radians(self.angle)) * pathfinding_tuple[1])
 
-        self.normalize_angle()
+        self.normalize_angle_degree()
 
-    def update_with_kinect(self, kinect_position, kinect_angle):
-        temp_pos = Position(kinect_position[0], kinect_position[1], math.radians(kinect_angle))
-        temp_pos.normalize_angle()
-        if temp_pos.is_valid():
-            self.angle = math.degrees(temp_pos.angle)
-            self.position = temp_pos.position
-            return True
-        else:
-            return False
+    # def update_with_kinect(self, kinect_position, kinect_angle):
+    #     temp_pos = Position(kinect_position[0], kinect_position[1], kinect_angle)
+    #     temp_pos.normalize_angle_degree()
+    #     if temp_pos.is_valid():
+    #         self.angle = temp_pos.angle
+    #         self.position = temp_pos.position
+    #         return True
+    #     else:
+    #         return False

@@ -138,9 +138,7 @@ class RobotMovementController:
             raise BadMovementDirection()
         self.serial_communication.write(str(chr(speed_percentage)))
         self.serial_communication.write(str(chr(int(distance_in_cm))))
-        self.serial_communication.flushInput()
-        read = self.serial_communication.read(size=1)
-        self.serial_communication.flushInput()
+        self.serial_communication.readline()
 
     def rotate_robot(self, rotation_direction_is_left, rotation_angle_in_degrees, rotation_speed_is_slow):
         if rotation_speed_is_slow:
@@ -153,9 +151,7 @@ class RobotMovementController:
             self.serial_communication.write(str(chr(102)))
         self.serial_communication.write(str(chr(speed_percentage)))
         self.serial_communication.write(str(chr(rotation_angle_in_degrees)))
-        self.serial_communication.flushInput()
-        read = self.serial_communication.read(size=1)
-        self.serial_communication.flushInput()
+        self.serial_communication.readline()
 
 
 

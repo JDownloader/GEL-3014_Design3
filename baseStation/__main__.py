@@ -62,10 +62,12 @@ def fetch_robot_position():
                    position=(position.position[0], position.position[1]))
     # return jsonify(angle = '10', position = '(10,10)')
 
-@app.route('/cubeposition')
+@app.route('/cubeposition', methods=['POST'])
 def fetch_cube_position():
-    # return str(robotLocator.get_position(FakeKinect()))
-    return jsonify(angle = '10', position = '(10,10)')
+    # if request.method == 'POST':
+    #     app.base_station_ip_address = request.form.get('ip', None)
+    # # return str(robotLocator.get_position(FakeKinect()))
+    return jsonify(position_x=200 , position_y=1900)
 
 @app.route('/flag')
 def fetch_flag():

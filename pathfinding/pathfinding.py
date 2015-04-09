@@ -15,6 +15,7 @@ class Pathfinding:
     def find_path_to_point(self, robot_position, point):
         delta_x = float(point[0] - robot_position.position[0])
         delta_y = float(point[1] - robot_position.position[1])
+        print 'pathfinding to point'
         print 'delta x ' + str(delta_x)
         print 'delta_y ' + str(delta_y)
         print 'angle ' + str(robot_position.angle)
@@ -28,6 +29,7 @@ class Pathfinding:
                 target_angle = -90
         else:
             target_angle = math.degrees(math.atan2(delta_x, delta_y))
+        print 'pathfinding target angle' + str(target_angle)
         rotation = self.determine_rotation_angle(robot_position.angle, target_angle)
         distance = self.calculate_hypotenuse(delta_x, delta_y)
         return (rotation, distance)

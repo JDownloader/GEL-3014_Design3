@@ -1,5 +1,5 @@
 import os
-from flask import Flask, abort, redirect, url_for, jsonify, request
+from flask import Flask, abort, redirect, url_for, jsonify, request, after_this_request
 import requests
 import constants as cte
 import json
@@ -26,8 +26,11 @@ app.config.from_object(__name__)
 
 @app.route('/')
 def start():
-    robot = RobotAI(BaseStationClient(app))
-    robot.run_sequence()
+    @after_this_request
+    def rune_sequence_callback(response):
+        robot = RobotAI(BaseStationClient(app))
+        robot.run_sequence()
+        return response
     # get_robot_position_from_base_station()
     return 'ok'
 
