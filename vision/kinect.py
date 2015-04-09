@@ -2,6 +2,7 @@ import cv2
 from distanceCalibration import DistanceCalibration
 
 
+
 class NoKinectDetectedException(Exception):
     def __init__(self):
         pass
@@ -43,3 +44,14 @@ class Kinect():
         centre = (x, y)
         return centre
 
+    def find_object_position(self, img_mask, x_shift=0):
+        position_in_world = self._find_position_in_world(img_mask, x_shift)
+        position = self._apply_matrix_transformation(position_in_world)
+        return (int(position[0]*1000), int(position[1]*1000+40))
+
+    def _find_position_in_world(self, img_mask, x_shift=0):
+        point_centre = self._get_centre_object(img_mask)
+        pixel_cloud = self.get_img_cloud_map()
+        point_world = pixel_cloud[point_centre[1] + x_shift, point_centre[0]]
+        point1_ref = [[-point_world[0]], [point_world[2]], [1]]
+        return np.mat(point1_ref)

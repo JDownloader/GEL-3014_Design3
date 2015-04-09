@@ -113,16 +113,16 @@ class Cube:
         return position[0] > self.NEGATIVE_POSITION_TOLERANCE_IN_MM \
             and position[1] > self.NEGATIVE_POSITION_TOLERANCE_IN_MM
 
-    def _find_position_in_world(self, img_hvg, kinect, x_shift=0):
-        point_centre = self._find_center_in_img(img_hvg, kinect)
-        pixel_cloud = kinect.get_img_cloud_map()
-        point_world = pixel_cloud[point_centre[1] + x_shift, point_centre[0]]
-        point1_ref = [[-point_world[0]], [point_world[2]], [1]]
-        return np.mat(point1_ref)
-
-    def _find_center_in_img(self, img_hvg, kinect):
-        img_mask = self.apply_filters(img_hvg, kinect)
-        return kinect._get_centre_object(img_mask)
+    # def _find_position_in_world(self, img_hvg, kinect, x_shift=0):
+    #     point_centre = self._find_center_in_img(img_hvg, kinect)
+    #     pixel_cloud = kinect.get_img_cloud_map()
+    #     point_world = pixel_cloud[point_centre[1] + x_shift, point_centre[0]]
+    #     point1_ref = [[-point_world[0]], [point_world[2]], [1]]
+    #     return np.mat(point1_ref)
+    #
+    # def _find_center_in_img(self, img_hvg, kinect):
+    #     img_mask = self.apply_filters(img_hvg, kinect)
+    #     return kinect._get_centre_object(img_mask)
 
 
 class WhiteCube(Cube):
@@ -170,7 +170,7 @@ class WhiteCubeForInBoardCamera(WhiteCube):
 
 
 class BlackCube(Cube):
-    CALIBRATION_ATTEMPT = 20
+    CALIBRATION_ATTEMPT = 25
     def __init__(self):
         self.color = 'black'
         self.position = None
@@ -189,7 +189,13 @@ class BlackCube(Cube):
             self.always_black_mask = cv2.bitwise_or(self.always_black_mask, img_mask)
             self.calibration_attempt_remaining -= 1
         else:
-            img_mask = cv2.bitwise_xor(img_mask, self.always_black_mask)
+            img_mask = cv2.bitwise_and(cv2.bitwise_xor(img_mask, self.always_black_mask), img_mask)
         img_mask = self.form_filter.apply(img_mask)
         return img_mask
+
+    def find_position(self, img_hvg, kinect, x_shift=0):
+        cloud_map = kinect.get_img_cloud_map()
+        for x in range(350, 557, 2):
+            print kinect._apply_matrix_transformation(cloud_map[259, x])
+        return (0, 0)
 
