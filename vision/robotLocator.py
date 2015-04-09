@@ -16,12 +16,14 @@ class RobotLocator():
         self.position = RobotPosition()
         for x in range(0, 5):
             position = self.attempt_get_position(kinect)
-            if position.is_valid():
-                for y in range(0, 3):
-                    second_position = self.attempt_get_position(kinect)
-                    if second_position.is_valid() and second_position.is_like(position):
-                        self.position = self.merge_position(position, second_position)
-                        return self.position
+            if position is not None:
+                if position.is_valid():
+                    for y in range(0, 3):
+                        second_position = self.attempt_get_position(kinect)
+                        if second_position is not None:
+                            if second_position.is_valid() and second_position.is_like(position):
+                                self.position = self.merge_position(position, second_position)
+                                return self.position
         self.position = RobotPosition()
         return self.position
 
