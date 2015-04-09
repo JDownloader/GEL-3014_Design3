@@ -123,7 +123,7 @@ class RobotMovementController:
             self.serial_communication = serial.Serial(communication_port, baudrate=9600, timeout=7)
 
     def move_robot(self, direction, distance_in_mm):
-        distance_in_cm = int(distance_in_mm / 10)
+        distance_in_cm = int(round(distance_in_mm / 10))
         if distance_in_cm >= 40:
             speed_percentage = 75
         elif 25 < distance_in_cm <= 40:
@@ -188,7 +188,7 @@ class Robot:
         self.movement_controller.move_robot(direction, distance_in_mm)
 
     def rotate(self, rotation_direction_is_left, rotation_angle_in_degrees, movement_speed_is_slow=False):
-        self.movement_controller.rotate_robot(rotation_direction_is_left, rotation_angle_in_degrees,
+        self.movement_controller.rotate_robot(rotation_direction_is_left, int(round(rotation_angle_in_degrees)),
                                               movement_speed_is_slow)
 
     def move_gripper_vertically(self, wanted_position_is_raised):
@@ -198,7 +198,7 @@ class Robot:
         self.gripper_controller.pliers_control(wanted_position_is_opened, opening_is_big)
 
     def change_led_color(self, led_color, led_position):
-        self.led_controller.change_color(led_color, led_position)
+        self.led_controller.change_color(str(led_color), int(led_position))
 
     def stop_movement(self):
         self.movement_controller.stop_all_movement()

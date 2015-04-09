@@ -11,7 +11,6 @@ class BaseStationClient():
         response = requests.get('http://' + self.app.base_station_ip_address + ':8000' + cte.FLAG_RESSOURCE)
         return json.loads(response.text)['flag']
 
-
     def fetch_robot_position(self):
         response = requests.get('http://' + self.app.base_station_ip_address + ':8000' + cte.ROBOT_POSITION_RESSOURCE)
         content = json.loads(response.text)

@@ -8,6 +8,7 @@ import math
 
 
 class RobotLocator():
+    PIXEL_SHIFT = 3
     def __init__(self):
         self.position = RobotPosition()
 
@@ -49,20 +50,20 @@ class RobotLocator():
 
         if self.position.is_valid_position(maybe_first_corner_position):#  TODO
             if angle_modificator == 0:
-                found_corner.find_position(img_hsv, kinect, 2)
+                found_corner.find_position(img_hsv, kinect, self.PIXEL_SHIFT)
                 self.position.set_from_points(maybe_first_corner_position, found_corner.position, 0)
                 # print 'purple first'
             else:
                 self.position.set_from_points(maybe_first_corner_position, found_corner.position, math.pi/2)
-                found_corner.find_position(img_hsv, kinect, -2)
+                found_corner.find_position(img_hsv, kinect, -self.PIXEL_SHIFT)
                 # print 'green first'
         elif self.position.is_valid_position(maybe_second_corner_position):#  TODO
             if angle_modificator == 0:
-                found_corner.find_position(img_hsv, kinect, -2)
+                found_corner.find_position(img_hsv, kinect, -self.PIXEL_SHIFT)
                 self.position.set_from_points(maybe_second_corner_position, found_corner.position, math.pi*3/2)
                 # print 'purple second'
             else:
-                found_corner.find_position(img_hsv, kinect, 2)
+                found_corner.find_position(img_hsv, kinect, self.PIXEL_SHIFT)
                 self.position.set_from_points(maybe_second_corner_position, found_corner.position, math.pi)
                 # print 'green second'
 
@@ -79,15 +80,15 @@ class RobotLocator():
         img_hsv_mask = stencil.apply(img_hsv)
         orange_corner = Cube('orange')
         if is_left:
-            return orange_corner.find_position(img_hsv_mask, kinect, 2)
-        return orange_corner.find_position(img_hsv_mask, kinect, -2)
+            return orange_corner.find_position(img_hsv_mask, kinect, self.PIXEL_SHIFT)
+        return orange_corner.find_position(img_hsv_mask, kinect, -self.PIXEL_SHIFT)
 
-    def get_rgb_calibration(self, img_hsv, form_filter=False):
+    def get_rgb_calibration(self, img_hsv, form_filter=True):
         rgb_result = np.zeros((img_hsv.shape[0], img_hsv.shape[1], 3), np.uint8)
         orange_cube = Cube('orange')
         green_cube = Cube('forest_green')
         purple_cube = Cube('purple')
-        if form_filter:
+        if form_filter == False:
             orange_cube.form_filter = FormFilter([0, 0, 1, 1])
             green_cube.form_filter = FormFilter([0, 0, 1, 1])
             purple_cube.form_filter = FormFilter([0, 0, 1, 1])
@@ -124,7 +125,7 @@ class Position():
     def get_angle_in_deg(self):
         if self.angle is None:
             return None
-        return int(round(self.angle * 180 / math.pi))
+        return self.angle * 180 / math.pi
 
     def is_valid(self):
         return self.is_valid_position(self.position)
@@ -135,7 +136,9 @@ class Position():
         if position[0] is None or position[1] is None:
             return False
         if position[0] > self.NEGATIVE_POSITION_TOLERANCE_IN_MM \
-                and position[1] > self.NEGATIVE_POSITION_TOLERANCE_IN_MM:
+                and position[1] > self.NEGATIVE_POSITION_TOLERANCE_IN_MM \
+                and position[0] < 1220 \
+                and position[1] < 2450:
             return True
         return False
 
@@ -163,11 +166,22 @@ class RobotPosition(Position):
 
             x_value = point_1[0] - diagonal * math.cos(self.angle + math.pi/float(4))
             y_value = point_1[1] + diagonal * math.sin(self.angle + math.pi/float(4))
-        self.position = (int(round(x_value)), int(round(y_value)))
+        self.position = (x_value, y_value)
         self.normalize_angle()
 
     def update_with_pathfinding_tuple(self, pathfinding_tuple):
-        self.angle += math.radians(pathfinding_tuple[0])
-        self.position = (self.position[0] + math.sin(self.angle) * pathfinding_tuple[1],
-                         self.position[1] + math.cos(self.angle) * pathfinding_tuple[1])
+        self.angle += pathfinding_tuple[0]
+        self.position = (self.position[0] + math.sin(math.radians(self.angle)) * pathfinding_tuple[1],
+                             self.position[1] + math.cos(math.radians(self.angle)) * pathfinding_tuple[1])
+
         self.normalize_angle()
+
+    def update_with_kinect(self, kinect_position, kinect_angle):
+        temp_pos = Position(kinect_position[0], kinect_position[1], math.radians(kinect_angle))
+        temp_pos.normalize_angle()
+        if temp_pos.is_valid():
+            self.angle = math.degrees(temp_pos.angle)
+            self.position = temp_pos.position
+            return True
+        else:
+            return False

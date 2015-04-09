@@ -15,12 +15,15 @@ class RobotAI:
 
     def run_sequence(self):
         self.update_robot_position_from_kinect()
+        self.move_robot_to(tableConsts.DOCK_POINT)
+        self.update_robot_position_from_kinect()
+        self.move_to_exactly_to_docking_point()
         # flag_matrix = self.resolve_atlas_enigma()
         # self.display_flag_for_five_seconds(flag_matrix)
         # self.move_robot_to(tableConsts.SAFE_POINT)
         # self.update_robot_position_from_kinect()
         # self.construct_flag(flag_matrix)
-        self.construct_flag(['red'])
+        # self.construct_flag(['red'])
 
     def resolve_atlas_enigma(self):
         self.move_robot_to(tableConsts.ATLAS_ZONE_COORDINATES)
@@ -43,23 +46,16 @@ class RobotAI:
         self.approach_cube()
 
     def place_cube(self, cube_index):
-        print 'dockzone1'
         self.move_robot_to(tableConsts.DOCK_POINT)
-        print 'upate pos1'
         self.update_robot_position_from_kinect()
-        print 'rotate'
-        self.rotate_robot_to_target(180)
-        print 'dropcube'
-        self.drop_cube_at_intended_point(cube_index)
+        self.move_to_exactly_to_docking_point()
+        # self.drop_cube_at_intended_point(cube_index)
 
     def drop_cube_at_intended_point(self, cube_index):
         cube_movement_dictionary = tableConsts.CUBE_DROP_MOVEMENTS_LIST[cube_index]
         if cube_movement_dictionary.get('direction') != 'forward':
-            print 'moving sideways'
             self.robot.move(cube_movement_dictionary.get('direction'),
-                               cube_movement_dictionary.get('width_distance'))
-        print 'moving forward'
-        self.robot.move('forward', cube_movement_dictionary.get('length_distance'))
+        self.robot.move('forward', cube_movement_dictionary.get('length_distance')))
         # self.robot.move_gripper_vertically(False)
         # self.robot.change_pliers_opening(True, False)
         self.robot.move('reverse', cube_movement_dictionary.get('length_distance'))
@@ -83,15 +79,19 @@ class RobotAI:
         return flag_matrix
 
     def update_robot_position_from_kinect(self):
-        angle_and_position_from_kinect = self.base_station.fetch_robot_position()
-        self.robot_angle_and_position.angle = angle_and_position_from_kinect[0]
-        self.robot_angle_and_position.position = angle_and_position_from_kinect[1]
+        position_updated = False
+        while not position_updated:
+            time.sleep(2)
+            angle_and_position_from_kinect = self.base_station.fetch_robot_position()
+            print 'unupdated pos: '+ str(self.robot_angle_and_position.angle) + ' ' + str(self.robot_angle_and_position.position)
+            position_updated = self.robot_angle_and_position.update_with_kinect(angle_and_position_from_kinect[1],
+                                                             angle_and_position_from_kinect[0])
+            print 'updated pos: '+ str(self.robot_angle_and_position.angle) + ' ' + str(self.robot_angle_and_position.position)
 
     def receive_cube_position_from_kinect(self):
         pass
 
     def move_robot_to(self, target_position, stop_at_buffer=False, movement_direction='forward'):
-        print 'movecommand'
         if stop_at_buffer:
             pathfinding_result = self.pathfinder.find_path_to_cube_buffer_zone(self.robot_angle_and_position,
                                                                                target_position)
@@ -125,4 +125,64 @@ class RobotAI:
         transposed_flag_matrix = reshaped_transposed_array[0].tolist()
         return transposed_flag_matrix
 
+    def move_to_exactly_to_docking_point(self, delta_angle=0, delta_x=0, delta_y=0):
+        print 'adjusting position'
+        angle_range = 1
+        x_range = 10
+        y_range = 10
+        print 'adjusting position, delta angle : '
+        self.rotate_precisely_to_dock_angle(angle_range, delta_angle)
+        print 'angle adjusted'
+        self.move_precisely_to_dock_x(x_range, delta_x)
+        print 'x adjusted'
+        self.move_precisely_to_dock_y(y_range, delta_y)
+        print 'y adjusted'
+        self.update_robot_position_from_kinect()
+        delta_angle = self.pathfinder.determine_rotation_angle(self.robot_angle_and_position.angle,
+                                                               tableConsts.DOCK_ANGLE)
+        delta_x = tableConsts.DOCK_POINT[0] - self.robot_angle_and_position.position[0]
+        delta_y = tableConsts.DOCK_POINT[1] - self.robot_angle_and_position.position[1]
+        if abs(delta_angle) > angle_range or abs(delta_x) > x_range or abs(delta_y) > y_range:
+            self.move_to_exactly_to_docking_point(delta_angle, delta_x, delta_y)
 
+    def rotate_precisely_to_dock_angle(self, angle_range, delta_angle):
+        temp_delta_angle = delta_angle
+        print 'trying rotation'
+        print delta_angle
+        print 'allo5'
+        if temp_delta_angle == 0:
+            print 'allo4'
+            print str(tableConsts.DOCK_ANGLE)
+            print 'allo5'
+            print str(self.robot_angle_and_position.angle)
+            temp_delta_angle = self.pathfinder.determine_rotation_angle(self.robot_angle_and_position.angle,
+                                                                        tableConsts.DOCK_ANGLE)
+            print 'temp delta angle: ' + str(temp_delta_angle)
+        if abs(temp_delta_angle) > angle_range:
+            print 'allo3'
+            if temp_delta_angle < 0:
+                print 'allo 2'
+                self.robot.rotate(False, abs(temp_delta_angle), True)
+                print 'rotating right'
+            else:
+                print 'allo'
+                self.robot.rotate(True, temp_delta_angle, True)
+                print 'rotating left'
+
+    def move_precisely_to_dock_x(self, x_range, delta_x):
+        if delta_x == 0:
+            delta_x = tableConsts.DOCK_POINT[0] - self.robot_angle_and_position.position[0]
+        if abs(delta_x) > x_range:
+            if delta_x < 0:
+                self.robot.move('left', abs(delta_x))
+            else:
+                self.robot.move('right', delta_x)
+
+    def move_precisely_to_dock_y(self, y_range, delta_y):
+        if delta_y == 0:
+            delta_y = tableConsts.DOCK_POINT[1] - self.robot_angle_and_position.position[1]
+        if abs(delta_y) > y_range:
+            if delta_y < 0:
+                self.robot.move('forward', abs(delta_y))
+            else:
+                self.robot.move('reverse', delta_y)

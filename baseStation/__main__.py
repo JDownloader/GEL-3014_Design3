@@ -9,20 +9,21 @@ from vision.kinect import Kinect
 import constants as cte
 from questionanswering.question_processor import QuestionProcessor
 import flagProcessor
+from tests.test_vision_kinect import FakeKinect
 
 SERVER_PORT = 8000
 
 
 class BaseStationServer(Flask):
-    robot_ip_address = RobotFinder.IP_NOT_FOUND
+    # robot_ip_address = RobotFinder.IP_NOT_FOUND
+    robot_ip_address = '127.0.0.1'
 
     def __init__(self, *args, **kwargs):
         super(BaseStationServer, self).__init__(*args, **kwargs)
         # self.run_loop = RunLoop()
         # self.robot_connection = None
         self.robotLocator = RobotLocator()
-        self.kinect = Kinect('3')
-
+        self.kinect = Kinect('4')
     def set_robot_ip_address(self, ip):
         print ip
         self.robot_ip_address = ip
@@ -48,7 +49,8 @@ def start():
     if app.robot_ip_address == RobotFinder.IP_NOT_FOUND:
         abort(500)
     else:
-        data = {'ip':'192.168.0.32'}
+        # data = {'ip':'192.168.0.32'}
+        data = {'ip':'127.0.0.1'}
         response = requests.post('http://' + app.robot_ip_address + ':8001' + '/basestationip', data=data)
     return 'ok'
 
