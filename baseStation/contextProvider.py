@@ -15,7 +15,7 @@ class ContextProvider:
         self.base_station.cube_finder.refresh_position()
         pos_y = random.randrange(0, 400, 10)
         angle = random.randrange(0, 359, 45)
-        position = RobotPosition(0, pos_y, angle)
+        position = self.get_position_data()
         sample_status = { 'top': 600-position.position[1]*0.27,
                           'left': 302-position.position[0]*0.27,
                           'angle': 360 - position.get_angle_in_deg(),
@@ -41,11 +41,11 @@ class ContextProvider:
         return False
 
     def get_position_data(self):
-        pass
-        # position = RobotPosition()
-        # position.position = (-500, -500)
-        # position.angle = 0
-        # if self.run_loop.robot_status is not None \
-        #         and self.run_loop.robot_status.position.angle is not None:
-        #     position = self.run_loop.robot_status.position
-        # return position
+        position = RobotPosition()
+        position.position = (-500, -500)
+        position.angle = 0
+        if self.base_station.robot_position is not None:
+            if self.base_station.robot_position.position is not None \
+                    and self.base_station.robot_position.angle is not None:
+                position = self.base_station.robot_position
+        return position

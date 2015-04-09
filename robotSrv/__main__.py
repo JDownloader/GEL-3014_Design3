@@ -23,6 +23,8 @@ class RobotServer(Flask):
 
 app = RobotServer(__name__)
 app.config.from_object(__name__)
+# since it will only be use by software engineer, debug on is ok
+app.debug = True
 
 @app.route('/')
 def start():

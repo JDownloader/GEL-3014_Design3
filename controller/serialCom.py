@@ -115,12 +115,13 @@ class RobotMovementController:
                                        'left': 4}
 
     def __init__(self):
-        communication_port = ''
         for port in comports():
             if port[2].find('USB VID:PID=2341:003d') > -1 or port[2].find('USB VID:PID=2a03:003d') > -1:
                 communication_port = port[0]
-        if len(communication_port) > 0:
-            self.serial_communication = serial.Serial(communication_port, baudrate=9600, timeout=7)
+                self.serial_communication = serial.Serial(communication_port, baudrate=9600, timeout=7)
+                break
+        if self.serial_communication is None:
+            print 'Arduino not detected!'
 
     def move_robot(self, direction, distance_in_mm):
         distance_in_cm = int(round(distance_in_mm / 10))

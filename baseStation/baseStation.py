@@ -14,6 +14,7 @@ class BaseStation():
         self.flag = Flag('Canada')
         self.question = ''
         self.answer = ''
+        self.robot_position = None
 
     def change_question(self, question, answer):
         self.question = question

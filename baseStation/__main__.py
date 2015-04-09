@@ -1,5 +1,5 @@
 import os.path
-from flask import Flask, abort, redirect, url_for, jsonify
+from flask import Flask, abort, redirect, url_for, jsonify, request
 from contextProvider import ContextProvider
 from robotIPFinder import RobotFinder
 from vision.robotLocator import RobotLocator
@@ -56,8 +56,7 @@ def start():
 @app.route('/robotposition')
 def fetch_robot_position():
     position = app.robot_locator.get_position(app.base_station.kinect)
-    # stuff = (position.get_angle_in_deg(), (position.position[0], position.position[1]))
-    # print stuff
+    app.base_station.robot_position = position
     return jsonify(angle=position.get_angle_in_deg(),
                    position=(position.position[0], position.position[1]))
     # return jsonify(angle = '10', position = '(10,10)')
@@ -89,6 +88,12 @@ def fetch_flag():
 def get_context():
     context = app.context_provider.get_context(app.robot_ip_address)
     return jsonify(context)
+
+@app.route('/changerobotposition', methods=['POST'])
+def change():
+    if request.method == 'POST':
+        position = request.form.get('position', None)
+    return 'ok'
 
 def fetch_question():
     question = ''
