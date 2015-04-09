@@ -1,6 +1,6 @@
 import cv2
 # from angletest2 import green_corner
-from cube import Cube, FormStencil, FormFilter
+from cube import Cube, FormStencil, FormFilter, TABLE_STENCIL
 from kinect import Kinect
 from visiontools import VisionTools
 import numpy as np
@@ -99,7 +99,7 @@ class RobotLocator():
             return orange_corner.find_position(img_hsv_mask, kinect, self.PIXEL_SHIFT)
         return orange_corner.find_position(img_hsv_mask, kinect, -self.PIXEL_SHIFT)
 
-    def get_rgb_calibration(self, img_hsv, form_filter=True):
+    def get_rgb_calibration(self, img_hsv, kinect, form_filter=True):
         rgb_result = np.zeros((img_hsv.shape[0], img_hsv.shape[1], 3), np.uint8)
         orange_cube = Cube('orange')
         green_cube = Cube('forest_green')
@@ -118,6 +118,8 @@ class RobotLocator():
                 rgb_result[i, j][0] += int(purple_filter[i, j] * 0.5)
                 rgb_result[i, j][2] += int(purple_filter[i, j] * 0.5)
                 rgb_result[i, j][1] += int(green_filter[i, j] * 0.25)
+        if kinect is not None:
+            rgb_result = FormStencil(TABLE_STENCIL.get(kinect.table)).apply(rgb_result)
         return rgb_result
 
 

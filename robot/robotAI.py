@@ -133,7 +133,7 @@ class RobotAI:
         return transposed_flag_matrix
 
     def move_to_exactly_to_docking_point(self, delta_angle=0, delta_x=0, delta_y=0):
-        angle_range = 1
+        angle_range = 3
         x_range = 10
         y_range = 10
         self.rotate_precisely_to_dock_angle(angle_range, delta_angle)

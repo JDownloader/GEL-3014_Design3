@@ -7,10 +7,10 @@ from flag import Flag
 class BaseStation():
     def __init__(self):
         try:
-            self.kinect = Kinect('4')
+            self.kinect = Kinect('2')
         except NoKinectDetectedException:
             self.kinect = FakeKinect()
-        self.cube_finder = CubeFinder(self.kinect)
+        self.cube_finder = DemoCubeFinder(self.kinect)
         self.flag = Flag('Canada')
         self.question = ''
         self.answer = ''

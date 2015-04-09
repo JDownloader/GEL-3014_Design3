@@ -63,10 +63,15 @@ def fetch_robot_position():
 
 @app.route('/cubeposition', methods=['POST'])
 def fetch_cube_position():
-    # if request.method == 'POST':
-    #     app.base_station_ip_address = request.form.get('ip', None)
-    # # return str(robotLocator.get_position(FakeKinect()))
-    return jsonify(position_x=200 , position_y=1900)
+    cube_position = (-500, -500)
+    if request.method == 'POST':
+        color = request.form.get('color', None)
+        app.base_station.cube_finder.refresh_position()
+        for cube in app.base_station.cube_finder.cubes:
+            if cube.color == color:
+                cube_position = cube.position
+                break
+    return jsonify(position_x=cube_position[0] , position_y=cube_position[1])
 
 @app.route('/flag')
 def fetch_flag():
