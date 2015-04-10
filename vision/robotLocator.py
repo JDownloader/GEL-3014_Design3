@@ -1,6 +1,6 @@
 import cv2
 # from angletest2 import green_corner
-from cube import Cube, FormStencil, FormFilter
+from cube import Cube, FormStencil, FormFilter, TABLE_STENCIL
 from kinect import Kinect
 from visiontools import VisionTools
 import numpy as np
@@ -99,7 +99,7 @@ class RobotLocator():
             return orange_corner.find_position(img_hsv_mask, kinect, self.PIXEL_SHIFT)
         return orange_corner.find_position(img_hsv_mask, kinect, -self.PIXEL_SHIFT)
 
-    def get_rgb_calibration(self, img_hsv, form_filter=True):
+    def get_rgb_calibration(self, img_hsv, kinect, form_filter=True):
         rgb_result = np.zeros((img_hsv.shape[0], img_hsv.shape[1], 3), np.uint8)
         orange_cube = Cube('orange')
         green_cube = Cube('forest_green')
@@ -118,6 +118,8 @@ class RobotLocator():
                 rgb_result[i, j][0] += int(purple_filter[i, j] * 0.5)
                 rgb_result[i, j][2] += int(purple_filter[i, j] * 0.5)
                 rgb_result[i, j][1] += int(green_filter[i, j] * 0.25)
+        if kinect is not None:
+            rgb_result = FormStencil(TABLE_STENCIL.get(kinect.table)).apply(rgb_result)
         return rgb_result
 
 
@@ -164,6 +166,12 @@ class Position():
         elif self.angle > math.pi:
             self.angle -= 2 * math.pi
 
+    def normalize_angle_degree(self):
+        if self.angle < -180:
+            self.angle += 360
+        elif self.angle > 180:
+            self.angle -= 360
+
 
 class RobotPosition(Position):
     ROBOT_DIMENSION = 220
@@ -191,18 +199,7 @@ class RobotPosition(Position):
         self.angle += pathfinding_tuple[0]
         self.position = (self.position[0] + math.sin(math.radians(self.angle)) * pathfinding_tuple[1],
                              self.position[1] + math.cos(math.radians(self.angle)) * pathfinding_tuple[1])
-
-        self.normalize_angle()
-
-    def update_with_kinect(self, kinect_position, kinect_angle):
-        temp_pos = Position(kinect_position[0], kinect_position[1], math.radians(kinect_angle))
-        temp_pos.normalize_angle()
-        if temp_pos.is_valid():
-            self.angle = math.degrees(temp_pos.angle)
-            self.position = temp_pos.position
-            return True
-        else:
-            return False
+        self.normalize_angle_degree()
 
     def is_like(self, other_position):
         if abs(self.angle-other_position.angle) < self.ANGLE_TOLERANCE and \

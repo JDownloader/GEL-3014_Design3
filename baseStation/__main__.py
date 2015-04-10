@@ -33,7 +33,7 @@ app.config.from_object(__name__)
 app.debug = True
 thread_robot_finder = RobotFinder(app.set_robot_ip_address)
 thread_robot_finder.start()
-app.set_robot_ip_address('127.0.0.1')
+# app.set_robot_ip_address('127.0.0.1')
 
 
 def root_dir():
@@ -61,10 +61,17 @@ def fetch_robot_position():
                    position=(position.position[0], position.position[1]))
     # return jsonify(angle = '10', position = '(10,10)')
 
-@app.route('/cubeposition')
+@app.route('/cubeposition', methods=['POST'])
 def fetch_cube_position():
-    # return str(robotLocator.get_position(FakeKinect()))
-    return jsonify(angle = '10', position = '(10,10)')
+    cube_position = (-500, -500)
+    if request.method == 'POST':
+        color = request.form.get('color', None)
+        app.base_station.cube_finder.refresh_position()
+        for cube in app.base_station.cube_finder.cubes:
+            if cube.color == color:
+                cube_position = cube.position
+                break
+    return jsonify(position_x=cube_position[0] , position_y=cube_position[1])
 
 @app.route('/flag')
 def fetch_flag():

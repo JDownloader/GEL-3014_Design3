@@ -56,7 +56,7 @@ if __name__ == "__main__":
         # purple_corner = Cube('forest_green')
         # image_mask3 = purple_corner.apply_filters(image_hsv1, ma_kinect)
 
-        image_mask3 = robot_locator.get_rgb_calibration(image_hsv1)
+        image_mask3 = robot_locator.get_rgb_calibration(image_hsv1, ma_kinect)
         cv2.imshow('BGR1', image_rgb1)
         # cv2.imshow('BGR2', image_rgb2)
         # cv2.imshow('orange', image_mask1)

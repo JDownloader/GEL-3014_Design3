@@ -161,6 +161,14 @@ class WhiteCube(Cube):
         return b_and_w_junction
 
 
+class WhiteCubeForInBoardCamera(WhiteCube):
+    def __init__(self):
+        WhiteCube.__init__(self)
+        self.black_form_filter = FormFilter([0, 3, 4, 4])
+        self.white_filter = ColorFilter([([0, 0, 150], [180, 40, 255])])
+        self.max_pixel_length = 200
+
+
 class BlackCube(Cube):
     CALIBRATION_ATTEMPT = 20
     def __init__(self):
