@@ -57,8 +57,9 @@ class RobotAI:
         # self.robot.move_gripper_vertically(False)
         # self.robot.change_pliers_opening(True, False)
         self.robot.move('reverse', cube_movement_dictionary.get('length_distance'))
-        self.update_robot_position_from_kinect()
-        print 'dropped cube, kinect pos' + str(self.robot_angle_and_position.angle) + str(self.robot_angle_and_position.position)
+        if cube_movement_dictionary.get('direction') != 'forward':
+            self.robot.move(self.reverse_movement_direction(cube_movement_dictionary.get('direction')),
+                            cube_movement_dictionary.get('width_distance'))
         # self.robot.move_gripper_vertically(True)
         # self.robot.change_pliers_opening(True, True)
 
@@ -132,26 +133,26 @@ class RobotAI:
         transposed_flag_matrix = reshaped_transposed_array[0].tolist()
         return transposed_flag_matrix
 
-    def move_to_exactly_to_docking_point(self, delta_angle=0, delta_x=0, delta_y=0):
+    def move_to_exactly_to_docking_point(self, delta_angle=0, delta_x=0, delta_y=0, target_angle=180):
         angle_range = 3
         x_range = 10
         y_range = 10
-        self.rotate_precisely_to_dock_angle(angle_range, delta_angle)
+        self.rotate_precisely_to_dock_angle(angle_range, delta_angle, target_angle)
         self.move_precisely_to_dock_x(x_range, delta_x)
         self.move_precisely_to_dock_y(y_range, delta_y)
         self.update_robot_position_from_kinect()
         delta_angle = self.pathfinder.determine_rotation_angle(self.robot_angle_and_position.angle,
-                                                               tableConsts.DOCK_ANGLE)
+                                                               target_angle)
         delta_x = tableConsts.DOCK_POINT[0] - self.robot_angle_and_position.position[0]
         delta_y = tableConsts.DOCK_POINT[1] - self.robot_angle_and_position.position[1]
         if abs(delta_angle) > angle_range or abs(delta_x) > x_range or abs(delta_y) > y_range:
             self.move_to_exactly_to_docking_point(delta_angle, delta_x, delta_y)
 
-    def rotate_precisely_to_dock_angle(self, angle_range, delta_angle):
+    def rotate_precisely_to_dock_angle(self, angle_range, delta_angle, target_angle):
         temp_delta_angle = delta_angle
         if temp_delta_angle == 0:
             temp_delta_angle = self.pathfinder.determine_rotation_angle(self.robot_angle_and_position.angle,
-                                                                        tableConsts.DOCK_ANGLE)
+                                                                        target_angle)
         if abs(temp_delta_angle) > angle_range:
             if temp_delta_angle < 0:
                 self.robot.rotate(False, abs(temp_delta_angle), True)
@@ -175,3 +176,12 @@ class RobotAI:
                 self.robot.move('forward', abs(delta_y))
             else:
                 self.robot.move('reverse', delta_y)
+    def reverse_movement_direction(self, direction_to_be_reversed):
+        reversed_direction = 'right'
+        if direction_to_be_reversed == 'forward':
+            reversed_direction = 'reverse'
+        elif direction_to_be_reversed == 'reverse':
+            reversed_direction = 'forward'
+        elif direction_to_be_reversed == 'right':
+            reversed_direction = 'left'
+        return reversed_direction
