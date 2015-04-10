@@ -33,7 +33,7 @@ app.config.from_object(__name__)
 app.debug = True
 thread_robot_finder = RobotFinder(app.set_robot_ip_address)
 thread_robot_finder.start()
-app.set_robot_ip_address('127.0.0.1')
+# app.set_robot_ip_address('127.0.0.1')
 
 
 def root_dir():
