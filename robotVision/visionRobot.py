@@ -1,19 +1,24 @@
 import time
 import math
+import cv2
 from camera import Camera
-from vision.cube import *
+from vision.cube import Cube, WhiteCubeForInBoardCamera
 from numpy import ndarray
+from vision import visiontools
 
 class VisionRobot():
+    def __init__(self, a_color):
+        self.camera = Camera()
+        self.cube = self.set_cube(a_color)
 
-    def __init__(self, a_camera):
-        self.camera = a_camera
 
-    def get_image(self):
-        cap = self.camera.getCapt()
-        image = cap.read()
-        image = self.camera.remmaping_image()
-        return image
+    def set_cube(self, a_color):
+        cube = None
+        if a_color is "white":
+            cube = WhiteCubeForInBoardCamera()
+        else:
+            cube = Cube(a_color)
+        return cube
 
     def find_contour_cube(self, image, cube):
         new_image = self.apply_mask_image(image, cube)
@@ -27,12 +32,12 @@ class VisionRobot():
     def find_angle_cube(self, square):
         corner = self.define_corner_number(square)
         if corner == 1 and len(square)>=6:
-            angle = camera.get_angle_cube(square, corner)
+            angle = self.camera.get_angle_cube(square, corner)
             right_angle = 90 - angle
         elif corner != 1 and len(square) >= 6:
-            right_angle = camera.get_angle_cube(square, corner)
+            right_angle = self.camera.get_angle_cube(square, corner)
         elif corner == 1 and len(square) == 4:
-            right_angle = camera.get_angle_cube(square, corner)
+            right_angle = self.camera.get_angle_cube(square, corner)
         return right_angle
 
     def define_corner_number(self, square):
@@ -48,7 +53,7 @@ class VisionRobot():
 
     def get_marker_cube(self, image, cube):
         mask_image = self.apply_mask_image(image, cube)
-        moment, marker = camera.find_cube_marker(mask_image, cube)
+        moment, marker = self.camera.find_cube_marker(mask_image, cube)
         return marker
 
     def apply_mask_image(self, image, cube):
@@ -68,45 +73,77 @@ class VisionRobot():
             moment = cv2.moments(largest_contour)
         return moment
 
-    def verifier_centre_image(self, image, moment):
+    def find_cube_center_delta(self, image, moment):
         is_centre = False
         height, width, depth = image.shape
-        centreX = int(moment['m10']/moment['m00'])
-        centreY = int(moment['m01']/moment['m00'])
-        if (centreX == width/2):
-            is_centre = True
-        else :
-            is_centre = False
-        return is_centre
+        centerX = int(moment['m10']/moment['m00'])
+        centerY = int(moment['m01']/moment['m00'])
+        delta_centreX = width/2 - centerX
+        delta_centreY = height/2 - centerY
+        return delta_centreX, delta_centreY
 
+    def find_cube_center(self):
+        cap = self.camera.getCapt()
+        cv2.namedWindow('BGR', cv2.WINDOW_AUTOSIZE)
+        while cap.isOpened():
+            _,image = cap.read()
+            image = self.camera.remmaping_image(image)
+            contour = self.find_contour_cube(image, self.cube)
+            try:
+                if contour is not None:
+                    moment = self.get_moment(contour)
+                    delta_centre = self.find_cube_center_delta(image, moment)
+                    cv2.drawContours(image,[contour],-1,(0,255,0),6)
+                    return delta_centre
+
+            except:
+                print 'Problem with camera'
+            k = cv2.waitKey(5) & 0xFF
+            if k == 27:
+                break
+            cv2.imshow('BGR', image)
+        cv2.destroyAllWindows()
 
 if __name__ == "__main__":
 
+        cubeLocator = VisionRobot('red')
+        s_center = cubeLocator.find_cube_center()
+        # cv2.namedWindow('BGR', cv2.WINDOW_AUTOSIZE)
+        # while True:
+        #     s_center = cubeLocator.find_cube_center()
 
-    cv2.namedWindow('BGR', cv2.WINDOW_AUTOSIZE)
+            # k = cv2.waitKey(5) & 0xFF
+            # if k == 27:
+            #     break
+        # cv2.destroyAllWindows()
 
-    camera = Camera()
-    cap = camera.getCapt()
-    vision = VisionRobot(camera)
-    while cap.isOpened():
+
+
+    # cv2.namedWindow('BGR', cv2.WINDOW_AUTOSIZE)
+    # color = "white"
+    # camera = Camera()
+    # cap = camera.getCapt()
+    # vision = VisionRobot(camera, color)
+    # while cap.isOpened():
+
 
         # Take each frame
-        _, image = cap.read()
+        # _, image = cap.read()
         ##flags_i, image = cap.retrieve(None, cv2.CAP_OPENNI_BGR_IMAGE)
 
 
-        cube = Cube("blue")
+        #cube = Cube("blue")
         #cube = WhiteCube()
         #image = cv2.imread("cubo_blanco.png")
-        cube = WhiteCubeForInBoardCamera()
-        image = camera.remmaping_image(image)
-        height, width, depth = image.shape
-
-        contour = vision.find_contour_cube(image, cube)
-        try:
-            if contour is not None:
-                moment = vision.get_moment(contour)
-                is_centre = vision.verifier_centre_image(image, moment)
+        #cube = WhiteCubeForInBoardCamera()
+        # image = camera.remmaping_image(image)
+        # height, width, depth = image.shape
+        #
+        # contour = vision.find_contour_cube(image, vision.cube)
+        # try:
+        #     if contour is not None:
+        #         moment = vision.get_moment(contour)
+        #         is_centre = vision.verifier_centre_image(image, moment)
                 # centreX = int(moment['m10']/moment['m00'])
                 # centreY = int(moment['m01']/moment['m00'])
                 # if ((width/2) - 10 <= centreX <=  (width/2) +10):
@@ -116,17 +153,18 @@ if __name__ == "__main__":
                 #     is_centre = False
                 # cv2.drawContours(image,[contour],-1,(0,255,0),6)
                 # cv2.circle(image, (centreX, centreY), 5, (0,0,255), -1)
-                print is_centre
+                # print is_centre
 
-        except:
-            pass
+        # except:
+        #     pass
+        #img_hsv = visiontools.VisionTools().get_hsv_image(image)
+        #img_hsv = cv2.resize(img_hsv, (0,0), fx=0.4, fy=0.4)
+        # cv2.imshow('BGR', image)
 
-        cv2.imshow('BGR', image)
 
+        # k = cv2.waitKey(5) & 0xFF
+        # if k == 27:
+        #     break
 
-        k = cv2.waitKey(5) & 0xFF
-        if k == 27:
-            break
-
-    cv2.destroyAllWindows()
+    # cv2.destroyAllWindows()
 

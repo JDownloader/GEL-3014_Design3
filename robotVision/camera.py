@@ -19,7 +19,7 @@ class NoCameraDetectedException(Exception):
 class Camera():
 
     def __init__(self):
-        self.capt_obj = cv2.VideoCapture(1)
+        self.capt_obj = cv2.VideoCapture(0)
         self.camera_matrix = np.array(CAMERA_MATRIX)
         self.distortion_matrix = np.array(DIST_COEFS)
         self.polyline = POLYLINE
@@ -66,6 +66,7 @@ class Camera():
         cnt = contours[0]
         biggest = None
         max_area = 0
+        approx = None
         for i in contours:
             area = cv2.contourArea(i)
             if area > 5000 and area < 100000 :
@@ -100,7 +101,6 @@ class Camera():
         for x  in xrange(1,len(contour[0])):
             contour_array = np.concatenate((contour_array,np.array(contour[0][x])),axis=0)
         return contour_array
-
 
     def get_angle_cube(self, contour, corner):
         oposite_side = abs(contour[0][1]-contour[corner][1])
