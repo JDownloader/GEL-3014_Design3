@@ -6,16 +6,20 @@ RANGES_FOR_COLOR_FILTER = {'red': [([169, 73, 92], [179, 255, 255]), ([0, 73, 92
                            'blue': [([95, 80, 80], [115, 255, 255])],
                            'yellow': [([22, 130, 130], [32, 255, 255])],
                            'orange': [([7, 80, 60], [17, 255, 255])],
-                           'purple': [([120, 80, 80], [130, 255, 255])],
-                           'forest_green': [([53, 25, 40], [75, 255, 255])]}
+                           'purple': [([120, 60, 60], [130, 255, 255])],
+                           'forest_green': [([53, 25, 40], [75, 255, 255])],
+                           'black': [([0, 0, 0], [180, 256, 120])],
+                           'white': [([0, 0, 150], [180, 40, 255])]}
 
 PARAMETERS_FOR_FORM_FILTER = {'red': [2, 9, 3, 3],
                               'green': [5, 8, 3, 3],
                               'blue': [5, 8, 3, 3],
                               'yellow': [2, 4, 3, 3],
-                              'orange': [3, 3, 3, 7],
+                              'orange': [4, 3, 3, 7],
                               'purple': [2, 3, 3, 5],
-                              'forest_green': [2, 3, 3, 5]}
+                              'forest_green': [2, 3, 3, 5],
+                              'black': [3, 1, 3, 3],
+                              'white': [0, 3, 4, 4]}
 
 TABLE_STENCIL = {'1': [np.array([[0, 0], [640, 0], [640, 289], [607, 273], [607, 210], [0, 210]], np.int32),  # Not set yet
                       np.array([[0, 293], [640, 322], [640, 480], [0, 480]], np.int32)],
@@ -134,6 +138,7 @@ class WhiteCube(Cube):
         self.black_filter = ColorFilter([([0, 0, 0], [180, 256, 120])])
         self.form_filter = FormFilter([4, 4, 3, 2])
         self.black_form_filter = FormFilter([0, 5, 3, 3])
+        self.max_pixel_length = 50
 
     def apply_filters(self, img_hsv, kinect=None):
         img_mask_white = self.white_filter.apply(img_hsv)
@@ -160,20 +165,29 @@ class WhiteCube(Cube):
         return b_and_w_junction
 
 
+class WhiteCubeForInBoardCamera(WhiteCube):
+    def __init__(self):
+        WhiteCube.__init__(self)
+        self.black_form_filter = FormFilter([0, 3, 4, 4])
+        self.white_filter = ColorFilter([([0, 0, 130], [180, 60, 255])])
+        self.max_pixel_length = 200
+
+
 class BlackCube(Cube):
+    CALIBRATION_ATTEMPT = 20
     def __init__(self):
         self.color = 'black'
         self.position = None
         self.always_black_mask = None
-        self.calibration_attempt_remaining = 100
+        self.calibration_attempt_remaining = self.CALIBRATION_ATTEMPT
         self.attempt_without_position_remaining = 0
-        self.color_filter = ColorFilter([([0, 0, 0], [180, 256, 130])])
-        self.form_filter = FormFilter([1, 0, 3, 3])
+        self.color_filter = ColorFilter([([0, 0, 0], [180, 256, 120])])
+        self.form_filter = FormFilter([3, 1, 3, 3])
 
     def apply_filters(self, img_hsv, kinect=None):
-        img_hsv = cv2.GaussianBlur(img_hsv, (5, 5), 0)
         img_mask = self.color_filter.apply(img_hsv)
-        if self.always_black_mask is None:
+        if self.calibration_attempt_remaining > self.CALIBRATION_ATTEMPT-5:
+            self.calibration_attempt_remaining -= 1
             self.always_black_mask = img_mask
         elif self.calibration_attempt_remaining > 0:
             self.always_black_mask = cv2.bitwise_or(self.always_black_mask, img_mask)

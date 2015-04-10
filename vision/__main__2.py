@@ -24,7 +24,7 @@ if __name__ == "__main__":
     # cv2.namedWindow('mask2', cv2.WINDOW_AUTOSIZE)
     # cv2.setMouseCallback('red_layer', mouse_click_callback, image_hsv2)
     try:
-        ma_kinect = Kinect('3')
+        ma_kinect = Kinect('4')
         # ma_kinect = FakeKinect()
     except NoKinectDetectedException:
         print "No kinect detected"
@@ -56,7 +56,7 @@ if __name__ == "__main__":
         # purple_corner = Cube('forest_green')
         # image_mask3 = purple_corner.apply_filters(image_hsv1, ma_kinect)
 
-        image_mask3 = WhiteCube().apply_filters(image_hsv1, ma_kinect)
+        image_mask3 = robot_locator.get_rgb_calibration(image_hsv1, ma_kinect)
         cv2.imshow('BGR1', image_rgb1)
         # cv2.imshow('BGR2', image_rgb2)
         # cv2.imshow('orange', image_mask1)

@@ -50,7 +50,7 @@ class PololuConnectionCreator:
 
 class CameraController:
     def __init__(self, pololu_serial_communication):
-        self.position_vertical = int(4 * 1047.5)
+        self.position_vertical = int(4 * 1240)
         self.position_horizontal = int(4 * 1550)
         self.channel_vertical = controller.constants.POLOLU_CHANNELS_PWM.get('camera_vertical')
         self.channel_horizontal = controller.constants.POLOLU_CHANNELS_PWM.get('camera_horizontal')
@@ -115,15 +115,16 @@ class RobotMovementController:
                                        'left': 4}
 
     def __init__(self):
-        communication_port = ''
         for port in comports():
             if port[2].find('USB VID:PID=2341:003d') > -1 or port[2].find('USB VID:PID=2a03:003d') > -1:
                 communication_port = port[0]
-        if len(communication_port) > 0:
-            self.serial_communication = serial.Serial(communication_port, baudrate=9600, timeout=7)
+                self.serial_communication = serial.Serial(communication_port, baudrate=9600, timeout=7)
+                break
+        if self.serial_communication is None:
+            print 'Arduino not detected!'
 
     def move_robot(self, direction, distance_in_mm):
-        distance_in_cm = int(distance_in_mm / 10)
+        distance_in_cm = int(round(distance_in_mm / 10))
         if distance_in_cm >= 40:
             speed_percentage = 75
         elif 25 < distance_in_cm <= 40:
@@ -138,13 +139,11 @@ class RobotMovementController:
             raise BadMovementDirection()
         self.serial_communication.write(str(chr(speed_percentage)))
         self.serial_communication.write(str(chr(int(distance_in_cm))))
-        self.serial_communication.flushInput()
-        read = self.serial_communication.read(size=1)
-        self.serial_communication.flushInput()
+        self.serial_communication.readline()
 
     def rotate_robot(self, rotation_direction_is_left, rotation_angle_in_degrees, rotation_speed_is_slow):
         if rotation_speed_is_slow:
-            speed_percentage = 10
+            speed_percentage = 5
         else:
             speed_percentage = 25
         if rotation_direction_is_left:
@@ -153,9 +152,7 @@ class RobotMovementController:
             self.serial_communication.write(str(chr(102)))
         self.serial_communication.write(str(chr(speed_percentage)))
         self.serial_communication.write(str(chr(rotation_angle_in_degrees)))
-        self.serial_communication.flushInput()
-        read = self.serial_communication.read(size=1)
-        self.serial_communication.flushInput()
+        self.serial_communication.readline()
 
 
 
@@ -188,7 +185,7 @@ class Robot:
         self.movement_controller.move_robot(direction, distance_in_mm)
 
     def rotate(self, rotation_direction_is_left, rotation_angle_in_degrees, movement_speed_is_slow=False):
-        self.movement_controller.rotate_robot(rotation_direction_is_left, rotation_angle_in_degrees,
+        self.movement_controller.rotate_robot(rotation_direction_is_left, int(round(rotation_angle_in_degrees)),
                                               movement_speed_is_slow)
 
     def move_gripper_vertically(self, wanted_position_is_raised):
@@ -198,7 +195,7 @@ class Robot:
         self.gripper_controller.pliers_control(wanted_position_is_opened, opening_is_big)
 
     def change_led_color(self, led_color, led_position):
-        self.led_controller.change_color(led_color, led_position)
+        self.led_controller.change_color(str(led_color), int(led_position))
 
     def stop_movement(self):
         self.movement_controller.stop_all_movement()
