@@ -95,7 +95,7 @@ class RobotAI:
 
 
     def receive_cube_position_from_kinect(self):
-        cube_pos = self.base_station.fetch_cube_position()
+        cube_pos = self.base_station.fetch_cube_position('red')
         print cube_pos
         return cube_pos
 
