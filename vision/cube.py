@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from robotLocator import Position
 
 RANGES_FOR_COLOR_FILTER = {'red': [([169, 73, 92], [179, 255, 255]), ([0, 73, 92], [2, 255, 255])],
                            'green': [([30, 110, 110], [50, 255, 255])],
@@ -94,9 +95,8 @@ class Cube:
         return img_mask
 
     def find_position(self, img_hvg, kinect, x_shift=0):
-        position_in_world = self._find_position_in_world(img_hvg, kinect, x_shift)
-        position = kinect._apply_matrix_transformation(position_in_world)
-        new_position = (int(position[0]*1000), int(position[1]*1000+40))
+        img_mask = self.apply_filters(img_hvg, kinect)
+        new_position = kinect.find_object_position(img_mask)
         self.adjust_position(new_position)
         return self.position
 
@@ -171,6 +171,7 @@ class WhiteCubeForInBoardCamera(WhiteCube):
 
 class BlackCube(Cube):
     CALIBRATION_ATTEMPT = 25
+
     def __init__(self):
         self.color = 'black'
         self.position = None
@@ -194,8 +195,10 @@ class BlackCube(Cube):
         return img_mask
 
     def find_position(self, img_hvg, kinect, x_shift=0):
-        cloud_map = kinect.get_img_cloud_map()
-        for x in range(350, 557, 2):
-            print kinect._apply_matrix_transformation(cloud_map[259, x])
+        for x in range(356, 561, 3):
+            position = kinect._apply_matrix_transformation(kinect._get_world_in_cloud((x, 269)))
+            if Position(position[0], position[1]).is_valid():
+                print x
+                print kinect._apply_matrix_transformation(kinect._get_world_in_cloud((x, 269)))
         return (0, 0)
 

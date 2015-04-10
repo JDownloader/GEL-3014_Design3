@@ -1,6 +1,5 @@
 import cv2
-# from angletest2 import green_corner
-from cube import Cube, FormStencil, FormFilter, TABLE_STENCIL
+from cube import *
 from kinect import Kinect
 from visiontools import VisionTools
 import numpy as np
@@ -9,6 +8,7 @@ import math
 
 class RobotLocator():
     PIXEL_SHIFT = 3
+
     def __init__(self):
         self.position = RobotPosition()
 
@@ -121,7 +121,6 @@ class RobotLocator():
         if kinect is not None:
             rgb_result = FormStencil(TABLE_STENCIL.get(kinect.table)).apply(rgb_result)
         return rgb_result
-
 
 
 class Position():
