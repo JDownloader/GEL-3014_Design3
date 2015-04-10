@@ -1,6 +1,7 @@
 import time
 from pathfinding.pathfinding import Pathfinding
 from controller.serialCom import Robot
+from robotVision.visionRobot import VisionRobot
 from vision.robotLocator import RobotPosition
 import pathfinding.constants as tableConsts
 import numpy
@@ -14,14 +15,15 @@ class RobotAI:
         self.base_station = base_station_client
 
     def run_sequence(self):
-        self.update_robot_position_from_kinect()
-        self.move_to_exactly_to_docking_point()
+        self.rotate_until_robot_is_centered_on_cube('red')
+        # self.update_robot_position_from_kinect()
+        # self.move_to_exactly_to_docking_point()
         # flag_matrix = self.resolve_atlas_enigma()
         # self.display_flag_for_five_seconds(flag_matrix)
         # self.move_robot_to(tableConsts.SAFE_POINT)
         # self.update_robot_position_from_kinect()
         # self.construct_flag(flag_matrix)
-        self.construct_flag(['red', 'red'])
+        # self.construct_flag(['red', 'red'])
 
     def resolve_atlas_enigma(self):
         self.move_robot_to(tableConsts.ATLAS_ZONE_COORDINATES)
@@ -185,3 +187,17 @@ class RobotAI:
         elif direction_to_be_reversed == 'right':
             reversed_direction = 'left'
         return reversed_direction
+    def get_cube_center(self, color):
+        cubeLocator = VisionRobot(str('red'))
+        cubeLocator.find_cube_center()
+
+    def rotate_until_robot_is_centered_on_cube(self, color):
+        is_centered = False
+        self.robot.rotate(True, 180, True)
+        print 'rotating'
+        while not is_centered:
+            print 'in while'
+            if self.get_cube_center(color):
+                self.robot.stop_movement()
+                is_centered = True
+                print 'sorti!!'

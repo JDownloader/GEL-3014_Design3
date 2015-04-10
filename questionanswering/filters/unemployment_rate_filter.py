@@ -1,10 +1,14 @@
 from questionanswering import bidictionnary
-
+import re
 def process(question, query_builder):
     mapped_question = next(question)
     if ('unemployment' in mapped_question) & ('rate' in mapped_question):
         unemployment_rate = extract_unemployment_rate(mapped_question)
-        query_builder.with_category_data('unemployment rate', ' '.join(unemployment_rate))
+        for rate in unemployment_rate:
+            if re.match('^[^.]*$', rate):
+                query_builder.with_category_data('unemployment rate', ' '.join(unemployment_rate) + '.*')
+            else:
+                query_builder.with_category_data('unemployment rate', ' '.join(unemployment_rate))
     yield mapped_question
 
 def extract_unemployment_rate(mappedSentence):

@@ -7,7 +7,9 @@ RANGES_FOR_COLOR_FILTER = {'red': [([169, 73, 92], [179, 255, 255]), ([0, 73, 92
                            'yellow': [([22, 130, 130], [32, 255, 255])],
                            'orange': [([7, 80, 60], [17, 255, 255])],
                            'purple': [([120, 60, 60], [130, 255, 255])],
-                           'forest_green': [([53, 25, 40], [75, 255, 255])]}
+                           'forest_green': [([53, 25, 40], [75, 255, 255])],
+                           'black': [([0, 0, 0], [180, 256, 120])],
+                           'white': [([0, 0, 150], [180, 40, 255])]}
 
 PARAMETERS_FOR_FORM_FILTER = {'red': [2, 9, 3, 3],
                               'green': [5, 8, 3, 3],
@@ -15,7 +17,9 @@ PARAMETERS_FOR_FORM_FILTER = {'red': [2, 9, 3, 3],
                               'yellow': [2, 4, 3, 3],
                               'orange': [4, 3, 3, 7],
                               'purple': [2, 3, 3, 5],
-                              'forest_green': [2, 3, 3, 5]}
+                              'forest_green': [2, 3, 3, 5],
+                              'black': [3, 1, 3, 3],
+                              'white': [0, 3, 4, 4]}
 
 TABLE_STENCIL = {'1': [np.array([[0, 0], [640, 0], [640, 289], [607, 273], [607, 210], [0, 210]], np.int32),  # Not set yet
                       np.array([[0, 293], [640, 322], [640, 480], [0, 480]], np.int32)],
@@ -159,6 +163,14 @@ class WhiteCube(Cube):
                         if draw_line and mask_white[i, x]:
                             b_and_w_junction[i, x][1] = 255
         return b_and_w_junction
+
+
+class WhiteCubeForInBoardCamera(WhiteCube):
+    def __init__(self):
+        WhiteCube.__init__(self)
+        self.black_form_filter = FormFilter([0, 3, 4, 4])
+        self.white_filter = ColorFilter([([0, 0, 130], [180, 60, 255])])
+        self.max_pixel_length = 200
 
 
 class BlackCube(Cube):

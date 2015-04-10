@@ -5,7 +5,7 @@ def process(question, query_builder):
     mapped_question = next(question)
     if 'climate' in mapped_question:
         climate = extract_climate(mapped_question)
-        query_builder.with_category_data('climate', ' '.join(climate))
+        query_builder.with_nested_query('climate', ' '.join(climate))
     yield mapped_question
 
 

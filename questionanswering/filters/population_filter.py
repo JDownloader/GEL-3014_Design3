@@ -4,8 +4,8 @@ import nltk
 
 def process(question, query_builder):
     mapped_question = next(question)
-    if ('population' in mapped_question) & ('growth' not in mapped_question):
-        if('greater' in mapped_question) & ('than' in mapped_question):
+    if ('population' in mapped_question) and ('growth' not in mapped_question)and ('death' not in mapped_question) and ('birth' not in mapped_question):
+        if('greater' in mapped_question) and ('than' in mapped_question):
             population_regex = extract_greater_than_population_number(mapped_question)
             query_builder.with_category_only('population')
             query_builder.with_regex_query(population_regex)

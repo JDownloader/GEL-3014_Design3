@@ -50,7 +50,7 @@ class PololuConnectionCreator:
 
 class CameraController:
     def __init__(self, pololu_serial_communication):
-        self.position_vertical = int(4 * 1047.5)
+        self.position_vertical = int(4 * 1240)
         self.position_horizontal = int(4 * 1550)
         self.channel_vertical = controller.constants.POLOLU_CHANNELS_PWM.get('camera_vertical')
         self.channel_horizontal = controller.constants.POLOLU_CHANNELS_PWM.get('camera_horizontal')
@@ -143,7 +143,7 @@ class RobotMovementController:
 
     def rotate_robot(self, rotation_direction_is_left, rotation_angle_in_degrees, rotation_speed_is_slow):
         if rotation_speed_is_slow:
-            speed_percentage = 10
+            speed_percentage = 5
         else:
             speed_percentage = 25
         if rotation_direction_is_left:
