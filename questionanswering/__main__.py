@@ -11,7 +11,7 @@ def fetchQuestion():
     #         "My death rate is greater than 13 death/1000 and my capital starts with Mos.", "My capital name starts with Moga.", "My capital name starts with Ath and ends with ens.","22 September 1960 is the date of independence of this country." ]
 
 
-    return "My unemployment rate is greater than 25% and my industries include tourism and footwear."
+    return  "My birth rate is approximately 16 births/1000 and my local short country name contains 2 words."
 
 
 def main():

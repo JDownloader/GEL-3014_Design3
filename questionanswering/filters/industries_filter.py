@@ -5,7 +5,7 @@ def process(question, query_builder):
     mapped_question = next(question)
     if 'industries' in mapped_question:
         industries = extract_industries(mapped_question)
-        query_builder.with_category_data('industries', ' '.join(industries))
+        query_builder.with_nested_query('industries', ' '.join(industries))
     yield mapped_question
 
 
