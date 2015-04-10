@@ -4,12 +4,13 @@ from numpy import arange, delete
 def process(question, query_builder):
     mapped_question = next(question)
     if ('death' in mapped_question) and ('rate' in mapped_question):
-        inflation_rate = extract_death_rate(mapped_question)
+        death_rate = extract_death_rate(mapped_question)
         if ('between' in mapped_question) or (('less' in mapped_question) and ('greater' in mapped_question) and ('than' in mapped_question)):
-            numbers_in_range = process_between_rate(inflation_rate)
+            numbers_in_range = process_between_rate(death_rate)
             query_builder.with_nested_query('death rate', ' '.join(numbers_in_range))
         else :
-            query_builder.with_nested_query('death rate', ' '.join(inflation_rate + '.*'))
+            adjusted_rates = [rate + '.*' for rate in death_rate]
+            query_builder.with_nested_query('death rate', ' '.join(adjusted_rates))
     yield mapped_question
 
 def extract_death_rate(mapped_question):
