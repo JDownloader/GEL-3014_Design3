@@ -90,7 +90,10 @@ def get_context():
 @app.route('/changerobotposition', methods=['POST'])
 def change():
     if request.method == 'POST':
-        position = request.form.get('position', None)
+        position_x = request.form.get('position_x', None)
+        position_y = request.form.get('position_y', None)
+        angle = request.form.get('angle', None)
+        app.base_station.change_robot_position(position_x, position_y, angle)
     return 'ok'
 
 def fetch_question():
