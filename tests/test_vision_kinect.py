@@ -14,13 +14,13 @@ class FakeKinect(Kinect):
     def __init__(self):
         self.table = '2'
         self.distanceCalibration = DistanceCalibration(self.table)
-        self.cloud_map = np.load(here+'/kinect_cloud_map.npy')
-        self.img = self.img = cv2.imread(here+'/4_different_cubes.png')
+        self.cloud_map = np.load(here+'/rgb_robot_green4.npy')
+        self.img = self.img = cv2.imread(here+'/rgb_robot_green4.png')
 
     def get_img_cloud_map(self):
         return self.cloud_map
 
-    def grab_new_image(self, bilateral_filter_activated=False):
+    def grab_new_image(self, bilateral_filter_activated=False, median_filter_activated=False):
         return self.img
 
 

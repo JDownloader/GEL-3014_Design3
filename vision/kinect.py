@@ -22,14 +22,19 @@ class Kinect():
         position = self.distanceCalibration.apply_matrix_transformation(point_in_world)
         return (int(position[0]*1000), int(position[1]*1000+40))
 
-    def grab_new_image(self, bilateral_filter_activated=False):
+    def grab_new_image(self, bilateral_filter_activated=False, median_filter_activated=False):
         self.capt_obj.grab()
         flags, img = self.capt_obj.retrieve(None, cv2.cv.CV_CAP_OPENNI_BGR_IMAGE)
         if not flags:
             print >> self.capt_obj.stderr, "Error with RGB image"
             return None
-        elif bilateral_filter_activated:
-            img = cv2.bilateralFilter(img, 20, 25, 25)
+        else:
+            if bilateral_filter_activated:
+                img_bi = img[200:340, :]
+                img_bi = cv2.bilateralFilter(img_bi, 20, 25, 25)
+                img = np.concatenate([img[0:199, :], img_bi, img[341:480, :]])
+            if median_filter_activated:
+                img = cv2.medianBlur(img, 5)
         return img
 
     def get_img_cloud_map(self):
