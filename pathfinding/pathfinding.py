@@ -45,35 +45,45 @@ class Pathfinding:
             rotation_angle -= 360
         return rotation_angle
 
-    def find_two_step_path_to_cube(self, robot_angle_and_position, cube_position):
+    def find_two_step_path_to_point(self, robot_angle_and_position, point):
         # assuming robot is at 0 degree
         movement_dict = {'first_direction': 0,
                          'first_distance': 0,
                          'second_direction': 0,
                          'second_distance': 0,
                          'angle_before_second_move': 0}
-        delta_x = cube_position[0] - robot_angle_and_position.position[0]
-        delta_y = cube_position[1] - robot_angle_and_position.position[1]
+        delta_x = point[0] - robot_angle_and_position.position[0]
+        delta_y = point[1] - robot_angle_and_position.position[1]
         if abs(delta_x) <= 200:
-            movement_dict['first_direction'] = 'forward'
-            movement_dict['first_distance'] = delta_y - constants.CUBE_BUFFER_RADIUS
+            if delta_y >= 0:
+                movement_dict['first_direction'] = 'forward'
+            else:
+                movement_dict['first_direction'] = 'reverse'
+            movement_dict['first_distance'] = abs(delta_y - constants.CUBE_BUFFER_RADIUS)
             movement_dict['second_distance'] = abs(delta_x / 2)
             if delta_x >= 0:
                 movement_dict['second_direction'] = 'left'
             else:
                 movement_dict['second_direction'] = 'right'
-        elif cube_position[1] >= constants.TABLE_TOP_RIGHT_BUFFERED_WALL[1]:
+        elif point[1] >= constants.TABLE_TOP_RIGHT_BUFFERED_WALL[1]:
             movement_dict['first_direction'] = 'forward'
-            movement_dict['first_distance'] = delta_y - constants.CUBE_BUFFER_RADIUS
+            movement_dict['first_distance'] = abs(delta_y - constants.CUBE_BUFFER_RADIUS)
             movement_dict['second_distance'] = 200
             if delta_x >=0:
                 movement_dict['second_direction'] = 'left'
             else:
                 movement_dict['second_direction'] = 'right'
-
+        elif delta_y < 0:
+            if delta_x >= 0:
+                movement_dict['first_direction'] = 'left'
+            else:
+                movement_dict['first_direction'] = 'right'
+            movement_dict['first_distance'] = abs(delta_x)
+            movement_dict['second_direction'] = 'reverse'
+            movement_dict['second_distance'] = abs(delta_y)
         else:
             movement_dict['first_direction'] = 'forward'
-            movement_dict['first_distance'] = delta_y
+            movement_dict['first_distance'] = abs(delta_y)
             movement_dict['second_direction'] = 'forward'
             movement_dict['second_distance'] = abs(delta_x / 2)
             if delta_x >= 0:

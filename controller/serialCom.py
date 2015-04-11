@@ -67,42 +67,57 @@ class GripperController:
         self.channel_vertical = controller.constants.POLOLU_CHANNELS_PWM.get('gripper_vertical')
         self.channel_pliers = controller.constants.POLOLU_CHANNELS_PWM.get('gripper_pliers')
         self.min_vertical = int(4*704.00)
-        self.max_vertical = int(4*2096.00)
-        self.pos_vertical_transport_cube = int(4*1785.00)
-        self.pos_vertical_table = int(4*1264.75)
+        self.max_vertical = int(4*1680)
+        self.pos_vertical_raised_high = int(4*1670)
+        self.pos_vertical_raised_low = int(4*875)
+        self.pos_vertical_table = int(4*750)
         self.vertical_speed = 20
-        self.min_pliers = int(4*454.25)
-        self.max_pliers = int(4*2374.50)
-        self.pos_pliers_open_big = int(4*2031.00)
-        self.pos_pliers_open_small = int(4*1156.75)
-        self.pos_pliers_closed = int(4*850.00)
-        self.pliers_speed = 30
+        self.min_pliers = int(4*985)
+        self.max_pliers = int(4*2260)
+        self.pos_pliers_open_big = int(4*1000)
+        self.pos_pliers_open_small = int(4*1700)
+        self.pos_pliers_closed = int(4*2075)
+        self.pliers_speed = 20
+        # self.min_vertical = int(4*704.00)
+        # self.max_vertical = int(4*2096.00)
+        # self.pos_vertical_raised_high = int(4*0)
+        # self.pos_vertical_raised_low = int(4*1785.00)
+        # self.pos_vertical_table = int(4*1264.75)
+        # self.vertical_speed = 20
+        # self.min_pliers = int(4*454.25)
+        # self.max_pliers = int(4*2374.50)
+        # self.pos_pliers_open_big = int(4*2031.00)
+        # self.pos_pliers_open_small = int(4*1156.75)
+        # self.pos_pliers_closed = int(4*850.00)
+        # self.pliers_speed = 30
+
+        self.GRIPPER_RAISE_LEVEL_DICTIONARY = {0: self.pos_vertical_table,
+                                               1: self.pos_vertical_raised_low,
+                                               2: self.pos_vertical_raised_high}
+        self.PLIERS_OPENING_LEVEL_DICTIONARY = {0: self.pos_pliers_closed,
+                                                1: self.pos_pliers_open_small,
+                                                2: self.pos_pliers_open_big}
         self._set_parameters()
+
 
     def _set_parameters(self):
         if self.gripper_serial_communication:
             self.gripper_serial_communication.setRange(self.channel_vertical, self.min_vertical, self.max_vertical)
             self.gripper_serial_communication.setSpeed(self.channel_vertical, self.vertical_speed)
-            self.gripper_serial_communication.setTarget(self.channel_vertical, self.pos_vertical_transport_cube)
+            self.gripper_serial_communication.setTarget(self.channel_vertical, self.pos_vertical_raised_high)
             self.gripper_serial_communication.setRange(self.channel_pliers, self.min_pliers, self.max_pliers)
             self.gripper_serial_communication.setSpeed(self.channel_pliers, self.pliers_speed)
             self.gripper_serial_communication.setTarget(self.channel_pliers, self.pos_pliers_closed)
 
-    def change_vertical_position(self, is_raised):
-        if is_raised:
-            self.gripper_serial_communication.setTarget(self.channel_vertical, self.pos_vertical_transport_cube)
-        else:
-            self.gripper_serial_communication.setTarget(self.channel_vertical, self.pos_vertical_table)
+    def change_vertical_position(self, raise_level):
+        self.gripper_serial_communication.setTarget(self.channel_vertical,
+                                                    self.GRIPPER_RAISE_LEVEL_DICTIONARY[raise_level] )
         while self.gripper_serial_communication.isMoving(self.channel_vertical):
             pass
 
-    def pliers_control(self, is_opened, opening_is_big):
-        if not is_opened:
-            self.gripper_serial_communication.setTarget(self.channel_pliers, self.pos_pliers_closed)
-        elif is_opened and opening_is_big:
-            self.gripper_serial_communication.setTarget(self.channel_pliers, self.pos_pliers_open_big)
-        elif is_opened and not opening_is_big:
-            self.gripper_serial_communication.setTarget(self.channel_pliers, self.pos_pliers_open_small)
+    def pliers_control(self, opening_level):
+        self.gripper_serial_communication.setTarget(self.channel_pliers,
+                                                    self.PLIERS_OPENING_LEVEL_DICTIONARY[opening_level])
         while self.gripper_serial_communication.isMoving(self.channel_pliers):
             pass
 
@@ -188,11 +203,11 @@ class Robot:
         self.movement_controller.rotate_robot(rotation_direction_is_left, int(round(rotation_angle_in_degrees)),
                                               movement_speed_is_slow)
 
-    def move_gripper_vertically(self, wanted_position_is_raised):
-        self.gripper_controller.change_vertical_position(wanted_position_is_raised)
+    def move_gripper_vertically(self, raise_level):
+        self.gripper_controller.change_vertical_position(raise_level)
 
-    def change_pliers_opening(self, wanted_position_is_opened, opening_is_big=False):
-        self.gripper_controller.pliers_control(wanted_position_is_opened, opening_is_big)
+    def change_pliers_opening(self, opening_level):
+        self.gripper_controller.pliers_control(opening_level)
 
     def change_led_color(self, led_color, led_position):
         self.led_controller.change_color(str(led_color), int(led_position))

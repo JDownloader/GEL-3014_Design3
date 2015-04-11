@@ -201,6 +201,24 @@ class RobotPosition(Position):
                              self.position[1] + math.cos(math.radians(self.angle)) * pathfinding_tuple[1])
         self.normalize_angle_degree()
 
+    def update_with_movement_direction_and_distance(self, movement_direction, distance):
+        new_pos = (0, 0)
+        if movement_direction == 'forward':
+            new_pos = (self.position[0] + distance * math.sin(math.radians(self.angle)),
+                       self.position[1] + distance * math.cos(math.radians(self.angle)))
+        elif movement_direction == 'reverse':
+            new_pos = (self.position[0] * math.sin(math.radians(self.angle + 180)),
+                       self.position[1] * math.cos(math.radians(self.angle + 180)))
+        elif movement_direction == 'left':
+            new_pos = (self.position[0] + distance * math.sin(math.radians(self.angle + 90)),
+                       self.position[1] + distance * math.cos(math.radians(self.angle + 90)))
+        elif movement_direction == 'right':
+            new_pos = (self.position[0] + distance * math.sin(math.radians(self.angle + 90)),
+                       self.position[1] + distance * math.cos(math.radians(self.angle + 90)))
+        self.position = new_pos
+
+
+
     def is_like(self, other_position):
         if abs(self.angle-other_position.angle) < self.ANGLE_TOLERANCE and \
                         abs(self.position[0]-other_position.position[0]) < self.DISTANCE_TOLERANCE and \
