@@ -113,17 +113,6 @@ class Cube:
         return position[0] > self.NEGATIVE_POSITION_TOLERANCE_IN_MM \
             and position[1] > self.NEGATIVE_POSITION_TOLERANCE_IN_MM
 
-    # def _find_position_in_world(self, img_hvg, kinect, x_shift=0):
-    #     point_centre = self._find_center_in_img(img_hvg, kinect)
-    #     pixel_cloud = kinect.get_img_cloud_map()
-    #     point_world = pixel_cloud[point_centre[1] + x_shift, point_centre[0]]
-    #     point1_ref = [[-point_world[0]], [point_world[2]], [1]]
-    #     return np.mat(point1_ref)
-    #
-    # def _find_center_in_img(self, img_hvg, kinect):
-    #     img_mask = self.apply_filters(img_hvg, kinect)
-    #     return kinect._get_centre_object(img_mask)
-
 
 class WhiteCube(Cube):
     def __init__(self):
