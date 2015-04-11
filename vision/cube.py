@@ -31,6 +31,13 @@ TABLE_STENCIL = {'1': [np.array([[0, 0], [640, 0], [640, 289], [607, 273], [607,
                  '6': [np.array([[0, 0], [640, 0], [640, 227], [366, 233], [108, 193], [104, 292], [0, 296]], np.int32),
                       np.array([[0, 304], [640, 324], [640, 480], [0, 480]], np.int32)]}
 
+TABLE_BACK_POSITION = {'1': [],
+                       '2': [range(351, 560, 3), 262],
+                       '3': [],
+                       '4': [range(247, 566, 3), 269],
+                       '5': [],
+                       '6': []}
+
 
 class ColorFilter:
     def __init__(self, color_range):
@@ -184,10 +191,25 @@ class BlackCube(Cube):
         return img_mask
 
     def find_position(self, img_hvg, kinect, x_shift=0):
-        for x in range(356, 561, 3):
-            position = kinect._apply_matrix_transformation(kinect._get_world_in_cloud((x, 269)))
+        x_values = []
+        y_values = []
+        table_back = TABLE_BACK_POSITION.get(kinect.table)
+        for x in table_back[0]:
+            pixel_position = (x, table_back[1])
+            position = kinect._apply_matrix_transformation(kinect._get_world_in_cloud(pixel_position))
             if Position(position[0], position[1]).is_valid():
-                print x
-                print kinect._apply_matrix_transformation(kinect._get_world_in_cloud((x, 269)))
+                if position[1]> 850 and position[1]<2000 and self.verify_color(img_hvg, pixel_position):
+                    x_values.append(position[0])
+                    y_values.append(position[1])
+        if x_values.__len__() > 0:
+            return (self.get_median(x_values), self.get_median(y_values))
         return (0, 0)
 
+    def get_median(self, values):
+        return np.median(np.array(values))
+
+    def verify_color(self, image_hsv, position):
+        pixel = image_hsv[position[1], position[0]]
+        if pixel[2] < 120:
+            return True
+        return False

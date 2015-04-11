@@ -75,7 +75,7 @@ if __name__ == "__main__":
         time.sleep(0.3)
         key = cv2.waitKey(5) & 0xFF
         if key == 27:
-            cv2.imwrite('rgb_robot_green.png', image_rgb1)
+            # cv2.imwrite('rgb_robot_green.png', image_rgb1)
             break
         # break
 
