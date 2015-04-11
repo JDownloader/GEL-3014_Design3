@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-from robotLocator import Position
 
 RANGES_FOR_COLOR_FILTER = {'red': [([169, 73, 92], [179, 255, 255]), ([0, 73, 92], [2, 255, 255])],
                            'green': [([30, 110, 110], [50, 255, 255])],
@@ -191,6 +190,7 @@ class BlackCube(Cube):
         return img_mask
 
     def find_position(self, img_hvg, kinect, x_shift=0):
+        from robotLocator import Position
         x_values = []
         y_values = []
         table_back = TABLE_BACK_POSITION.get(kinect.table)

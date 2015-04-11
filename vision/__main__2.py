@@ -14,6 +14,12 @@ def mouse_click_callback(event, x, y, flags, param):
         print "Click at %d, %d" % (x, y)
         print param[x, y]
 
+def save_kinect_capture(kinect, file_name, img_rgb=None):
+    map = kinect.get_img_cloud_map()
+    np.save(file_name + '.npy', map)
+    if img_rgb is None:
+        img_rgb = kinect.grab_new_image()
+    cv2.imwrite(file_name + '.png', img_rgb)
 
 if __name__ == "__main__":
     visionReady = True
@@ -32,7 +38,7 @@ if __name__ == "__main__":
 
     blackCube = BlackCube()
     robot_locator = robotLocator.RobotLocator()
-
+    image_number = 0
     while visionReady:
         # image_rgb1 = cv2.imread('rgb_robot1.png')
         # image_rgb2 = cv2.imread('rgb_robot2.png')
@@ -74,26 +80,11 @@ if __name__ == "__main__":
 
         time.sleep(0.3)
         key = cv2.waitKey(5) & 0xFF
-        if key == 27:
-            # cv2.imwrite('rgb_robot_green.png', image_rgb1)
+        if key == 99:  # 'c'
+            print 'image saved-> '+str(image_number)
+            save_kinect_capture(ma_kinect, 'img'+str(image_number))
+            image_number += 1
+        elif key == 27:
             break
-        # break
 
     cv2.destroyAllWindows()
-    # cv2.imwrite('4_different_cubes.png', image_rgb)
-    # position_blue = blue_cube.find_position(image_hsv, ma_kinect)
-    #
-    # # print pixel_cloud
-    # print "blue" + str(position_blue)
-    #
-    # position_red = red_cube.find_position(image_hsv, ma_kinect)
-    #
-    #
-    # # print pixel_cloud
-    # print "red" + str(position_red)
-    # blue_in_world = blue_cube.find_position(image_hsv, ma_kinect)
-    # red_in_world = red_cube.find_position(image_hsv, ma_kinect)
-    #
-    #
-    # list = ma_kinect.get_img_cloud_map()
-    # np.save('rgb_robot_green4.npy', list)
