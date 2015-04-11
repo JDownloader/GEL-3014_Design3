@@ -36,13 +36,21 @@ if __name__ == "__main__":
     while visionReady:
         # image_rgb1 = cv2.imread('rgb_robot1.png')
         # image_rgb2 = cv2.imread('rgb_robot2.png')
+        a = datetime.datetime.now()
         image_rgb1 = ma_kinect.grab_new_image(bilateral_filter_activated=True)
+        b = datetime.datetime.now()
+        c=b-a
+        print 't-> ' + str(c.seconds) + '.' + str(c.microseconds)
         # image_mask2 = image_rgb1
         image_hsv1 = cv2.cvtColor(image_rgb1, cv2.COLOR_BGR2HSV)
         image_hsv2 = cv2.cvtColor(image_rgb1, cv2.COLOR_BGR2HSV)
 
         print '***'
+        a = datetime.datetime.now()
         robot_position = robot_locator.get_position(ma_kinect)
+        b = datetime.datetime.now()
+        c=b-a
+        print 't-> ' + str(c.seconds) + '.' + str(c.microseconds)
         print robot_position.get_angle_in_deg()
         print robot_position.position
         print '***'

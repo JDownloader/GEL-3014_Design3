@@ -1,6 +1,6 @@
 import cv2
-# from angletest2 import green_corner
-from cube import Cube, FormStencil, FormFilter, TABLE_STENCIL
+from cube import *
+import cube
 from kinect import Kinect
 from visiontools import VisionTools
 import numpy as np
@@ -9,17 +9,18 @@ import math
 
 class RobotLocator():
     PIXEL_SHIFT = 3
+
     def __init__(self):
         self.position = RobotPosition()
 
     def get_position(self, kinect):
         self.position = RobotPosition()
         for x in range(0, 5):
-            position = self.attempt_get_position(kinect)
+            position = self.attempt_get_position(kinect, x)
             if position is not None:
                 if position.is_valid():
                     for y in range(0, 3):
-                        second_position = self.attempt_get_position(kinect)
+                        second_position = self.attempt_get_position(kinect, y)
                         if second_position is not None:
                             if second_position.is_valid() and second_position.is_like(position):
                                 self.position = self.merge_position(position, second_position)
@@ -33,11 +34,11 @@ class RobotLocator():
         angle = float((position_1.angle+position_2.angle)/float(2))
         return RobotPosition(pos_x, pos_y, angle)
 
-    def attempt_get_position(self, kinect):
+    def attempt_get_position(self, kinect, attempt_no):
         new_position = None
-        img_hsv = self.get_masked_hsv(kinect)
-        purple_corner = Cube('purple')
-        green_corner = Cube('forest_green')
+        img_hsv = self.get_masked_hsv(kinect, attempt_no)
+        purple_corner = cube.Cube('purple')
+        green_corner = cube.Cube('forest_green')
         purple_position = purple_corner.find_position(img_hsv, kinect)
         green_position = green_corner.find_position(img_hsv, kinect)
         if purple_corner.is_valid_position(purple_position):
@@ -46,16 +47,19 @@ class RobotLocator():
             new_position = self.test_other_corners(img_hsv, kinect, green_corner, math.pi / 2)
         return new_position
 
-    def get_masked_hsv(self, kinect):
-        img = kinect.grab_new_image(bilateral_filter_activated=True)
+    def get_masked_hsv(self, kinect, attempt_no):
+        if attempt_no == 0:
+            img = kinect.grab_new_image(median_filter_activated=True)
+        else:
+            img = kinect.grab_new_image(bilateral_filter_activated=True)
         img_hsv = VisionTools().get_hsv_image(img)
         polyline = np.array([[0, 280], [640, 280], [640, 480], [0, 480]], np.int32)
-        stencil = FormStencil([polyline])
+        stencil = cube.FormStencil([polyline])
         return stencil.apply(img_hsv)
 
     def test_other_corners(self, img_hsv, kinect, found_corner, angle_modificator=0):
         new_position = RobotPosition()
-        found_corner_x_position = found_corner._find_center_in_img(img_hsv, kinect)[0]
+        found_corner_x_position = kinect._get_centre_object(found_corner.apply_filters(img_hsv))[0]
         if angle_modificator == 0:
             maybe_first_corner_position = self.find_left_orange_corner(img_hsv, kinect, found_corner_x_position)
             maybe_second_corner_position = self.find_right_orange_corner(img_hsv, kinect, found_corner_x_position)
@@ -92,18 +96,18 @@ class RobotLocator():
         return self.find_orange_corner(img_hsv, kinect, polyline, False)
 
     def find_orange_corner(self, img_hsv, kinect, polyline, is_left):
-        stencil = FormStencil([polyline])
+        stencil = cube.FormStencil([polyline])
         img_hsv_mask = stencil.apply(img_hsv)
-        orange_corner = Cube('orange')
+        orange_corner = cube.Cube('orange')
         if is_left:
             return orange_corner.find_position(img_hsv_mask, kinect, self.PIXEL_SHIFT)
         return orange_corner.find_position(img_hsv_mask, kinect, -self.PIXEL_SHIFT)
 
     def get_rgb_calibration(self, img_hsv, kinect, form_filter=True):
         rgb_result = np.zeros((img_hsv.shape[0], img_hsv.shape[1], 3), np.uint8)
-        orange_cube = Cube('orange')
-        green_cube = Cube('forest_green')
-        purple_cube = Cube('purple')
+        orange_cube = cube.Cube('orange')
+        green_cube = cube.Cube('forest_green')
+        purple_cube = cube.Cube('purple')
         if form_filter == False:
             orange_cube.form_filter = FormFilter([0, 0, 1, 1])
             green_cube.form_filter = FormFilter([0, 0, 1, 1])
@@ -119,9 +123,8 @@ class RobotLocator():
                 rgb_result[i, j][2] += int(purple_filter[i, j] * 0.5)
                 rgb_result[i, j][1] += int(green_filter[i, j] * 0.25)
         if kinect is not None:
-            rgb_result = FormStencil(TABLE_STENCIL.get(kinect.table)).apply(rgb_result)
+            rgb_result = cube.FormStencil(cube.TABLE_STENCIL.get(kinect.table)).apply(rgb_result)
         return rgb_result
-
 
 
 class Position():

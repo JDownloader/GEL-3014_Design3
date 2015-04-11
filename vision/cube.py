@@ -1,5 +1,6 @@
 import cv2
 import numpy as np
+from robotLocator import Position
 
 RANGES_FOR_COLOR_FILTER = {'red': [([169, 73, 92], [179, 255, 255]), ([0, 73, 92], [2, 255, 255])],
                            'green': [([30, 110, 110], [50, 255, 255])],
@@ -31,8 +32,8 @@ TABLE_STENCIL = {'1': [np.array([[0, 0], [640, 0], [640, 289], [607, 273], [607,
                       np.array([[0, 298], [640, 314], [640, 480], [0, 480]], np.int32)],
                  '5': [np.array([[0, 0], [640, 0], [640, 289], [607, 273], [607, 210], [0, 210]], np.int32),  # Not set yet
                       np.array([[0, 293], [640, 322], [640, 480], [0, 480]], np.int32)],
-                 '6': [np.array([[0, 0], [640, 0], [640, 289], [607, 273], [607, 210], [0, 210]], np.int32),  # Not set yet
-                      np.array([[0, 293], [640, 322], [640, 480], [0, 480]], np.int32)]}
+                 '6': [np.array([[0, 0], [640, 0], [640, 227], [366, 233], [108, 193], [104, 292], [0, 296]], np.int32),
+                      np.array([[0, 304], [640, 324], [640, 480], [0, 480]], np.int32)]}
 
 
 class ColorFilter:
@@ -98,9 +99,8 @@ class Cube:
         return img_mask
 
     def find_position(self, img_hvg, kinect, x_shift=0):
-        position_in_world = self._find_position_in_world(img_hvg, kinect, x_shift)
-        position = kinect._apply_matrix_transformation(position_in_world)
-        new_position = (int(position[0]*1000), int(position[1]*1000+40))
+        img_mask = self.apply_filters(img_hvg, kinect)
+        new_position = kinect.find_object_position(img_mask)
         self.adjust_position(new_position)
         return self.position
 
@@ -116,17 +116,6 @@ class Cube:
     def is_valid_position(self, position):
         return position[0] > self.NEGATIVE_POSITION_TOLERANCE_IN_MM \
             and position[1] > self.NEGATIVE_POSITION_TOLERANCE_IN_MM
-
-    def _find_position_in_world(self, img_hvg, kinect, x_shift=0):
-        point_centre = self._find_center_in_img(img_hvg, kinect)
-        pixel_cloud = kinect.get_img_cloud_map()
-        point_world = pixel_cloud[point_centre[1] + x_shift, point_centre[0]]
-        point1_ref = [[-point_world[0]], [point_world[2]], [1]]
-        return np.mat(point1_ref)
-
-    def _find_center_in_img(self, img_hvg, kinect):
-        img_mask = self.apply_filters(img_hvg, kinect)
-        return kinect._get_centre_object(img_mask)
 
 
 class WhiteCube(Cube):
@@ -174,7 +163,8 @@ class WhiteCubeForInBoardCamera(WhiteCube):
 
 
 class BlackCube(Cube):
-    CALIBRATION_ATTEMPT = 20
+    CALIBRATION_ATTEMPT = 25
+
     def __init__(self):
         self.color = 'black'
         self.position = None
@@ -193,7 +183,15 @@ class BlackCube(Cube):
             self.always_black_mask = cv2.bitwise_or(self.always_black_mask, img_mask)
             self.calibration_attempt_remaining -= 1
         else:
-            img_mask = cv2.bitwise_xor(img_mask, self.always_black_mask)
+            img_mask = cv2.bitwise_and(cv2.bitwise_xor(img_mask, self.always_black_mask), img_mask)
         img_mask = self.form_filter.apply(img_mask)
         return img_mask
+
+    def find_position(self, img_hvg, kinect, x_shift=0):
+        for x in range(356, 561, 3):
+            position = kinect._apply_matrix_transformation(kinect._get_world_in_cloud((x, 269)))
+            if Position(position[0], position[1]).is_valid():
+                print x
+                print kinect._apply_matrix_transformation(kinect._get_world_in_cloud((x, 269)))
+        return (0, 0)
 
