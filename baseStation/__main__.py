@@ -73,6 +73,12 @@ def fetch_cube_position():
                 break
     return jsonify(position_x=cube_position[0] , position_y=cube_position[1])
 
+@app.route('/path', methods=['POST'])
+def receive_path():
+    if request.method == 'POST':
+        print 'Next path: '
+        print request.form.get('path', None)
+
 @app.route('/flag')
 def fetch_flag():
     flag = ''

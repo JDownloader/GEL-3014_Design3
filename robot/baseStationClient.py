@@ -16,8 +16,12 @@ class BaseStationClient():
         content = json.loads(response.text)
         return (content['angle'], content['position'])
 
-    def fetch_cube_position(self):
-        data = {'color': 'red'}
+    def fetch_cube_position(self, cube_color):
+        data = {'color': cube_color}
         response = requests.post('http://' + self.app.base_station_ip_address + ':8000' + cte.CUBE_POSITION_RESSOURCE, data=data)
         content = json.loads(response.text)
         return (content['position_x'], content['position_y'])
+
+    def send_pathfinding_itinerary(self, path):
+        data = {'path': path}
+        requests.post('http://' + self.app.base_station_ip_address + ':8000' + cte.PATH_RESSOURCE, data=data)
