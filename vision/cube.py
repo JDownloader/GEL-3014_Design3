@@ -10,8 +10,8 @@ RANGES_FOR_COLOR_FILTER = {'red': [([169, 73, 92], [179, 255, 255]), ([0, 73, 92
                            'purple': [([120, 60, 60], [130, 255, 255])],
                            'forest_green': [([53, 25, 40], [75, 255, 255])]}
 
-PARAMETERS_FOR_FORM_FILTER = {'red': [2, 9, 3, 3],
-                              'green': [5, 8, 3, 3],
+PARAMETERS_FOR_FORM_FILTER = {'red': [2, 3, 3, 3],
+                              'green': [5, 7, 3, 3],
                               'blue': [5, 8, 3, 3],
                               'yellow': [2, 4, 3, 3],
                               'orange': [4, 3, 3, 7],
