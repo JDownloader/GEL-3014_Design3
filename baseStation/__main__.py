@@ -87,7 +87,7 @@ def fetch_flag():
         print question
         answer = fetch_answer(question)
         if is_right_answer(answer):
-            app.base_station.change_question(question, answer)
+            app.base_station.set_question(question, answer)
             flag_processor = flagProcessor.FlagProcessor(answer)
             flag = flag_processor.get_flag()
             print flag
@@ -106,7 +106,7 @@ def change():
         position_x = request.form.get('position_x', None)
         position_y = request.form.get('position_y', None)
         angle = request.form.get('angle', None)
-        app.base_station.change_robot_position(position_x, position_y, angle)
+        app.base_station.set_robot_position(position_x, position_y, angle)
     return 'ok'
 
 def fetch_question():

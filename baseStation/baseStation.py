@@ -17,9 +17,9 @@ class BaseStation():
         self.answer = ''
         self.robot_position = None
 
-    def change_question(self, question, answer):
+    def set_question(self, question, answer):
         self.question = question
         self.answer = answer
 
-    def change_robot_position(self, x, y, angle):
+    def set_robot_position(self, x, y, angle):
         self.robot_position = RobotPosition(x, y, angle)

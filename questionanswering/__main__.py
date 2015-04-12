@@ -1,5 +1,7 @@
-from question_processor import QuestionProcessor
+import json
 import time
+from question_processor import QuestionProcessor
+import requests
 
 def fetchQuestion():
     # return ["My telephone lines in use are 1.217 million.","My unemployment rate is 40.6%.","My population is 3,060,631.", "One national symbol of this country is the edelweiss.", "The lotus blossom is the national symbol of this country.",
@@ -11,18 +13,61 @@ def fetchQuestion():
     #         "My death rate is greater than 13 death/1000 and my capital starts with Mos.", "My capital name starts with Moga.", "My capital name starts with Ath and ends with ens.","22 September 1960 is the date of independence of this country." ]
 
 
-    return "What country has 13.694 million internet users?"
-
+    return  "My export partners are US, Germany, UK, France, Spain, Canada and Italy."
+ATLAS_WEB_SERVER_URLS = ['https://192.168.0.2', 'https://192.168.1.2', 'https://132.203.14.228']
 
 def main():
 
-    question = fetchQuestion()
-    start_time = time.time()
+    flag = ''
+    for cycle in xrange(10):
+        question = fetch_question()
+        print question
+        answer = fetch_answer(question)
+        if is_right_answer(answer):
+            # app.base_station.set_question(question, answer)
+            print 'Nicely done!'
+            break
+        else:
+            print 'Oh Oh'
+
+def fetch_answer(question):
     print "question : " + question
     processor = QuestionProcessor()
     processor.answer_question(question)
-    print "answer : " + processor.answer
-    print("--- %s seconds ---" % (time.time() - start_time))
+    return processor.answer
+
+def is_right_answer(answer):
+    print answer
+    answer_is_good = raw_input('Is this the right answer ? (y/n) : ')
+    strikes = 0
+    if answer_is_good[0] is 'y':
+        return True
+    else:
+        strikes += 1
+        if strikes < 2:
+            return False
+        else :
+            return True
+
+def fetch_question():
+    question = ''
+    for url in ATLAS_WEB_SERVER_URLS:
+        try:
+            response = requests.get(url, verify=False, timeout=0.1)
+            if response.status_code == 200:
+                question = response.text
+                break
+        except Exception:
+            pass
+    return json.loads(question)['question']
+
+    # question = fetchQuestion()
+    # start_time = time.time()
+    # print "question : " + question
+    # processor = QuestionProcessor()
+    # processor.answer_question(question)
+    # print "answer : " + processor.answer
+    # print("--- %s seconds ---" % (time.time() - start_time))
 
 if __name__ == "__main__":
     main()

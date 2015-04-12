@@ -3,10 +3,10 @@ import nltk
 
 def process(question, query_builder):
     mapped_question = next(question)
-    if ('import' in mapped_question) :
+    if ('export' in mapped_question) :
         if ('partners' in mapped_question):
             partners = extract_importation_information(mapped_question)
-            query_builder.with_category_data('Imports - partners', ' '.join(partners))
+            query_builder.with_category_data('Exports - partners', ' '.join(partners))
     yield mapped_question
 
 
@@ -20,7 +20,8 @@ def extract_importation_information(mappedSentence):
         if subtree.label() == 'NP':
             reverse_dict = bidictionnary.Bidict(dict(subtree.leaves()))
             partners += reverse_dict.keys_with_values(['NNP','NNS'])
-        if 'partners' in partners:
-            partners.remove('partners')
+    if 'partners' in partners:
+        partners.remove('partners')
     return partners
+
 
