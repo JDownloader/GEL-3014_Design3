@@ -210,14 +210,14 @@ class RobotPosition(Position):
             new_pos = (self.position[0] + distance * math.sin(math.radians(self.angle)),
                        self.position[1] + distance * math.cos(math.radians(self.angle)))
         elif movement_direction == 'reverse':
-            new_pos = (self.position[0] * math.sin(math.radians(self.angle + 180)),
-                       self.position[1] * math.cos(math.radians(self.angle + 180)))
+            new_pos = (self.position[0] + distance * math.sin(math.radians(self.angle + 180)),
+                       self.position[1] + distance * math.cos(math.radians(self.angle + 180)))
         elif movement_direction == 'left':
             new_pos = (self.position[0] + distance * math.sin(math.radians(self.angle + 90)),
                        self.position[1] + distance * math.cos(math.radians(self.angle + 90)))
         elif movement_direction == 'right':
-            new_pos = (self.position[0] + distance * math.sin(math.radians(self.angle + 90)),
-                       self.position[1] + distance * math.cos(math.radians(self.angle + 90)))
+            new_pos = (self.position[0] + distance * math.sin(math.radians(self.angle - 90)),
+                       self.position[1] + distance * math.cos(math.radians(self.angle - 90)))
         self.position = new_pos
 
 

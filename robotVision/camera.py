@@ -19,7 +19,7 @@ class NoCameraDetectedException(Exception):
 class Camera():
 
     def __init__(self):
-        self.capt_obj = cv2.VideoCapture(0)
+        self.capt_obj = cv2.VideoCapture(1)
         self.camera_matrix = np.array(CAMERA_MATRIX)
         self.distortion_matrix = np.array(DIST_COEFS)
         self.polyline = POLYLINE

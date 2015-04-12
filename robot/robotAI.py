@@ -13,6 +13,7 @@ class RobotAI:
         self.robot = Robot()
         self.robot_angle_and_position = RobotPosition()
         self.base_station = base_station_client
+        self.table_number = 4
 
     def run_sequence(self):
         self.pre_atlas_sequence()
@@ -22,15 +23,16 @@ class RobotAI:
     def pre_atlas_sequence(self):
         self.update_robot_position_from_kinect()
         self.move_robot_to(tableConsts.DOCK_POINT)
+        self.rotate_robot_to_target(0)
         self.move_to_exactly_to_docking_point()
 
     def resolve_atlas_enigma(self):
-        two_step_path_to_atlas = self.pathfinder.find_two_step_path_to_point(self.robot_angle_and_position,
-                                                                             tableConsts.ATLAS_ZONE_COORDINATES)
-        self.move_two_step_to_point(two_step_path_to_atlas)
-        self.robot.change_led_color('red', 9)
-        time.sleep(2)
-        self.robot.change_led_color('off', 9)
+        # two_step_path_to_atlas = self.pathfinder.find_two_step_path_to_point(self.robot_angle_and_position,
+        #                                                                      tableConsts.ATLAS_ZONE_COORDINATES)
+        # self.move_two_step_to_point(two_step_path_to_atlas)
+        # self.robot.change_led_color('red', 9)
+        # time.sleep(2)
+        # self.robot.change_led_color('off', 9)
         return self.receive_flag_from_base_station()
 
     def construct_flag(self, flag_matrix):
@@ -43,13 +45,16 @@ class RobotAI:
     def grab_cube(self, cube, cube_index):
         self.robot.change_led_color(cube, cube_index)
         cube_position = self.kinect_cube_find_sequence()
-        path_to_cube = self.pathfinder.find_two_step_path_to_point(self.robot_angle_and_position, cube_position)
+        path_to_cube = self.pathfinder.find_two_step_path_to_cube(self.robot_angle_and_position, cube_position)
         self.move_two_step_to_point(path_to_cube)
         self.move_robot_to_pickup_cube(cube)
         self.pickup_cube()
 
     def place_cube(self, cube_index):
-        self.move_two_step_to_point(tableConsts.DOCK_POINT)
+        self.rotate_robot_to_target(0)
+        path_to_dock = self.pathfinder.find_two_step_path_to_point(self.robot_angle_and_position,
+                                                                   tableConsts.DOCK_POINT)
+        self.move_two_step_to_point(path_to_dock)
         self.rotate_robot_to_target(0)
         self.update_robot_position_from_kinect()
         self.move_to_exactly_to_docking_point()
@@ -93,11 +98,12 @@ class RobotAI:
         while angle_and_position_from_kinect[0] is None:
             angle_and_position_from_kinect = self.base_station.fetch_robot_position()
             print 'kinect pos is none'
-        self.robot_angle_and_position.angle = angle_and_position_from_kinect[0]
+        self.robot_angle_and_position.angle = angle_and_position_from_kinect[0] + \
+                                              tableConsts.TABLE_ANGLE_ADJUSTMENT[self.table_number]
         self.robot_angle_and_position.position = angle_and_position_from_kinect[1]
 
     def receive_cube_position_from_kinect(self):
-        cube_pos = self.base_station.fetch_cube_position()
+        cube_pos = self.base_station.fetch_cube_position('red')
         return cube_pos
 
     def move_robot_to(self, target_position, stop_at_buffer=False, movement_direction='forward'):
@@ -131,13 +137,14 @@ class RobotAI:
         flag_array = numpy.array(flag_matrix)
         flag_array_reshaped = flag_array.reshape((3, 3))
         transposed_array = flag_array_reshaped.transpose()
+        transposed_array[[0, 2],:] = transposed_array[[2, 0],:]
         reshaped_transposed_array = transposed_array.reshape((1, 9))
         transposed_flag_matrix = reshaped_transposed_array[0].tolist()
         return transposed_flag_matrix
 
     def move_to_exactly_to_docking_point(self, delta_angle=0, delta_x=0, delta_y=0):
         # assumning robot is at 0 degree
-        angle_range = 3
+        angle_range = 2
         x_range = 10
         y_range = 10
         self.rotate_precisely_to_dock_angle(angle_range, delta_angle)
@@ -193,7 +200,7 @@ class RobotAI:
     def center_robot_on_cube(self, camera_instance):
         camera_delta_x = camera_instance.find_cube_center()[0]
         while abs(camera_delta_x) >= 15:
-            if camera_delta_x <= 0:
+            if camera_delta_x >= 0:
                 self.move_in_direction_and_keep_angle('left', 10)
             else:
                 self.move_in_direction_and_keep_angle('right', 10)
@@ -203,12 +210,11 @@ class RobotAI:
         self.robot.gripper_controller.change_vertical_position(0)
         self.robot.gripper_controller.pliers_control(2)
         camera_delta_y = camera_instance.find_cube_center()[1]
-        while abs(camera_delta_y):
-            if camera_delta_y > -160:
-                self.move_in_direction_and_keep_angle('forward', 10)
-            else:
-                self.move_in_direction_and_keep_angle('reverse', 10)
+        while camera_delta_y > -150:
+            self.center_robot_on_cube(camera_instance)
+            self.move_in_direction_and_keep_angle('forward', 20)
             camera_delta_y = camera_instance.find_cube_center()[1]
+        self.move_in_direction_and_keep_angle('forward', 30)
 
     def move_in_direction_and_keep_angle(self, direction, distance):
         self.robot.move(direction, distance)
