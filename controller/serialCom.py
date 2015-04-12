@@ -66,17 +66,17 @@ class GripperController:
         self.gripper_serial_communication = pololu_serial_communication
         self.channel_vertical = controller.constants.POLOLU_CHANNELS_PWM.get('gripper_vertical')
         self.channel_pliers = controller.constants.POLOLU_CHANNELS_PWM.get('gripper_pliers')
-        self.min_vertical = int(4*704.00)
-        self.max_vertical = int(4*1680)
-        self.pos_vertical_raised_high = int(4*1670)
-        self.pos_vertical_raised_low = int(4*875)
-        self.pos_vertical_table = int(4*750)
+        self.min_vertical = int(4*1230)
+        self.max_vertical = int(4*2140)
+        self.pos_vertical_raised_high = int(4*1270)
+        self.pos_vertical_raised_low = int(4*1950)
+        self.pos_vertical_table = int(4*2090)
         self.vertical_speed = 20
-        self.min_pliers = int(4*985)
-        self.max_pliers = int(4*2260)
-        self.pos_pliers_open_big = int(4*1000)
-        self.pos_pliers_open_small = int(4*1700)
-        self.pos_pliers_closed = int(4*2075)
+        self.min_pliers = int(4*765)
+        self.max_pliers = int(4*2000)
+        self.pos_pliers_open_big = int(4*900)
+        self.pos_pliers_open_small = int(4*1500)
+        self.pos_pliers_closed = int(4*1980)
         self.pliers_speed = 20
         # self.min_vertical = int(4*704.00)
         # self.max_vertical = int(4*2096.00)
@@ -107,11 +107,15 @@ class GripperController:
             self.gripper_serial_communication.setTarget(self.channel_vertical, self.pos_vertical_raised_high)
             self.gripper_serial_communication.setRange(self.channel_pliers, self.min_pliers, self.max_pliers)
             self.gripper_serial_communication.setSpeed(self.channel_pliers, self.pliers_speed)
-            self.gripper_serial_communication.setTarget(self.channel_pliers, self.pos_pliers_closed)
+            self.gripper_serial_communication.setTarget(self.channel_pliers, self.pos_pliers_open_big)
 
     def change_vertical_position(self, raise_level):
         self.gripper_serial_communication.setTarget(self.channel_vertical,
-                                                    self.GRIPPER_RAISE_LEVEL_DICTIONARY[raise_level] )
+                                                    self.GRIPPER_RAISE_LEVEL_DICTIONARY[raise_level] - 30)
+        while self.gripper_serial_communication.isMoving(self.channel_vertical):
+            pass
+        self.gripper_serial_communication.setTarget(self.channel_vertical,
+                                                    self.GRIPPER_RAISE_LEVEL_DICTIONARY[raise_level])
         while self.gripper_serial_communication.isMoving(self.channel_vertical):
             pass
 

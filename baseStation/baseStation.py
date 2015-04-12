@@ -8,11 +8,11 @@ from flag import Flag
 class BaseStation():
     def __init__(self):
         try:
-            self.kinect = Kinect('2')
+            self.kinect = Kinect('4')
         except NoKinectDetectedException:
             self.kinect = FakeKinect()
         self.cube_finder = DemoCubeFinder(self.kinect)
-        self.flag = Flag('Canada')
+        self.flag = Flag('Colombia')
         self.question = ''
         self.answer = ''
         self.robot_position = None

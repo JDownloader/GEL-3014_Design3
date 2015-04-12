@@ -33,7 +33,7 @@ app.config.from_object(__name__)
 app.debug = True
 thread_robot_finder = RobotFinder(app.set_robot_ip_address)
 thread_robot_finder.start()
-# app.set_robot_ip_address('127.0.0.1')
+app.set_robot_ip_address('127.0.0.1')
 
 
 def root_dir():
@@ -81,17 +81,16 @@ def receive_path():
 
 @app.route('/flag')
 def fetch_flag():
-    flag = ''
-    for cycle in xrange(cte.NUMBER_OF_WRONG_ANSWER_ALLOWED):
-        question = fetch_question()
-        print question
-        answer = fetch_answer(question)
-        if is_right_answer(answer):
-            app.base_station.change_question(question, answer)
-            flag_processor = flagProcessor.FlagProcessor(answer)
-            flag = flag_processor.get_flag()
-            print flag
-            break
+    # flag = ''
+    # for cycle in xrange(cte.NUMBER_OF_WRONG_ANSWER_ALLOWED):
+    #     question = fetch_question()
+    #     print question
+    #     answer = fetch_answer(question)
+    #     if is_right_answer(answer):
+    #         app.base_station.change_question(question, answer)
+    flag_processor = flagProcessor.FlagProcessor('Colombia')
+    flag = flag_processor.get_flag()
+            # break
     return jsonify(flag=flag)
 
 # A javaScript fonction calls this method every 250 ms
