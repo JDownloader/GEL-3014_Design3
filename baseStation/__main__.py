@@ -84,10 +84,16 @@ def fetch_flag():
     flag = ''
     for cycle in xrange(cte.NUMBER_OF_WRONG_ANSWER_ALLOWED):
         question = fetch_question()
+
+        if question is None:
+            break
+
         print question
         answer = fetch_answer(question)
         if is_right_answer(answer):
             app.base_station.set_question(question, answer)
+            flag_processor = flagProcessor.FlagProcessor(answer)
+            flag = flag_processor.get_flag()
             break
     return jsonify(flag=flag)
 
@@ -107,16 +113,21 @@ def change():
     return 'ok'
 
 def fetch_question():
+    json_question = ''
     question = ''
     for url in cte.ATLAS_WEB_SERVER_URLS:
         try:
-            response = requests.get(url, verify=False, timeout=0.1)
+            response = requests.get(url, verify=False, timeout=0.3)
             if response.status_code == 200:
-                question = response.text
+                json_question = response.text
                 break
         except Exception:
             pass
-    return json.loads(question)['question']
+    try :
+        question = json.loads(json_question)['question']
+    except Exception:
+        print 'No question from Atlas'
+    return question
 
 def fetch_answer(question):
     print "question : " + question

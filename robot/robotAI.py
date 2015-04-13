@@ -27,12 +27,12 @@ class RobotAI:
         self.move_to_exactly_to_docking_point()
 
     def resolve_atlas_enigma(self):
-        # two_step_path_to_atlas = self.pathfinder.find_two_step_path_to_point(self.robot_angle_and_position,
-        #                                                                      tableConsts.ATLAS_ZONE_COORDINATES)
-        # self.move_two_step_to_point(two_step_path_to_atlas)
-        # self.robot.change_led_color('red', 9)
-        # time.sleep(2)
-        # self.robot.change_led_color('off', 9)
+        two_step_path_to_atlas = self.pathfinder.find_two_step_path_to_point(self.robot_angle_and_position,
+                                                                             tableConsts.ATLAS_ZONE_COORDINATES)
+        self.move_two_step_to_point(two_step_path_to_atlas)
+        self.robot.change_led_color('red', 9)
+        time.sleep(2)
+        self.robot.change_led_color('off', 9)
         return self.receive_flag_from_base_station()
 
     def construct_flag(self, flag_matrix):
@@ -65,14 +65,14 @@ class RobotAI:
         if cube_movement_dictionary.get('direction') != 'forward':
             self.robot.move(cube_movement_dictionary.get('direction'), cube_movement_dictionary.get('width_distance'))
         self.robot.move('forward', cube_movement_dictionary.get('length_distance'))
-        self.robot.move_gripper_vertically(0)
-        self.robot.change_pliers_opening(1)
+        # self.robot.move_gripper_vertically(0)
+        # self.robot.change_pliers_opening(1)
         self.robot.move('reverse', cube_movement_dictionary.get('length_distance'))
         if cube_movement_dictionary.get('direction') != 'forward':
             self.robot.move(self.reverse_movement_direction(cube_movement_dictionary.get('direction')),
                             cube_movement_dictionary.get('width_distance'))
-        self.robot.move_gripper_vertically(2)
-        self.robot.change_pliers_opening(2)
+        # self.robot.move_gripper_vertically(2)
+        # self.robot.change_pliers_opening(2)
 
     def move_robot_to_pickup_cube(self, cube_color):
         camera = VisionRobot(cube_color)
@@ -207,8 +207,8 @@ class RobotAI:
             camera_delta_x = camera_instance.find_cube_center()[0]
 
     def approach_cube(self, camera_instance):
-        self.robot.gripper_controller.change_vertical_position(0)
-        self.robot.gripper_controller.pliers_control(2)
+        # self.robot.gripper_controller.change_vertical_position(0)
+        # self.robot.gripper_controller.pliers_control(2)
         camera_delta_y = camera_instance.find_cube_center()[1]
         while camera_delta_y > -150:
             self.center_robot_on_cube(camera_instance)
@@ -221,14 +221,14 @@ class RobotAI:
         self.robot_angle_and_position.update_with_movement_direction_and_distance(direction, distance)
 
     def pickup_cube(self):
-        self.robot.gripper_controller.pliers_control(0)
-        self.robot.gripper_controller.change_vertical_position(1)
+        # self.robot.gripper_controller.pliers_control(0)
+        # self.robot.gripper_controller.change_vertical_position(1)
         self.move_in_direction_and_keep_angle('reverse', 50)
-        self.robot.gripper_controller.change_vertical_position(0)
-        self.robot.gripper_controller.pliers_control(2)
+        # self.robot.gripper_controller.change_vertical_position(0)
+        # self.robot.gripper_controller.pliers_control(2)
         self.move_in_direction_and_keep_angle('forward', 50)
-        self.robot.gripper_controller.pliers_control(0)
-        self.robot.gripper_controller.change_vertical_position(2)
+        # self.robot.gripper_controller.pliers_control(0)
+        # self.robot.gripper_controller.change_vertical_position(2)
 
     def move_two_step_to_point(self, movement_dictionary):
         self.move_in_direction_and_keep_angle(movement_dictionary['first_direction'],
