@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-from robotLocator import Position
 
 RANGES_FOR_COLOR_FILTER = {'red': [([169, 73, 92], [179, 255, 255]), ([0, 73, 92], [2, 255, 255])],
                            'green': [([30, 110, 110], [50, 255, 255])],
@@ -12,8 +11,8 @@ RANGES_FOR_COLOR_FILTER = {'red': [([169, 73, 92], [179, 255, 255]), ([0, 73, 92
                            'black': [([0, 0, 0], [180, 256, 120])],
                            'white': [([0, 0, 150], [180, 40, 255])]}
 
-PARAMETERS_FOR_FORM_FILTER = {'red': [2, 9, 3, 3],
-                              'green': [5, 8, 3, 3],
+PARAMETERS_FOR_FORM_FILTER = {'red': [2, 3, 3, 3],
+                              'green': [5, 7, 3, 3],
                               'blue': [5, 8, 3, 3],
                               'yellow': [2, 4, 3, 3],
                               'orange': [4, 3, 3, 7],
@@ -34,6 +33,13 @@ TABLE_STENCIL = {'1': [np.array([[0, 0], [640, 0], [640, 289], [607, 273], [607,
                       np.array([[0, 293], [640, 322], [640, 480], [0, 480]], np.int32)],
                  '6': [np.array([[0, 0], [640, 0], [640, 227], [366, 233], [108, 193], [104, 292], [0, 296]], np.int32),
                       np.array([[0, 304], [640, 324], [640, 480], [0, 480]], np.int32)]}
+
+TABLE_BACK_POSITION = {'1': [range(252, 556, 3), 253],
+                       '2': [range(351, 560, 3), 262],
+                       '3': [range(359, 573, 3), 273],
+                       '4': [range(247, 566, 3), 269],
+                       '5': [],
+                       '6': []}
 
 
 class ColorFilter:
@@ -188,10 +194,26 @@ class BlackCube(Cube):
         return img_mask
 
     def find_position(self, img_hvg, kinect, x_shift=0):
-        for x in range(356, 561, 3):
-            position = kinect._apply_matrix_transformation(kinect._get_world_in_cloud((x, 269)))
+        from robotLocator import Position
+        x_values = []
+        y_values = []
+        table_back = TABLE_BACK_POSITION.get(kinect.table)
+        for x in table_back[0]:
+            pixel_position = (x, table_back[1])
+            position = kinect._apply_matrix_transformation(kinect._get_world_in_cloud(pixel_position))
             if Position(position[0], position[1]).is_valid():
-                print x
-                print kinect._apply_matrix_transformation(kinect._get_world_in_cloud((x, 269)))
+                if position[1]> 850 and position[1]<2000 and self.verify_color(img_hvg, pixel_position):
+                    x_values.append(position[0])
+                    y_values.append(position[1])
+        if x_values.__len__() > 0:
+            return (self.get_median(x_values), self.get_median(y_values))
         return (0, 0)
 
+    def get_median(self, values):
+        return np.median(np.array(values))
+
+    def verify_color(self, image_hsv, position):
+        pixel = image_hsv[position[1], position[0]]
+        if pixel[2] < 120:
+            return True
+        return False
