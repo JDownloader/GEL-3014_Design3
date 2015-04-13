@@ -13,13 +13,12 @@ class ContextProvider:
 
     def get_context(self, robot_ip):
         self.base_station.cube_finder.refresh_position()
-        pos_y = random.randrange(0, 400, 10)
-        angle = random.randrange(0, 359, 45)
         position = self.get_position_data()
         sample_status = { 'top': 600-position.position[1]*0.27,
                           'left': 302-position.position[0]*0.27,
                           'angle': 360 - position.get_angle_in_deg(),
                           'kinect_is_fake': self.is_fake_kinect(),
+                          'path': [(0, 100)],
                           # 'chrono': strftime('%Mm%Ss', gmtime(tim)),
                           'chrono': '',
                           'robotIP': robot_ip,
@@ -42,7 +41,7 @@ class ContextProvider:
 
     def get_position_data(self):
         position = RobotPosition()
-        position.position = (-500, -500)
+        position.position = (800, 1000)
         position.angle = 0
         if self.base_station.robot_position is not None:
             if self.base_station.robot_position.position is not None \

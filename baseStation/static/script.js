@@ -66,7 +66,8 @@
 	});
 
 	function setRobotPosition(data) {
-        var x =robot.setPosition(data.left, data.top, data.angle);
+        var x = robot.setPosition(data.left, data.top, data.angle);
+        var y = robot.drawPath(data.path, data.top, data.angle);
 		planCanvas.calcOffset();
 		planCanvas.renderAll();
 	}
@@ -159,6 +160,7 @@
 		for (i = 0; i < 9; i++){
 			if(baseFlag[i] === null) {
 				flagCubes[i].fill = 'rgba(0,0,0,0)';
+				flagCubes[i].strokeWidth = 0;
 			} else{
 				flagCubes[i].fill = colors[baseFlag[i]];
 				flagCubes[i].stroke = '#000';
@@ -238,9 +240,15 @@
             originY: 'top',
             originX: 'right'
         });
+        this.line1 = new fabric.Line([0,0,100,100], {
+            fill: 'red',
+            stroke: 'red',
+            strokeWidth: 5,
+            selectable: false
+        });
 
         this.addToCanvas = function(canvas){
-            canvas.add(this.body, this.purpleCorner, this.greenCorner, this.orange1Corner, this.orange2Corner);
+            canvas.add(this.body, this.purpleCorner, this.greenCorner, this.orange1Corner, this.orange2Corner, this.line1);
         }
 
         this.setPosition = function(x, y, angle){
@@ -262,6 +270,17 @@
             this.orange2Corner.set('left', x_pos);
             this.orange2Corner.set('top', y_pos);
             this.orange2Corner.set('angle', angle);
+            return null;
+        }
+        this.drawPath = function(path, x, y){
+            //this.
+			for(i = 0; i < path.length; i++) {
+                this.line1.set('x1', this.body.left);
+                this.line1.set('y1', this.body.top);
+                this.line1.set('x2', 130);
+                this.line1.set('y2', 50);
+                this.line1.setCoords();
+            }
             return null;
         }
     }
