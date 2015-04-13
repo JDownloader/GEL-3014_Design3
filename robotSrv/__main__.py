@@ -40,7 +40,6 @@ def start():
 def recieve_base_stationIP():
     if request.method == 'POST':
         app.base_station_ip_address = request.form.get('ip', None)
-        # app.base_station_ip_address = 'http://127.0.0.1:8000/'
     return 'ok'
 
 
