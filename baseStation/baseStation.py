@@ -12,7 +12,7 @@ class BaseStation():
         except NoKinectDetectedException:
             self.kinect = FakeKinect()
         self.cube_finder = DemoCubeFinder(self.kinect)
-        self.flag = Flag('Colombia')
+        self.flag = ''
         self.question = ''
         self.answer = ''
         self.robot_position = None
@@ -20,6 +20,7 @@ class BaseStation():
     def set_question(self, question, answer):
         self.question = question
         self.answer = answer
+        self.flag = Flag(answer)
 
     def set_robot_position(self, x, y, angle):
         self.robot_position = RobotPosition(x, y, angle)

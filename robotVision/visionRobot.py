@@ -85,7 +85,7 @@ class VisionRobot():
     def find_cube_center(self):
         cap = self.camera.getCapt()
         cv2.namedWindow('BGR', cv2.WINDOW_AUTOSIZE)
-        while cap.isOpened():
+        if cap.isOpened():
             _,image = cap.read()
             # image = self.camera.remmaping_image(image)
             contour = self.find_contour_cube(image, self.cube)
@@ -93,16 +93,17 @@ class VisionRobot():
                 if contour is not None:
                     moment = self.get_moment(contour)
                     delta_centre = self.find_cube_center_delta(image, moment)
-                    cv2.drawContours(image,[contour],-1,(0,255,0),6)
+                    # cv2.drawContours(image,[contour],-1,(0,255,0),6)
                     return delta_centre
 
             except:
                 print 'Problem with camera'
-            k = cv2.waitKey(5) & 0xFF
-            if k == 27:
-                break
-            cv2.imshow('BGR', image)
-        cv2.destroyAllWindows()
+            # k = cv2.waitKey(5) & 0xFF
+            # if k == 27:
+            #     break
+            # cv2.imshow('BGR', image)
+        return (None, None)
+        # cv2.destroyAllWindows()
 
 if __name__ == "__main__":
 

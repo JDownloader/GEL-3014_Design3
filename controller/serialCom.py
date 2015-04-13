@@ -148,6 +148,7 @@ class RobotMovementController:
             speed_percentage = 30
         else:
             speed_percentage = 10
+        self.serial_communication.flushInput()
         try:
             self.serial_communication.write(str(chr(self.ARDUINO_SERIAL_DIRECTION_STRING.get(direction))))
         except Exception:
@@ -161,6 +162,7 @@ class RobotMovementController:
             speed_percentage = 5
         else:
             speed_percentage = 25
+        self.serial_communication.flushInput()
         if rotation_direction_is_left:
             self.serial_communication.write(str(chr(101)))
         else:

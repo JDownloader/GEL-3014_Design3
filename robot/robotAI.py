@@ -2,7 +2,7 @@ import time
 from pathfinding.pathfinding import Pathfinding
 from controller.serialCom import Robot
 from robotVision.visionRobot import VisionRobot
-from vision.robotLocator import RobotPosition
+from vision.robotLocator import RobotPosition, Position
 import pathfinding.constants as tableConsts
 import numpy
 
@@ -24,7 +24,7 @@ class RobotAI:
         self.update_robot_position_from_kinect()
         self.move_robot_to(tableConsts.DOCK_POINT)
         self.rotate_robot_to_target(0)
-        self.move_to_exactly_to_docking_point()
+        self.move_exactly_to_docking_point()
 
     def resolve_atlas_enigma(self):
         two_step_path_to_atlas = self.pathfinder.find_two_step_path_to_point(self.robot_angle_and_position,
@@ -36,11 +36,13 @@ class RobotAI:
         return self.receive_flag_from_base_station()
 
     def construct_flag(self, flag_matrix):
+        self.display_flag_for_five_seconds(flag_matrix)
         for cube_index, cube in enumerate(flag_matrix):
             if cube:
                 self.grab_cube(str(cube), cube_index)
                 self.place_cube(cube_index)
                 self.rotate_robot_to_target(0)
+                self.move_exactly_to_docking_point()
 
     def grab_cube(self, cube, cube_index):
         self.robot.change_led_color(cube, cube_index)
@@ -57,7 +59,8 @@ class RobotAI:
         self.move_two_step_to_point(path_to_dock)
         self.rotate_robot_to_target(0)
         self.update_robot_position_from_kinect()
-        self.move_to_exactly_to_docking_point()
+        self.move_exactly_to_docking_point()
+        self.rotate_robot_to_target(180)
         self.drop_cube_at_intended_point(cube_index)
 
     def drop_cube_at_intended_point(self, cube_index):
@@ -97,6 +100,7 @@ class RobotAI:
         angle_and_position_from_kinect = self.base_station.fetch_robot_position()
         while angle_and_position_from_kinect[0] is None:
             angle_and_position_from_kinect = self.base_station.fetch_robot_position()
+            self.rotate_robot_to_target(self.robot_angle_and_position.angle + 1)
             print 'kinect pos is none'
         self.robot_angle_and_position.angle = angle_and_position_from_kinect[0] + \
                                               tableConsts.TABLE_ANGLE_ADJUSTMENT[self.table_number]
@@ -142,7 +146,7 @@ class RobotAI:
         transposed_flag_matrix = reshaped_transposed_array[0].tolist()
         return transposed_flag_matrix
 
-    def move_to_exactly_to_docking_point(self, delta_angle=0, delta_x=0, delta_y=0):
+    def move_exactly_to_docking_point(self, delta_angle=0, delta_x=0, delta_y=0):
         # assumning robot is at 0 degree
         angle_range = 2
         x_range = 10
@@ -156,7 +160,7 @@ class RobotAI:
         delta_x = tableConsts.DOCK_POINT[0] - self.robot_angle_and_position.position[0]
         delta_y = tableConsts.DOCK_POINT[1] - self.robot_angle_and_position.position[1]
         if abs(delta_angle) > angle_range or abs(delta_x) > x_range or abs(delta_y) > y_range:
-            self.move_to_exactly_to_docking_point(delta_angle, delta_x, delta_y)
+            self.move_exactly_to_docking_point(delta_angle, delta_x, delta_y)
 
     def rotate_precisely_to_dock_angle(self, angle_range, delta_angle):
         temp_delta_angle = delta_angle
@@ -218,6 +222,7 @@ class RobotAI:
 
     def move_in_direction_and_keep_angle(self, direction, distance):
         self.robot.move(direction, distance)
+        print 'moving' + direction
         self.robot_angle_and_position.update_with_movement_direction_and_distance(direction, distance)
 
     def pickup_cube(self):
@@ -241,8 +246,8 @@ class RobotAI:
         path_to_safe_zone = self.pathfinder.find_two_step_path_to_point(self.robot_angle_and_position,
                                                                         tableConsts.SAFE_POINT)
         self.move_two_step_to_point(path_to_safe_zone)
-        cube_pos = None
-        while cube_pos is None:
+        cube_pos = (-500, -500)
+        while not Position(cube_pos[0], cube_pos[1]).is_valid():
             cube_pos = self.receive_cube_position_from_kinect()
         path_to_pre_cube_fetch_point = self.pathfinder.find_two_step_path_to_point(self.robot_angle_and_position,
                                                                    tableConsts.PRE_CUBE_FETCH_POINT)

@@ -33,7 +33,7 @@ app.config.from_object(__name__)
 app.debug = True
 thread_robot_finder = RobotFinder(app.set_robot_ip_address)
 thread_robot_finder.start()
-app.set_robot_ip_address('127.0.0.1')
+# app.set_robot_ip_address('127.0.0.1')
 
 
 def root_dir():
@@ -59,7 +59,6 @@ def fetch_robot_position():
     app.base_station.robot_position = position
     return jsonify(angle=position.get_angle_in_deg(),
                    position=(position.position[0], position.position[1]))
-    # return jsonify(angle = '10', position = '(10,10)')
 
 @app.route('/cubeposition', methods=['POST'])
 def fetch_cube_position():
@@ -90,6 +89,7 @@ def fetch_flag():
             app.base_station.set_question(question, answer)
             flag_processor = flagProcessor.FlagProcessor(answer)
             flag = flag_processor.get_flag()
+
             break
     return jsonify(flag=flag)
 
@@ -113,7 +113,7 @@ def fetch_question():
     question = ''
     for url in cte.ATLAS_WEB_SERVER_URLS:
         try:
-            response = requests.get(url, verify=False, timeout=0.3)
+            response = requests.get(url, verify=False, timeout=0.5)
             if response.status_code == 200:
                 json_question = response.text
                 break
@@ -123,6 +123,7 @@ def fetch_question():
         question = json.loads(json_question)['question']
     except Exception:
         print 'No question from Atlas'
+        fetch_question()
     return question
 
 def fetch_answer(question):
