@@ -1,5 +1,6 @@
 from vision.cube import Cube, WhiteCube, BlackCube
 from vision.visiontools import VisionTools
+from vision.robotLocator import Position
 
 
 class CubeFinder():
@@ -13,6 +14,22 @@ class CubeFinder():
     def add_cube(self, cube):
         if cube not in self.cubes:
             self.cubes.append(cube)
+
+    def get_cube_position_whit_color(self, color):
+        if color == 'black':
+            cube = BlackCube()
+        elif color == 'white':
+            cube = WhiteCube()
+        else:
+            cube=Cube(color)
+        self.cubes.append(cube)
+        image_rgb = self.kinect.grab_new_image(bilateral_filter_activated=True)
+        image_hsv = VisionTools().get_hsv_image(image_rgb)
+        for x in range(0,100):
+            cube.find_position(image_hsv, self.kinect)
+            if Position(cube.position[0], cube.position[1]).is_valid():
+                break
+        return cube.position
 
     def refresh_position(self):
         image_rgb = self.kinect.grab_new_image(True)
