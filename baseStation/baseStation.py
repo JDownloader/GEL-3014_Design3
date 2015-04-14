@@ -12,7 +12,7 @@ class BaseStation():
         except NoKinectDetectedException:
             self.kinect = FakeKinect()
         self.cube_finder = DemoCubeFinder(self.kinect)
-        self.flag = ''
+        self.flag = None
         self.question = ''
         self.answer = ''
         self.robot_position = None

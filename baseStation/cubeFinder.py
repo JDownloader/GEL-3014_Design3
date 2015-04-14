@@ -1,7 +1,7 @@
 from vision.cube import Cube, WhiteCube, BlackCube
 from vision.visiontools import VisionTools
 from vision.robotLocator import Position
-
+import time
 
 class CubeFinder():
     def __init__(self, kinect):
@@ -23,12 +23,13 @@ class CubeFinder():
         else:
             cube=Cube(color)
         self.cubes.append(cube)
-        image_rgb = self.kinect.grab_new_image(bilateral_filter_activated=True)
-        image_hsv = VisionTools().get_hsv_image(image_rgb)
-        for x in range(0,100):
+        for x in range(0, 20):
+            image_rgb = self.kinect.grab_new_image(bilateral_filter_activated=True)
+            image_hsv = VisionTools().get_hsv_image(image_rgb)
             cube.find_position(image_hsv, self.kinect)
             if Position(cube.position[0], cube.position[1]).is_valid():
                 break
+            time.sleep(0.2)
         return cube.position
 
     def refresh_position(self):

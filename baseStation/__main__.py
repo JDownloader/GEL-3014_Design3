@@ -33,7 +33,7 @@ app.config.from_object(__name__)
 app.debug = True
 thread_robot_finder = RobotFinder(app.set_robot_ip_address)
 thread_robot_finder.start()
-# app.set_robot_ip_address('127.0.0.1')
+app.set_robot_ip_address('192.168.0.36')
 
 
 def root_dir():
@@ -48,7 +48,7 @@ def start():
     if app.robot_ip_address == RobotFinder.IP_NOT_FOUND:
         abort(500)
     else:
-        data = {'ip': app.robot_ip_address}
+        data = {'ip': '192.168.0.32'}
         response = requests.post('http://' + app.robot_ip_address + ':8001' + '/basestationip', data=data)
     return 'ok'
 
