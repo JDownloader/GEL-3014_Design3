@@ -7,8 +7,8 @@ from numpy import ndarray
 from vision import visiontools
 
 class VisionRobot():
-    def __init__(self, a_color, camera):
-        self.camera = camera
+    def __init__(self, a_color):
+        self.camera = Camera()
         self.cube = self.set_cube(a_color)
 
 
