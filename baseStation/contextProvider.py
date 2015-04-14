@@ -9,7 +9,9 @@ class ContextProvider:
         self.base_station = base_station
 
     def _get_current_flag(self):
-        return self.base_station.flag.get_matrix_for_ui()
+        if self.base_station.flag is not None:
+            return self.base_station.flag.get_matrix_for_ui()
+        return ''
 
     def get_context(self, robot_ip):
         self.base_station.cube_finder.refresh_position()

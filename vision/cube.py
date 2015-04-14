@@ -15,7 +15,7 @@ PARAMETERS_FOR_FORM_FILTER = {'red': [2, 3, 3, 3],
                               'green': [5, 7, 3, 3],
                               'blue': [5, 8, 3, 3],
                               'yellow': [2, 4, 3, 3],
-                              'orange': [4, 3, 3, 7],
+                              'orange': [3, 3, 3, 7],
                               'purple': [2, 3, 3, 5],
                               'forest_green': [2, 3, 3, 5],
                               'black': [3, 1, 3, 3],
@@ -164,7 +164,7 @@ class WhiteCubeForInBoardCamera(WhiteCube):
     def __init__(self):
         WhiteCube.__init__(self)
         self.black_form_filter = FormFilter([0, 3, 4, 4])
-        self.white_filter = ColorFilter([([0, 0, 130], [180, 60, 255])])
+        self.white_filter = ColorFilter([([0, 0, 115], [180, 60, 255])])
         self.max_pixel_length = 200
 
 

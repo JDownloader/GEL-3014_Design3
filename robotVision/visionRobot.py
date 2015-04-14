@@ -86,8 +86,8 @@ class VisionRobot():
 
     def find_cube_center(self):
         cap = self.camera.getCapt()
-        cv2.namedWindow('BGR', cv2.WINDOW_AUTOSIZE)
-        while cap.isOpened():
+        # cv2.namedWindow('BGR', cv2.WINDOW_AUTOSIZE)
+        if cap.isOpened():
             _,image = cap.read()
             # image = self.camera.remmaping_image(image)
             contour = self.find_contour_cube(image, self.cube)
@@ -95,55 +95,48 @@ class VisionRobot():
                 if contour is not None:
                     moment = self.get_moment(contour)
                     delta_centre = self.find_cube_center_delta(image, moment)
-                    cv2.drawContours(image,[contour],-1,(0,255,0),6)
+                    # cv2.drawContours(image,[contour],-1,(0,255,0),6)
                     return delta_centre
 
             except:
                 print 'Problem with camera'
-            k = cv2.waitKey(5) & 0xFF
-            if k == 27:
-                break
-            cv2.imshow('BGR', image)
-        cv2.destroyAllWindows()
+            # k = cv2.waitKey(5) & 0xFF
+            # if k == 27:
+            #     break
+            # cv2.imshow('BGR', image)
+        return (None, None)
+        # cv2.destroyAllWindows()
 
 if __name__ == "__main__":
 
-        vision= VisionRobot('blue')
-        delta_centre = vision.find_cube_center()
-        print delta_centre
+    camera = Camera()
+    cap = camera.getCapt()
+    color = 'black'
+    vision = VisionRobot(color,camera)
+    cv2.namedWindow('BGR', cv2.WINDOW_AUTOSIZE)
+
+    while cap.isOpened():
 
 
-    # color = 'blue'
-    # vision = VisionRobot(color)
-    # cap = vision.camera.getCapt()
-    #
-    # cv2.namedWindow('BGR', cv2.WINDOW_AUTOSIZE)
-    #
-    # while cap.isOpened():
-    #
-    #
-    #     _,image = cap.read()
-    #
-    #     approx = vision.find_contour_cube(image, vision.cube)
-    #     if approx is not None:
-    #         moment = vision.get_moment(approx)
-    #         delta_centre = vision.find_cube_center_delta(image, moment)
-    #         print delta_centre
-    #
-    #
-    #
-    #
-    #
-    #     cv2.drawContours(image,approx,-1,(0,255,0),6)
-    #
-    #
-    #     k = cv2.waitKey(5) & 0xFF
-    #     if k == 27:
-    #         break
-    #     cv2.imshow('BGR', image)
-    #
-    #
-    # cv2.destroyAllWindows()
-    #
+        _,image = cap.read()
+        # image = self.camera.remmaping_image(image)
+        contour = vision.find_contour_cube(image, vision.cube)
+        try:
+            if contour is not None:
+                moment = vision.get_moment(contour)
+                delta_centre = vision.find_cube_center_delta(image, moment)
+                cv2.drawContours(image,[contour],-1,(0,255,0),6)
+                print delta_centre
 
+        except:
+            print 'Problem with camera'
+        k = cv2.waitKey(5) & 0xFF
+        if k == 27:
+            break
+        cv2.imshow('BGR', image)
+
+        # cv2.destroyAllWindows()
+
+    #
+    cv2.destroyAllWindows()
 
