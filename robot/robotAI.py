@@ -138,7 +138,16 @@ class RobotAI:
         self.robot_angle_and_position.update_with_pathfinding_tuple(tuple_result_from_pathfinding)
 
     def tranpose_flag_matrix(self, flag_matrix):
-        flag_array = numpy.array(flag_matrix)
+        flag_matrix.pop()
+        flag_matrix_without_none = []
+        for cube in flag_matrix:
+            if cube is None:
+                flag_matrix_without_none.append('off')
+            else:
+                flag_matrix_without_none.append(cube)
+        print flag_matrix_without_none
+        flag_array = numpy.array(flag_matrix_without_none)
+        print flag_array
         flag_array_reshaped = flag_array.reshape((3, 3))
         transposed_array = flag_array_reshaped.transpose()
         transposed_array[[0, 2],:] = transposed_array[[2, 0],:]
@@ -217,9 +226,9 @@ class RobotAI:
             else:
                 self.move_in_direction_and_keep_angle('right', 10)
             camera_delta_x = camera_instance.find_cube_center()[0]
-	    while camera_delta_x is None:
-		self.move_in_direction_and_keep_angle('reverse', 10)
-		camera_delta_x = camera_instance.find_cube_center()[0]
+        while camera_delta_x is None:
+            self.move_in_direction_and_keep_angle('reverse', 10)
+            camera_delta_x = camera_instance.find_cube_center()[0]
 
     def approach_cube(self, camera_instance):
         self.robot.gripper_controller.change_vertical_position(0)
@@ -229,10 +238,10 @@ class RobotAI:
             self.center_robot_on_cube(camera_instance)
             self.move_in_direction_and_keep_angle('forward', 20)
             camera_delta_y = camera_instance.find_cube_center()[1]
-	    if camera_delta_y is None:
-		self.move_in_direction_and_keep_angle('reverse', 30)
-		self.center_robot_on_cube(camera_instance)
-		camera_delta_y = 0
+            if camera_delta_y is None:
+                self.move_in_direction_and_keep_angle('reverse', 30)
+                self.center_robot_on_cube(camera_instance)
+                camera_delta_y = 0
         self.move_in_direction_and_keep_angle('forward', 30)
 
     def move_in_direction_and_keep_angle(self, direction, distance):
