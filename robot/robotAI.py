@@ -38,7 +38,7 @@ class RobotAI:
     def construct_flag(self, flag_matrix):
         self.display_flag_for_five_seconds(flag_matrix)
         for cube_index, cube in enumerate(flag_matrix):
-            if cube:
+            if cube is not None:
                 self.grab_cube(str(cube), cube_index)
                 self.place_cube(cube_index)
                 self.rotate_robot_to_target(0)
@@ -138,15 +138,10 @@ class RobotAI:
         self.robot_angle_and_position.update_with_pathfinding_tuple(tuple_result_from_pathfinding)
 
     def tranpose_flag_matrix(self, flag_matrix):
-        flag_matrix.pop()
-        flag_matrix_without_none = []
-        for cube in flag_matrix:
-            if cube is None:
-                flag_matrix_without_none.append('off')
-            else:
-                flag_matrix_without_none.append(cube)
-        print flag_matrix_without_none
-        flag_array = numpy.array(flag_matrix_without_none)
+	print flag_matrix
+	if len(flag_matrix) > 9:
+            flag_matrix.pop()
+        flag_array = numpy.array(flag_matrix)
         print flag_array
         flag_array_reshaped = flag_array.reshape((3, 3))
         transposed_array = flag_array_reshaped.transpose()
@@ -271,6 +266,8 @@ class RobotAI:
                                                                         tableConsts.SAFE_POINT)
         self.move_two_step_to_point(path_to_safe_zone)
         cube_pos = (-500, -500)
+	print str(cube_color)
+	print type(cube_color)
         while not Position(cube_pos[0], cube_pos[1]).is_valid():
             cube_pos = self.receive_cube_position_from_kinect(cube_color)
             self.move_in_direction_and_keep_angle('reverse', 20)
