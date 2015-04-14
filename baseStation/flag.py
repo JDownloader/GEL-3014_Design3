@@ -6,7 +6,7 @@ here = path.abspath(path.dirname(__file__))
 
 class Flag():
     FLAGS_FILE = here + '/flags.json'
-    NUMBER_OF_TILES_IN_FLAG = 9
+    NUMBER_OF_TILES_IN_FLAG = 10
     cubes_of_tiles = [None]*NUMBER_OF_TILES_IN_FLAG
 
     def __init__(self, country):

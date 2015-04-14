@@ -65,7 +65,7 @@ def fetch_cube_position():
     cube_position = (-500, -500)
     if request.method == 'POST':
         color = request.form.get('color', None)
-        cube_position = app.base_station.cube_finder.get_cube_position_whit_color(color)
+        cube_position = app.base_station.cube_finder.get_cube_position_with_color(color)
     return jsonify(position_x=cube_position[0] , position_y=cube_position[1])
 
 @app.route('/path', methods=['POST'])

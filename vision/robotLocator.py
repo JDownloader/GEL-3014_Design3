@@ -220,8 +220,6 @@ class RobotPosition(Position):
                        self.position[1] + distance * math.cos(math.radians(self.angle - 90)))
         self.position = new_pos
 
-
-
     def is_like(self, other_position):
         if abs(self.angle-other_position.angle) < self.ANGLE_TOLERANCE and \
                         abs(self.position[0]-other_position.position[0]) < self.DISTANCE_TOLERANCE and \

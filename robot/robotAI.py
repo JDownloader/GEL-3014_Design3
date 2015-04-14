@@ -5,7 +5,7 @@ from robotVision.visionRobot import VisionRobot
 from vision.robotLocator import RobotPosition, Position
 import pathfinding.constants as tableConsts
 import numpy
-
+import math
 
 class RobotAI:
     def __init__(self, base_station_client):
@@ -116,9 +116,7 @@ class RobotAI:
                                                                                target_position)
         else:
             pathfinding_result = self.pathfinder.find_path_to_point(self.robot_angle_and_position, target_position)
-        print 'current pos ' + str(self.robot_angle_and_position.angle) + ' ' + str(self.robot_angle_and_position.position)
-        print 'target pos' + str(target_position)
-        print 'pathfinding result ' + str(pathfinding_result[0]) + ' ' + str(pathfinding_result[1])
+        self.send_path_to_base_station(pathfinding_result)
 
         self._send_move_commands(pathfinding_result, movement_direction)
 
@@ -260,6 +258,7 @@ class RobotAI:
         self.robot.gripper_controller.change_vertical_position(2)
 
     def move_two_step_to_point(self, movement_dictionary):
+        self.send_path_to_base_station(movement_dictionary)
         self.move_in_direction_and_keep_angle(movement_dictionary['first_direction'],
                                               movement_dictionary['first_distance'])
         self.rotate_robot_to_target(movement_dictionary['angle_before_second_move'])
@@ -290,5 +289,59 @@ class RobotAI:
         reversed_dict['angle_before_second_move'] = 0
         return reversed_dict
 
+    def send_path_to_base_station(self, path):
+        if type(path) is tuple:
+            final_angle = 4
+            arrival_point = (self.robot_angle_and_position.position[0] +
+                             math.sin(math.radians(final_angle)) * path[1], self.robot_angle_and_position.position[1]
+                             + math.cos(math.radians(final_angle)) * path[1])
+            # self.base_station.send_pathfinding_itinerary(arrival_point)
+            print arrival_point
+        elif type(path) is dict:
+            arrival_point = (0, 0)
+            intermediate_point = (0, 0)
+            if path['first_direction'] == 'forward':
+                intermediate_point = (self.robot_angle_and_position.position[0] + path['first_distance'] *
+                                      math.sin(math.radians(self.robot_angle_and_position.angle)),
+                           self.robot_angle_and_position.position[1] + path['first_distance'] *
+                           math.cos(math.radians(self.robot_angle_and_position.angle)))
+            elif path['first_direction'] == 'reverse':
+                intermediate_point = (self.robot_angle_and_position.position[0] + path['first_distance'] *
+                                      math.sin(math.radians(self.robot_angle_and_position.angle + 180)),
+                           self.robot_angle_and_position.position[1] + path['first_distance'] *
+                           math.cos(math.radians(self.robot_angle_and_position.angle + 180)))
+            elif path['first_direction'] == 'left':
+                intermediate_point = (self.robot_angle_and_position.position[0] + path['first_distance'] *
+                                      math.sin(math.radians(self.robot_angle_and_position.angle + 90)),
+                           self.robot_angle_and_position.position[1] + path['first_distance'] *
+                           math.cos(math.radians(self.robot_angle_and_position.angle + 90)))
+            elif path['first_direction'] == 'right':
+                intermediate_point = (self.robot_angle_and_position.position[0] + path['first_distance'] *
+                                      math.sin(math.radians(self.robot_angle_and_position.angle - 90)),
+                           self.robot_angle_and_position.position[1] + path['first_distance'] *
+                           math.cos(math.radians(self.robot_angle_and_position.angle - 90)))
 
+            intermediate_angle = self.robot_angle_and_position.angle + path['angle_before_second_move']
+            if path['second_direction'] == 'forward':
+                arrival_point = (intermediate_point[0] + path['second_distance'] *
+                                      math.sin(math.radians(intermediate_angle)),
+                           intermediate_point[1] + path['second_distance'] *
+                           math.cos(math.radians(intermediate_angle)))
+            elif path['second_direction'] == 'reverse':
+                arrival_point = (intermediate_point[0] + path['second_distance'] *
+                                      math.sin(math.radians(intermediate_angle + 180)),
+                           intermediate_point[1] + path['second_distance'] *
+                           math.cos(math.radians(intermediate_angle + 180)))
+            elif path['second_direction'] == 'left':
+                arrival_point = (intermediate_point[0] + path['second_distance'] *
+                                      math.sin(math.radians(intermediate_angle + 90)),
+                           intermediate_point[1] + path['second_distance'] *
+                           math.cos(math.radians(intermediate_angle + 90)))
+            elif path['second_direction'] == 'right':
+                arrival_point = (intermediate_point[0] + path['second_distance'] *
+                                      math.sin(math.radians(intermediate_angle - 90)),
+                           intermediate_point[1] + path['second_distance'] *
+                           math.cos(math.radians(intermediate_angle - 90)))
 
+            # self.base_station.send_pathfinding_itinerary((intermediate_point, arrival_point))
+            print (intermediate_point, arrival_point)

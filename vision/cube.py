@@ -195,6 +195,7 @@ class BlackCube(Cube):
 
     def find_position(self, img_hvg, kinect, x_shift=0):
         from robotLocator import Position
+        self.position = (None, None)
         x_values = []
         y_values = []
         table_back = TABLE_BACK_POSITION.get(kinect.table)
@@ -206,8 +207,8 @@ class BlackCube(Cube):
                     x_values.append(position[0])
                     y_values.append(position[1])
         if x_values.__len__() > 0:
-            return (self.get_median(x_values), self.get_median(y_values))
-        return (0, 0)
+            self.position = (self.get_median(x_values), self.get_median(y_values))
+        return self.position
 
     def get_median(self, values):
         return np.median(np.array(values))

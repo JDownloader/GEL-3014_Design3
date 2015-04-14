@@ -26,8 +26,9 @@ class CubeFinder():
         for x in range(0, 20):
             image_hsv = self.get_hsv_with_stencil(color)
             cube.find_position(image_hsv, self.kinect)
-            if Position(cube.position[0], cube.position[1]).is_valid():
-                break
+            if cube.position is not None:
+                if Position(cube.position[0], cube.position[1]).is_valid():
+                    break
             time.sleep(0.2)
         self.cubes.append(cube)
         return cube.position
