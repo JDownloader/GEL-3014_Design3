@@ -39,7 +39,7 @@ def start():
 @app.route('/basestationip', methods=['POST'])
 def recieve_base_stationIP():
     if request.method == 'POST':
-        app.base_station_ip_address = request.form.get('ip', None)
+        app.base_station_ip_address = request.remote_addr
     return 'ok'
 
 

@@ -84,7 +84,7 @@ class VisionRobot():
 
     def find_cube_center(self):
         cap = self.camera.getCapt()
-        cv2.namedWindow('BGR', cv2.WINDOW_AUTOSIZE)
+        # cv2.namedWindow('BGR', cv2.WINDOW_AUTOSIZE)
         if cap.isOpened():
             _,image = cap.read()
             # image = self.camera.remmaping_image(image)
