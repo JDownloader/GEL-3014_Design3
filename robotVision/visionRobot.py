@@ -14,7 +14,7 @@ class VisionRobot():
 
     def set_cube(self, a_color):
         cube = None
-        if a_color is "white":
+        if a_color is 'white':
             cube = WhiteCubeForInBoardCamera()
         else:
             cube = Cube(a_color)
@@ -23,7 +23,7 @@ class VisionRobot():
     def find_contour_cube(self, image, cube):
         new_image = self.apply_mask_image(image, cube)
         contour = None
-        if cube.color is "black":
+        if cube.color is "black" or cube.color is "white":
             contour = self.camera.find_contour_cube_black(new_image)
         else:
             contour = self.camera.find_largest_contour_color(new_image)
@@ -57,12 +57,14 @@ class VisionRobot():
         return marker
 
     def apply_mask_image(self, image, cube):
-        if cube.color is "white":
-            img_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-            # image_hsv1 = cv2.resize(img_hsv, (0,0), fx=0.3, fy=0.3)
-            new_image = cube.apply_filters(img_hsv)
-        elif cube.color is "black":
+        if cube.color is "white" or cube.color is "black":
             new_image = self.camera.apply_filter_black_cube(image)
+            # img_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
+            # img_hsv = cv2.medianBlur(img_hsv, 5)
+            # image_hsv1 = cv2.resize(img_hsv, (0,0), fx=0.3, fy=0.3)
+            # new_image = cube.apply_filters(img_hsv)
+        # elif cube.color is "black":
+        #     new_image = self.camera.apply_filter_black_cube(image)
         else:
             new_image = self.camera.apply_filter_color_cubes(image, cube)
         return new_image
