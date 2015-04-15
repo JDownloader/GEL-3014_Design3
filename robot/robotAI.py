@@ -17,8 +17,9 @@ class RobotAI:
 
     def run_sequence(self):
         self.pre_atlas_sequence()
-        flag = self.tranpose_flag_matrix(self.resolve_atlas_enigma())
-        self.construct_flag(flag)
+        while True:
+            flag = self.tranpose_flag_matrix(self.resolve_atlas_enigma())
+            self.construct_flag(flag)
 
     def pre_atlas_sequence(self):
         self.update_robot_position_from_kinect()
@@ -43,6 +44,12 @@ class RobotAI:
                 self.place_cube(cube_index)
                 self.rotate_robot_to_target(0)
                 self.move_exactly_to_docking_point()
+        self.robot.change_led_color('red', 9)
+        print 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+        print 'XXXXXXXXXXXXXXXXXXXXXXXProchain drapeau?XXXXXXXXXXXXXXXXXXXXXXX'
+        print 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
+        wait = raw_input()
+        self.robot.change_led_color('off', 9)
 
     def grab_cube(self, cube, cube_index):
         self.robot.change_led_color(cube, cube_index)
@@ -72,12 +79,13 @@ class RobotAI:
         self.robot.move('forward', cube_movement_dictionary.get('length_distance'))
         self.robot.move_gripper_vertically(0)
         self.robot.change_pliers_opening(1)
+        self.robot.move_gripper_vertically(2)
+        self.robot.change_pliers_opening(2)
         self.robot.move('reverse', cube_movement_dictionary.get('length_distance'))
         if cube_movement_dictionary.get('direction') != 'forward':
             self.robot.move(self.reverse_movement_direction(cube_movement_dictionary.get('direction')),
                             cube_movement_dictionary.get('width_distance'))
-        self.robot.move_gripper_vertically(2)
-        self.robot.change_pliers_opening(2)
+
 
     def move_robot_to_pickup_cube(self, cube_color):
         camera = VisionRobot(cube_color)
@@ -294,7 +302,7 @@ class RobotAI:
             arrival_point = (self.robot_angle_and_position.position[0] +
                              math.sin(math.radians(final_angle)) * path[1], self.robot_angle_and_position.position[1]
                              + math.cos(math.radians(final_angle)) * path[1])
-            # self.base_station.send_pathfinding_itinerary(arrival_point)
+            self.base_station.send_pathfinding_itinerary(arrival_point)
             print arrival_point
         elif type(path) is dict:
             arrival_point = (0, 0)
@@ -342,5 +350,5 @@ class RobotAI:
                            intermediate_point[1] + path['second_distance'] *
                            math.cos(math.radians(intermediate_angle - 90)))
 
-            # self.base_station.send_pathfinding_itinerary((intermediate_point, arrival_point))
+            self.base_station.send_pathfinding_itinerary((intermediate_point, arrival_point))
             print (intermediate_point, arrival_point)

@@ -194,4 +194,5 @@
 "Vietnam": [null, "red", null, null, "yellow", null, null, "red", null, "white"],
 "Yemen": [null, null, null, "red", "white", "black", null, null, null, "white"],
 "Zambia": ["green", "green", null, "green", "green", null, "yellow", "black", null, "white"],
-"Zimbabwe": ["white", "white", "yellow", "green", "white", "black", "green", "yellow", "red", "white"]}
+"Zimbabwe": ["white", "white", "yellow", "green", "white", "black", "green", "yellow", "red", "white"],
+"Alma": [null, "green", "yellow", "green", "blue", "white", null, "green", "red", "white"]}

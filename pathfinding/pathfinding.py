@@ -79,17 +79,17 @@ class Pathfinding:
         #         movement_dict['second_direction'] = 'right'
         elif delta_y < 0:
             if delta_x >= 0:
-                movement_dict['first_direction'] = 'left'
+                movement_dict['second_direction'] = 'left'
             else:
-                movement_dict['first_direction'] = 'right'
-            movement_dict['first_distance'] = abs(delta_x)
-            movement_dict['second_direction'] = 'reverse'
-            movement_dict['second_distance'] = abs(delta_y)
+                movement_dict['second_direction'] = 'right'
+            movement_dict['second_distance'] = abs(delta_x)
+            movement_dict['first_direction'] = 'reverse'
+            movement_dict['first_distance'] = abs(delta_y)
         else:
             movement_dict['first_direction'] = 'forward'
             movement_dict['first_distance'] = abs(delta_y)
-            movement_dict['second_direction'] = 'forward'
-            movement_dict['second_distance'] = abs(delta_x / 2)
+            movement_dict['second_direction'] = 'reverse'
+            movement_dict['second_distance'] = 100
             if delta_x >= 0:
                 movement_dict['angle_before_second_move'] = 90
             else:
