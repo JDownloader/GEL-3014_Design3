@@ -79,6 +79,7 @@ class RobotAI:
     def drop_cube_at_intended_point(self, cube_index):
         cube_movement_dictionary = tableConsts.CUBE_DROP_MOVEMENTS_LIST[cube_index]
         self.robot.move_gripper_vertically(1)
+        self.move_exactly_to_docking_point(angle=180)
         if cube_movement_dictionary.get('direction') != 'forward':
             self.robot.move(cube_movement_dictionary.get('direction'), cube_movement_dictionary.get('width_distance'))
         self.robot.move('forward', cube_movement_dictionary.get('length_distance'))
