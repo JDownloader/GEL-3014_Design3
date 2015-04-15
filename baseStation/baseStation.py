@@ -11,7 +11,7 @@ class BaseStation():
             self.kinect = Kinect('3')
         except NoKinectDetectedException:
             self.kinect = FakeKinect()
-        self.cube_finder = DemoCubeFinder(self.kinect)
+        self.cube_finder = CubeFinder(self.kinect)
         self.flag = None
         self.question = ''
         self.answer = ''

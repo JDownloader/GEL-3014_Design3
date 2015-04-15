@@ -11,7 +11,7 @@ from questionanswering.question_processor import QuestionProcessor
 from baseStation import BaseStation
 import flagProcessor
 from tests.test_vision_kinect import FakeKinect
-
+from flag import Flag
 SERVER_PORT = 8000
 
 
@@ -71,11 +71,14 @@ def fetch_cube_position():
 @app.route('/path', methods=['POST'])
 def receive_path():
     if request.method == 'POST':
-        print 'Next path: '
-        print request.form.get('path', None)
+        path = request.form.get('path', None)
+        print 'Next path: ' + str(path)
+        app.context_provider.set_path(path)
+    return "ok"
 
 @app.route('/flag')
 def fetch_flag():
+    # flag = Flag('Canada').get_matrix()
     flag = ''
     for cycle in xrange(cte.NUMBER_OF_WRONG_ANSWER_ALLOWED):
         question = fetch_question()
@@ -91,6 +94,8 @@ def fetch_flag():
             flag = flag_processor.get_flag()
 
             break
+    app.base_station.set_question('From where is your favorite J-D?', 'Alma')
+    flag = Flag('Alma').get_matrix()
     return jsonify(flag=flag)
 
 # A javaScript fonction calls this method every 250 ms

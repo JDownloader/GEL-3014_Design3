@@ -7,6 +7,7 @@ from vision.robotLocator import RobotPosition
 class ContextProvider:
     def __init__(self, base_station):
         self.base_station = base_station
+        self.path = []
 
     def _get_current_flag(self):
         if self.base_station.flag is not None:
@@ -15,13 +16,12 @@ class ContextProvider:
 
     def get_context(self, robot_ip):
         self.base_station.cube_finder.refresh_position()
-        pos_y = random.randrange(0, 400, 10)
-        angle = random.randrange(0, 359, 45)
         position = self.get_position_data()
-        sample_status = { 'top': 600-position.position[1]*0.27,
-                          'left': 302-position.position[0]*0.27,
+        sample_status = { 'top': self.convert_x_position(position.position[1]),
+                          'left': self.convert_x_position(position.position[0]),
                           'angle': 360 - position.get_angle_in_deg(),
                           'kinect_is_fake': self.is_fake_kinect(),
+                          'path': self.path,
                           # 'chrono': strftime('%Mm%Ss', gmtime(tim)),
                           'chrono': '',
                           'robotIP': robot_ip,
@@ -51,3 +51,19 @@ class ContextProvider:
                     and self.base_station.robot_position.angle is not None:
                 position = self.base_station.robot_position
         return position
+
+    def convert_x_position(self, x):
+        return 600-x*0.27
+
+    def convert_y_position(self, y):
+        return 302-y*0.27
+
+    def convert_position(self, position):
+        return (self.convert_x_position(position[0]), self.convert_y_position(position[1]))
+
+    def set_path(self, path):
+        new_path = []
+        for move in path:
+            new_move = self.convert_position(move)
+            new_path.append(new_move)
+        self.path = new_path

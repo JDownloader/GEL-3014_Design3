@@ -23,5 +23,6 @@ class BaseStationClient():
         return (content['position_x'], content['position_y'])
 
     def send_pathfinding_itinerary(self, path):
-        data = {'path': path}
-        requests.post('http://' + self.app.base_station_ip_address + ':8000' + cte.PATH_RESSOURCE, data=data)
+        print path
+        raw_data = {'path': str(path)}
+        requests.post('http://' + self.app.base_station_ip_address + ':8000' + cte.PATH_RESSOURCE, data=raw_data)
