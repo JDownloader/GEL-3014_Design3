@@ -64,6 +64,7 @@ class VisionRobot():
             new_image = VisionTools().get_hsv_image(image)
             new_image = cube.optimize_img(new_image)
             new_image = cube.apply_filters(new_image)
+            new_image = cube.refilter(new_image)
             new_image = cube.deoptimize_img(new_image)
         elif cube.color is "black":
             new_image = self.camera.apply_filter_black_cube(image)

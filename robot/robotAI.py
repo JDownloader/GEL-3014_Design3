@@ -275,8 +275,8 @@ class RobotAI:
                                                                         tableConsts.SAFE_POINT)
         self.move_two_step_to_point(path_to_safe_zone)
         cube_pos = (-500, -500)
-	print str(cube_color)
-	print type(cube_color)
+        print str(cube_color)
+        print type(cube_color)
         while not Position(cube_pos[0], cube_pos[1]).is_valid():
             cube_pos = self.receive_cube_position_from_kinect(cube_color)
             self.move_in_direction_and_keep_angle('reverse', 20)

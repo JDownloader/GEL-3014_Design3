@@ -69,14 +69,6 @@ class Pathfinding:
                 movement_dict['second_direction'] = 'left'
             else:
                 movement_dict['second_direction'] = 'right'
-        # elif cube[1] >= constants.TABLE_TOP_RIGHT_BUFFERED_WALL[1]:
-        #     movement_dict['first_direction'] = 'forward'
-        #     movement_dict['first_distance'] = abs(delta_y - constants.CUBE_BUFFER_RADIUS)
-        #     movement_dict['second_distance'] = 200
-        #     if delta_x >=0:
-        #         movement_dict['second_direction'] = 'left'
-        #     else:
-        #         movement_dict['second_direction'] = 'right'
         elif delta_y < 0:
             if delta_x >= 0:
                 movement_dict['second_direction'] = 'left'
@@ -106,13 +98,13 @@ class Pathfinding:
         delta_x = point[0] - robot_angle_and_position.position[0]
         delta_y = point[1] - robot_angle_and_position.position[1]
         if delta_x >= 0:
-            movement_dict['first_direction'] = 'left'
+            movement_dict['second_direction'] = 'left'
         else:
-            movement_dict['first_direction'] = 'right'
+            movement_dict['second_direction'] = 'right'
         if delta_y >= 0:
-            movement_dict['second_direction'] = 'forward'
+            movement_dict['first_direction'] = 'forward'
         else:
-            movement_dict['second_direction'] = 'reverse'
-        movement_dict['second_distance'] = abs(delta_y)
-        movement_dict['first_distance'] = abs(delta_x)
+            movement_dict['first_direction'] = 'reverse'
+        movement_dict['first_distance'] = abs(delta_y)
+        movement_dict['second_distance'] = abs(delta_x)
         return movement_dict
