@@ -43,7 +43,7 @@ class ContextProvider:
 
     def get_position_data(self):
         position = RobotPosition()
-        position.position = (800, 1000)
+        position.position = (-500, -500)
         position.angle = 0
         if self.base_station.robot_position is not None:
             if self.base_station.robot_position.position is not None \
