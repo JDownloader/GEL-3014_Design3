@@ -47,6 +47,7 @@ class RobotAI:
     def grab_cube(self, cube, cube_index):
         self.robot.change_led_color(cube, cube_index)
         cube_position = self.kinect_cube_find_sequence(cube)
+        print 'cube pos = ' + str(cube_position)
         path_to_cube = self.pathfinder.find_two_step_path_to_cube(self.robot_angle_and_position, cube_position)
         self.move_two_step_to_point(path_to_cube)
         self.move_robot_to_pickup_cube(cube)
@@ -136,8 +137,8 @@ class RobotAI:
         self.robot_angle_and_position.update_with_pathfinding_tuple(tuple_result_from_pathfinding)
 
     def tranpose_flag_matrix(self, flag_matrix):
-	print flag_matrix
-	if len(flag_matrix) > 9:
+        print flag_matrix
+        if len(flag_matrix) > 9:
             flag_matrix.pop()
         flag_array = numpy.array(flag_matrix)
         print flag_array
