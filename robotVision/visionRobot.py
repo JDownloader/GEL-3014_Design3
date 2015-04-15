@@ -2,8 +2,8 @@ import time
 import math
 import cv2
 from camera import Camera
-from vision.cube import Cube, WhiteCubeForInBoardCamera
-from numpy import ndarray
+from vision.cube import Cube, WhiteCubeForInBoardCamera, FormStencil
+import numpy as np
 from vision.visiontools import VisionTools
 
 class VisionRobot():
@@ -26,7 +26,7 @@ class VisionRobot():
     def find_contour_cube(self, image, cube):
         new_image = self.apply_mask_image(image, cube)
         contour = None
-        if cube.color is "black":
+        if cube.color is "black" or cube.color is 'white':
             contour = self.camera.find_contour_cube_black(new_image)
         else:
             contour = self.camera.find_largest_contour_color(new_image)
@@ -60,12 +60,10 @@ class VisionRobot():
         return marker
 
     def apply_mask_image(self, image, cube):
+        new_image = self.apply_gripper_mask(image, cube.color)
         if cube.color is "white":
-            new_image = VisionTools().get_hsv_image(image)
-            new_image = cube.optimize_img(new_image)
-            new_image = cube.apply_filters(new_image)
-            new_image = cube.refilter(new_image)
-            new_image = cube.deoptimize_img(new_image)
+            new_image = VisionTools().get_hsv_image(new_image)
+            new_image = cube.get_img(new_image)
         elif cube.color is "black":
             new_image = self.camera.apply_filter_black_cube(image)
             # img_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
@@ -77,6 +75,15 @@ class VisionRobot():
         else:
             new_image = self.camera.apply_filter_color_cubes(image, cube)
         return new_image
+
+    def apply_gripper_mask(self,image,cube_color):
+        polyform = [np.array([[0, 332], [257, 332], [257, 480], [0, 480]], np.int32),
+                    np.array([[422, 350], [422, 480], [640, 480], [640, 350]], np.int32)]
+        if cube_color == 'white':
+            return FormStencil(polyform).apply(image, (254, 254, 254))
+        else:
+            return FormStencil(polyform).apply(image, (0, 0, 0))
+
 
     def get_moment(self, largest_contour):
         moment = None
@@ -91,6 +98,7 @@ class VisionRobot():
         centerY = int(moment['m01']/moment['m00'])
         delta_centreX = width/2 - centerX
         delta_centreY = height/2 - centerY
+        print (delta_centreX, delta_centreY)
         return delta_centreX, delta_centreY
 
     def find_cube_center(self):

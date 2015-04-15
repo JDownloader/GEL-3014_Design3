@@ -71,8 +71,9 @@ def fetch_cube_position():
 @app.route('/path', methods=['POST'])
 def receive_path():
     if request.method == 'POST':
-        path = request.form.get('path', None)
-        print 'Next path: ' + str(path)
+        path = eval(request.data)
+        print len(path)
+    #     # tbl = json.loads(path)['path']
         app.context_provider.set_path(path)
     return "ok"
 

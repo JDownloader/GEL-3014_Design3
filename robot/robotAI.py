@@ -252,10 +252,14 @@ class RobotAI:
                 camera_delta_x = camera_instance.find_cube_center()[0]
 
     def approach_cube(self, camera_instance):
+        if camera_instance.cube == 'white' or camera_instance.cube == 'black':
+            y_value = -80
+        else:
+            y_value = -140
         self.robot.gripper_controller.change_vertical_position(0)
         self.robot.gripper_controller.pliers_control(2)
         camera_delta_y = camera_instance.find_cube_center()[1]
-        while camera_delta_y > -150:
+        while camera_delta_y > y_value:
             self.center_robot_on_cube(camera_instance)
             self.move_in_direction_and_keep_angle('forward', 20)
             camera_delta_y = camera_instance.find_cube_center()[1]
@@ -263,7 +267,7 @@ class RobotAI:
                 self.move_in_direction_and_keep_angle('reverse', 30)
                 self.center_robot_on_cube(camera_instance)
                 camera_delta_y = camera_instance.find_cube_center()[1]
-        self.move_in_direction_and_keep_angle('forward', 30)
+        self.move_in_direction_and_keep_angle('forward', 50)
 
     def move_in_direction_and_keep_angle(self, direction, distance):
         self.robot.move(direction, distance)

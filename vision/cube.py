@@ -17,7 +17,7 @@ PARAMETERS_FOR_FORM_FILTER = {'red': [2, 3, 3, 3],
                               'yellow': [2, 4, 3, 3],
                               'orange': [2, 3, 3, 7],
                               'purple': [2, 3, 3, 5],
-                              'forest_green': [3, 3, 3, 5],
+                              'forest_green': [2, 3, 3, 5],
                               'black': [3, 1, 3, 3],
                               'white': [0, 3, 4, 4]}
 
@@ -80,9 +80,11 @@ class FormStencil:
             poly_line_reshaped = poly_line.reshape((-1, 1, 2))
             self.poly_lines.append(poly_line_reshaped)
 
-    def apply(self, img_mask):
+    def apply(self, img_mask, color=None):
+        if color is None:
+            color = (0, 0, 0)
         img_result = np.copy(img_mask)
-        cv2.fillPoly(img_result, self.poly_lines, (0, 0, 0))
+        cv2.fillPoly(img_result, self.poly_lines, color)
         return img_result
 
 
@@ -156,7 +158,9 @@ class WhiteCube(Cube):
                         if mask_black[i, x] and mask_white[i, x]:
                             draw_line = True
                         if draw_line and mask_white[i, x]:
+                            b_and_w_junction[i, x][0] = 255
                             b_and_w_junction[i, x][1] = 255
+                            b_and_w_junction[i, x][2] = 255
         return b_and_w_junction
 
 
@@ -164,7 +168,7 @@ class WhiteCubeForInBoardCamera(WhiteCube):
     def __init__(self):
         WhiteCube.__init__(self)
         self.black_form_filter = FormFilter([0, 3, 3, 3])
-        self.white_filter = ColorFilter([([0, 0, 122], [180, 60, 255])])
+        self.white_filter = ColorFilter([([0, 0, 100], [180, 70, 253])])
         self.black_filter = ColorFilter([([0, 0, 0], [180, 256, 90])])
         self.max_pixel_length = 15
 
@@ -180,7 +184,15 @@ class WhiteCubeForInBoardCamera(WhiteCube):
         return img
 
     def refilter(self, img):
-        return FormFilter([4, 5, 5, 5]).apply(img)
+        return FormFilter([6, 9, 3, 3]).apply(img)
+
+    def get_img(self, img_hsv):
+        new_image = self.optimize_img(img_hsv)
+        new_image = self.apply_filters(new_image)
+        new_image = self.refilter(new_image)
+        new_image = self.deoptimize_img(new_image)
+        return new_image
+
 
 class BlackCube(Cube):
     CALIBRATION_ATTEMPT = 25

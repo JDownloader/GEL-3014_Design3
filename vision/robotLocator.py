@@ -56,7 +56,7 @@ class RobotLocator():
         else:
             img = kinect.grab_new_image(bilateral_filter_activated=True)
         img_hsv = VisionTools().get_hsv_image(img)
-        polyline = np.array([[0, 280], [640, 280], [640, 480], [0, 480]], np.int32)
+        polyline = np.array([[0, 270], [640, 270], [640, 480], [0, 480]], np.int32)
         stencil = FormStencil([polyline])
         return stencil.apply(img_hsv)
 

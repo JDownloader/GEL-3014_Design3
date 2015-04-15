@@ -25,4 +25,5 @@ class BaseStationClient():
     def send_pathfinding_itinerary(self, path):
         print path
         raw_data = {'path': str(path)}
-        requests.post('http://' + self.app.base_station_ip_address + ':8000' + cte.PATH_RESSOURCE, data=raw_data)
+        tbl = json.dumps(raw_data)
+        requests.post('http://' + self.app.base_station_ip_address + ':8000' + cte.PATH_RESSOURCE, data=path)

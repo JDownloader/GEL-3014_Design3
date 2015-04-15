@@ -17,11 +17,11 @@ class ContextProvider:
     def get_context(self, robot_ip):
         self.base_station.cube_finder.refresh_position()
         position = self.get_position_data()
-        sample_status = { 'top': self.convert_x_position(position.position[1]),
-                          'left': self.convert_x_position(position.position[0]),
+        sample_status = { 'top': position.position[1],
+                          'left': position.position[0],
                           'angle': 360 - position.get_angle_in_deg(),
                           'kinect_is_fake': self.is_fake_kinect(),
-                          'path': self.path,
+                          'path': [[546, 248], [438, 140]],
                           # 'chrono': strftime('%Mm%Ss', gmtime(tim)),
                           'chrono': '',
                           'robotIP': robot_ip,
@@ -50,6 +50,7 @@ class ContextProvider:
             if self.base_station.robot_position.position is not None \
                     and self.base_station.robot_position.angle is not None:
                 position = self.base_station.robot_position
+        position.position = (100, 100)
         return position
 
     def convert_x_position(self, x):
@@ -59,11 +60,12 @@ class ContextProvider:
         return int(float(302)-float(y)*float(0.27))
 
     def convert_position(self, position):
-        return (self.convert_x_position(position[0]), self.convert_y_position(position[1]))
+        return [self.convert_x_position(position[0]), self.convert_y_position(position[1])]
 
     def set_path(self, path):
         new_path = []
         for move in path:
             new_move = self.convert_position(move)
             new_path.append(new_move)
+        print new_path
         self.path = new_path

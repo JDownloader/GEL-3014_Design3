@@ -63,10 +63,10 @@ class Camera():
 
     def find_contour_cube_black(self, image):
         contours, hierarchy = cv2.findContours(image,cv2.RETR_TREE,cv2.CHAIN_APPROX_SIMPLE)
-        cnt = contours[0]
+        approx = None
+
         biggest = None
         max_area = 0
-        approx = None
         for i in contours:
             area = cv2.contourArea(i)
             if area > 5000 and area < 100000 :
