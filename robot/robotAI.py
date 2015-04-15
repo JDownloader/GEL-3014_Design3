@@ -44,9 +44,14 @@ class RobotAI:
                 self.place_cube(cube_index)
                 self.rotate_robot_to_target(0)
                 self.move_exactly_to_docking_point()
+        for led_index in range(0, 9):
+            self.robot.change_led_color('off', led_index)
         self.robot.change_led_color('red', 9)
+        print '  ()()'
+        print '  (oo)'
+        print '('')('')'
         print 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
-        print 'XXXXXXXXXXXXXXXXXXXXXXXProchain drapeau?XXXXXXXXXXXXXXXXXXXXXXX'
+        print 'XXXXXXXXXXXXXXXXXXXXXX Prochain drapeau? XXXXXXXXXXXXXXXXXXXXXX'
         print 'XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX'
         wait = raw_input()
         self.robot.change_led_color('off', 9)
@@ -303,7 +308,7 @@ class RobotAI:
             arrival_point = (self.robot_angle_and_position.position[0] +
                              math.sin(math.radians(final_angle)) * path[1], self.robot_angle_and_position.position[1]
                              + math.cos(math.radians(final_angle)) * path[1])
-            self.base_station.send_pathfinding_itinerary(arrival_point)
+            self.base_station.send_pathfinding_itinerary([arrival_point])
             print arrival_point
         elif type(path) is dict:
             arrival_point = (0, 0)
@@ -351,5 +356,5 @@ class RobotAI:
                            intermediate_point[1] + path['second_distance'] *
                            math.cos(math.radians(intermediate_angle - 90)))
 
-            self.base_station.send_pathfinding_itinerary((intermediate_point, arrival_point))
+            self.base_station.send_pathfinding_itinerary([intermediate_point, arrival_point])
             print (intermediate_point, arrival_point)

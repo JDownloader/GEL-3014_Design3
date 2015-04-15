@@ -73,6 +73,7 @@ def receive_path():
     if request.method == 'POST':
         print 'Next path: '
         print request.form.get('path', None)
+    return "ok"
 
 @app.route('/flag')
 def fetch_flag():
