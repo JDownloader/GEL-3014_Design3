@@ -4,11 +4,14 @@ import cv2
 from camera import Camera
 from vision.cube import Cube, WhiteCubeForInBoardCamera
 from numpy import ndarray
-from vision import visiontools
+from vision.visiontools import VisionTools
 
 class VisionRobot():
-    def __init__(self, a_color):
-        self.camera = Camera()
+    def __init__(self, a_color, camera=None):
+        if camera is None:
+            self.camera = Camera()
+        else:
+            self.camera = camera
         self.cube = self.set_cube(a_color)
 
 
@@ -23,7 +26,7 @@ class VisionRobot():
     def find_contour_cube(self, image, cube):
         new_image = self.apply_mask_image(image, cube)
         contour = None
-        if cube.color is "black" or cube.color is "white":
+        if cube.color is "black":
             contour = self.camera.find_contour_cube_black(new_image)
         else:
             contour = self.camera.find_largest_contour_color(new_image)
@@ -57,7 +60,12 @@ class VisionRobot():
         return marker
 
     def apply_mask_image(self, image, cube):
-        if cube.color is "white" or cube.color is "black":
+        if cube.color is "white":
+            new_image = VisionTools().get_hsv_image(image)
+            new_image = cube.optimize_img(new_image)
+            new_image = cube.apply_filters(new_image)
+            new_image = cube.deoptimize_img(new_image)
+        elif cube.color is "black":
             new_image = self.camera.apply_filter_black_cube(image)
             # img_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
             # img_hsv = cv2.medianBlur(img_hsv, 5)
@@ -111,8 +119,8 @@ if __name__ == "__main__":
 
     camera = Camera()
     cap = camera.getCapt()
-    color = 'black'
-    vision = VisionRobot(color,camera)
+    color = 'white'
+    vision = VisionRobot(color, camera)
     cv2.namedWindow('BGR', cv2.WINDOW_AUTOSIZE)
 
     while cap.isOpened():

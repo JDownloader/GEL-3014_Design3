@@ -163,10 +163,21 @@ class WhiteCube(Cube):
 class WhiteCubeForInBoardCamera(WhiteCube):
     def __init__(self):
         WhiteCube.__init__(self)
-        self.black_form_filter = FormFilter([0, 3, 4, 4])
-        self.white_filter = ColorFilter([([0, 0, 115], [180, 60, 255])])
-        self.max_pixel_length = 200
+        self.black_form_filter = FormFilter([0, 3, 3, 3])
+        self.white_filter = ColorFilter([([0, 0, 122], [180, 60, 255])])
+        self.black_filter = ColorFilter([([0, 0, 0], [180, 256, 90])])
+        self.max_pixel_length = 17
 
+    def optimize_img(self, img_hsv):
+        img_hsv = cv2.resize(img_hsv, (0,0), fx=0.4, fy=0.4)
+        img_hsv = cv2.bilateralFilter(img_hsv, 20, 25, 25)
+        return img_hsv
+
+    def deoptimize_img(self, img):
+        multiplier = (float(1)/0.4)
+        print multiplier
+        img = cv2.resize(img, (0,0), fx=multiplier, fy=multiplier)
+        return img
 
 class BlackCube(Cube):
     CALIBRATION_ATTEMPT = 25
