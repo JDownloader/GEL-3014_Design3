@@ -8,7 +8,7 @@ from flag import Flag
 class BaseStation():
     def __init__(self):
         try:
-            self.kinect = Kinect('3')
+            self.kinect = Kinect('4')
         except NoKinectDetectedException:
             self.kinect = FakeKinect()
         self.cube_finder = CubeFinder(self.kinect)

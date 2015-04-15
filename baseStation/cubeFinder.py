@@ -4,6 +4,14 @@ from vision.robotLocator import Position
 import time
 import numpy as np
 
+TABLE_FLAG_STENCIL = {'1': None,
+                      '2': [np.array([[0, 258], [366, 258], [366, 480], [0, 480]], np.int32)],
+                      '3': [np.array([[0, 258], [366, 258], [366, 480], [0, 480]], np.int32)],
+                      '4': [np.array([[0, 266], [362, 266], [362, 480], [0, 480]], np.int32)],
+                      '5': None,
+                      '6': None}
+
+
 class CubeFinder():
     def __init__(self, kinect):
         self.kinect = kinect
@@ -37,7 +45,7 @@ class CubeFinder():
         image_rgb = self.kinect.grab_new_image(bilateral_filter_activated=True)
         image_hsv = VisionTools().get_hsv_image(image_rgb)
         if self.color_already_there(color):
-            stencil = [np.array([[0, 258], [366, 258], [366, 480], [0, 480]], np.int32)]
+            stencil = TABLE_FLAG_STENCIL.get(str(self.kinect.table))
             image_hsv = FormStencil(stencil).apply(image_hsv)
         return image_hsv
 
@@ -72,7 +80,6 @@ class CubeFinder2():
         for cube in self.cubes:
             cube.find_position(image_hsv, self.kinect)
             # print(cube.color + str(cube.position))
-
 
 
 class DemoCubeFinder(CubeFinder):

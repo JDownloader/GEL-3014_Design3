@@ -6,6 +6,7 @@ from visiontools import VisionTools
 import time, datetime
 import math
 from tests.test_vision_kinect import FakeKinect
+from baseStation.cubeFinder import TABLE_FLAG_STENCIL
 import robotLocator
 
 

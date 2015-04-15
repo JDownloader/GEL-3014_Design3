@@ -71,9 +71,11 @@ def fetch_cube_position():
 @app.route('/path', methods=['POST'])
 def receive_path():
     if request.method == 'POST':
+        position = app.robot_locator.get_position(app.base_station.kinect)
+        app.base_station.robot_position = position
         path = eval(request.data)
         print len(path)
-    #     # tbl = json.loads(path)['path']
+        # tbl = json.loads(path)['path']
         app.context_provider.set_path(path)
     return "ok"
 

@@ -205,7 +205,7 @@
 	//Classes
 
 	function RobotForm () {
-        this.body = new fabric.Rect({
+        this.robotBody = new fabric.Rect({
             width: 50, height: 50, left: 150, top: 100, angle: 45,
             stroke: '#eee',
             strokeWidth: 10,
@@ -255,16 +255,16 @@
         });
 
         this.addToCanvas = function(canvas){
-            canvas.add(this.body, this.purpleCorner, this.greenCorner, this.orange1Corner, this.orange2Corner, this.lines[0], this.lines[1]);
+            canvas.add(this.robotBody, this.purpleCorner, this.greenCorner, this.orange1Corner, this.orange2Corner, this.lines[0], this.lines[1]);
         }
 
         this.setPosition = function(x, y, angle){
             var x_pos = x;
             var y_pos = y;
-            //console.log(x_pos);
-            this.body.set('left', x_pos);
-            this.body.set('top', y_pos);
-            this.body.set('angle', angle);
+            console.log(x_pos);
+            this.robotBody.set('left', x_pos);
+            this.robotBody.set('top', y_pos);
+            this.robotBody.set('angle', angle);
             this.purpleCorner.set('left', x_pos);
             this.purpleCorner.set('top', y_pos);
             this.purpleCorner.set('angle', angle);
@@ -284,11 +284,11 @@
 			for(i = 0; i < 2; i++) {
                 if(i < path.length){
                     if(i==0){
-                        this.lines[i].set('x1', this.body.left);
-                        this.lines[i].set('y1', this.body.top);
+                        this.lines[i].set('x1', this.robotBody.left);
+                        this.lines[i].set('y1', this.robotBody.top);
                     }else{
-                        this.lines[i].set('x1', this.lines[i-1].x1);
-                        this.lines[i].set('y1', this.lines[i-1].x2);
+                        this.lines[i].set('x1', path[i-1][0]);
+                        this.lines[i].set('y1', path[i-1][1]);
                     }
                     this.lines[i].set('x2', path[i][0]);
                     this.lines[i].set('y2', path[i][1]);
