@@ -149,50 +149,63 @@ class RobotAI:
         transposed_flag_matrix = reshaped_transposed_array[0].tolist()
         return transposed_flag_matrix
 
-    def move_exactly_to_docking_point(self, delta_angle=0, delta_x=0, delta_y=0):
+    def move_exactly_to_docking_point(self, delta_angle=0, delta_x=0, delta_y=0, angle=0):
         # assumning robot is at 0 degree
         angle_range = 2
         x_range = 10
         y_range = 10
-        self.rotate_precisely_to_dock_angle(angle_range, delta_angle)
-        self.move_precisely_to_dock_x(x_range, delta_x)
-        self.move_precisely_to_dock_y(y_range, delta_y)
+        self.rotate_precisely_to_dock_angle(angle_range, delta_angle, angle)
+        self.move_precisely_to_dock_x(x_range, delta_x, angle)
+        self.move_precisely_to_dock_y(y_range, delta_y, angle)
         self.update_robot_position_from_kinect()
         delta_angle = self.pathfinder.determine_rotation_angle(self.robot_angle_and_position.angle,
-                                                               0)
+                                                               angle)
         delta_x = tableConsts.DOCK_POINT[0] - self.robot_angle_and_position.position[0]
         delta_y = tableConsts.DOCK_POINT[1] - self.robot_angle_and_position.position[1]
         if abs(delta_angle) > angle_range or abs(delta_x) > x_range or abs(delta_y) > y_range:
             self.move_exactly_to_docking_point(delta_angle, delta_x, delta_y)
 
-    def rotate_precisely_to_dock_angle(self, angle_range, delta_angle):
+    def rotate_precisely_to_dock_angle(self, angle_range, delta_angle, angle):
         temp_delta_angle = delta_angle
         if temp_delta_angle == 0:
             temp_delta_angle = self.pathfinder.determine_rotation_angle(self.robot_angle_and_position.angle,
-                                                                        0)
+                                                                        angle)
         if abs(temp_delta_angle) > angle_range:
-            if temp_delta_angle < 0:
-                self.robot.rotate(False, abs(temp_delta_angle), True)
-            else:
-                self.robot.rotate(True, temp_delta_angle, True)
+            if angle == 0:
+                if temp_delta_angle < 0:
+                    self.robot.rotate(False, abs(temp_delta_angle), True)
+                else:
+                    self.robot.rotate(True, temp_delta_angle, True)
 
-    def move_precisely_to_dock_x(self, x_range, delta_x):
+    def move_precisely_to_dock_x(self, x_range, delta_x, angle):
         if delta_x == 0:
             delta_x = tableConsts.DOCK_POINT[0] - self.robot_angle_and_position.position[0]
         if abs(delta_x) > x_range:
-            if delta_x < 0:
-                self.robot.move('right', abs(delta_x))
+            if angle == 0:
+                if delta_x < 0:
+                    self.robot.move('right', abs(delta_x))
+                else:
+                    self.robot.move('left', delta_x)
             else:
-                self.robot.move('left', delta_x)
+                if delta_x < 0:
+                    self.robot.move('left', abs(delta_x))
+                else:
+                    self.robot.move('right', delta_x)
 
-    def move_precisely_to_dock_y(self, y_range, delta_y):
+    def move_precisely_to_dock_y(self, y_range, delta_y, angle):
         if delta_y == 0:
             delta_y = tableConsts.DOCK_POINT[1] - self.robot_angle_and_position.position[1]
         if abs(delta_y) > y_range:
-            if delta_y < 0:
-                self.robot.move('reverse', abs(delta_y))
-            else:
-                self.robot.move('forward', delta_y)
+            if angle == 0:
+                if delta_y < 0:
+                    self.robot.move('reverse', abs(delta_y))
+                else:
+                    self.robot.move('forward', delta_y)
+        else:
+                if delta_y < 0:
+                    self.robot.move('forward', abs(delta_y))
+                else:
+                    self.robot.move('reverse', delta_y)
 
     def reverse_movement_direction(self, direction_to_be_reversed):
         reversed_direction = 'right'

@@ -2,9 +2,11 @@ import cv2
 from cube import Cube, FormStencil, TABLE_STENCIL, FormFilter
 # import cube
 from kinect import Kinect
+from kinectCaptureHelper import KinectCaptureHelper
 from visiontools import VisionTools
 import numpy as np
 import math
+import time
 
 
 class RobotLocator():
@@ -15,17 +17,18 @@ class RobotLocator():
 
     def get_position(self, kinect):
         self.position = RobotPosition()
-        for x in range(0, 5):
+        for x in range(0, 7):
             position = self.attempt_get_position(kinect, x)
             if position is not None:
                 if position.is_valid():
-                    for y in range(0, 3):
+                    for y in range(0, 5):
                         second_position = self.attempt_get_position(kinect, y)
                         if second_position is not None:
                             if second_position.is_valid() and second_position.is_like(position):
                                 self.position = self.merge_position(position, second_position)
                                 return self.position
         self.position = RobotPosition()
+        KinectCaptureHelper().save_kinect_capture(kinect, str(time.time()))
         return self.position
 
     def merge_position(self, position_1, position_2):

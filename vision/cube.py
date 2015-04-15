@@ -15,9 +15,9 @@ PARAMETERS_FOR_FORM_FILTER = {'red': [2, 3, 3, 3],
                               'green': [5, 7, 3, 3],
                               'blue': [5, 8, 3, 3],
                               'yellow': [2, 4, 3, 3],
-                              'orange': [3, 3, 3, 7],
+                              'orange': [2, 3, 3, 7],
                               'purple': [2, 3, 3, 5],
-                              'forest_green': [2, 3, 3, 5],
+                              'forest_green': [3, 3, 3, 5],
                               'black': [3, 1, 3, 3],
                               'white': [0, 3, 4, 4]}
 

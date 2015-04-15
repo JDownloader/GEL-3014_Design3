@@ -48,7 +48,7 @@ CUBE_DROP_MOVEMENTS_LIST = [FIRST_CUBE_DROP_POSITION, SECOND_CUBE_DROP_POSITION,
 
 TABLE_ANGLE_ADJUSTMENT = {1: 0,
                           2: 0,
-                          3: 5,
+                          3: 0,
                           4: 4,
                           5: 0,
                           6: 0}
