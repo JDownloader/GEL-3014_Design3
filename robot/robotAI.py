@@ -178,7 +178,7 @@ class RobotAI:
         delta_x = tableConsts.DOCK_POINT[0] - self.robot_angle_and_position.position[0]
         delta_y = tableConsts.DOCK_POINT[1] - self.robot_angle_and_position.position[1]
         if abs(delta_angle) > angle_range or abs(delta_x) > x_range or abs(delta_y) > y_range:
-            self.move_exactly_to_docking_point(delta_angle, delta_x, delta_y)
+            self.move_exactly_to_docking_point(delta_angle, delta_x, delta_y, angle)
 
     def rotate_precisely_to_dock_angle(self, angle_range, delta_angle, angle):
         temp_delta_angle = delta_angle
@@ -186,11 +186,10 @@ class RobotAI:
             temp_delta_angle = self.pathfinder.determine_rotation_angle(self.robot_angle_and_position.angle,
                                                                         angle)
         if abs(temp_delta_angle) > angle_range:
-            if angle == 0:
-                if temp_delta_angle < 0:
-                    self.robot.rotate(False, abs(temp_delta_angle), True)
-                else:
-                    self.robot.rotate(True, temp_delta_angle, True)
+            if temp_delta_angle < 0:
+                self.robot.rotate(False, abs(temp_delta_angle), True)
+            else:
+                self.robot.rotate(True, temp_delta_angle, True)
 
     def move_precisely_to_dock_x(self, x_range, delta_x, angle):
         if delta_x == 0:

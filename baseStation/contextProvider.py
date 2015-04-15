@@ -53,10 +53,10 @@ class ContextProvider:
         return position
 
     def convert_x_position(self, x):
-        return 600-x*0.27
+        return int(float(600)-float(x)*float(0.27))
 
     def convert_y_position(self, y):
-        return 302-y*0.27
+        return int(float(302)-float(y)*float(0.27))
 
     def convert_position(self, position):
         return (self.convert_x_position(position[0]), self.convert_y_position(position[1]))
