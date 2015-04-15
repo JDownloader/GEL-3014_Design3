@@ -240,7 +240,14 @@
             originY: 'top',
             originX: 'right'
         });
-        this.line1 = new fabric.Line([0,0,100,100], {
+        this.lines = new Array();
+        this.lines[0] = new fabric.Line([0,0,100,100], {
+            fill: 'red',
+            stroke: 'red',
+            strokeWidth: 5,
+            selectable: false
+        });
+        this.lines[1] = new fabric.Line([0,0,100,100], {
             fill: 'red',
             stroke: 'red',
             strokeWidth: 5,
@@ -248,7 +255,7 @@
         });
 
         this.addToCanvas = function(canvas){
-            canvas.add(this.body, this.purpleCorner, this.greenCorner, this.orange1Corner, this.orange2Corner, this.line1);
+            canvas.add(this.body, this.purpleCorner, this.greenCorner, this.orange1Corner, this.orange2Corner, this.lines[0], this.lines[1]);
         }
 
         this.setPosition = function(x, y, angle){
@@ -274,12 +281,25 @@
         }
         this.drawPath = function(path, x, y){
             //this.
-			for(i = 0; i < path.length; i++) {
-                this.line1.set('x1', this.body.left);
-                this.line1.set('y1', this.body.top);
-                this.line1.set('x2', 130);
-                this.line1.set('y2', 50);
-                this.line1.setCoords();
+			for(i = 0; i < 2; i++) {
+                if(i < path.length){
+                    if(i==0){
+                        this.lines[i].set('x1', this.body.left);
+                        this.lines[i].set('y1', this.body.top);
+                    }else{
+                        this.lines[i].set('x1', this.lines[i-1].x1);
+                        this.lines[i].set('y1', this.lines[i-1].x2);
+                    }
+                    this.lines[i].set('x2', path[i][0]);
+                    this.lines[i].set('y2', path[i][1]);
+                    this.lines[i].setCoords();
+                }else{
+                    this.lines[i].set('x1', 0);
+                    this.lines[i].set('y1', 0);
+                    this.lines[i].set('x2', 0);
+                    this.lines[i].set('y2', 0);
+                    this.lines[i].setCoords();
+                }
             }
             return null;
         }
