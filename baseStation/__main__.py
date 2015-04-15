@@ -71,8 +71,9 @@ def fetch_cube_position():
 @app.route('/path', methods=['POST'])
 def receive_path():
     if request.method == 'POST':
-        print 'Next path: '
-        print request.form.get('path', None)
+        path = request.form.get('path', None)
+        print 'Next path: ' + str(path)
+        app.context_provider.set_path(path)
     return "ok"
 
 @app.route('/flag')
