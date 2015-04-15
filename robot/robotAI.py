@@ -244,7 +244,7 @@ class RobotAI:
             if camera_delta_y is None:
                 self.move_in_direction_and_keep_angle('reverse', 30)
                 self.center_robot_on_cube(camera_instance)
-                camera_delta_y = 0
+                camera_delta_y = camera_instance.find_cube_center()[1]
         self.move_in_direction_and_keep_angle('forward', 30)
 
     def move_in_direction_and_keep_angle(self, direction, distance):
@@ -254,6 +254,7 @@ class RobotAI:
 
     def pickup_cube(self):
         self.robot.gripper_controller.pliers_control(0)
+        self.move_in_direction_and_keep_angle('reverse', 10)
         self.robot.gripper_controller.change_vertical_position(1)
         self.move_in_direction_and_keep_angle('reverse', 50)
         self.robot.gripper_controller.change_vertical_position(0)
