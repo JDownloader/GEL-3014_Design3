@@ -219,9 +219,9 @@ class RobotAI:
             else:
                 self.move_in_direction_and_keep_angle('right', 10)
             camera_delta_x = camera_instance.find_cube_center()[0]
-        while camera_delta_x is None:
-            self.move_in_direction_and_keep_angle('reverse', 10)
-            camera_delta_x = camera_instance.find_cube_center()[0]
+            while camera_delta_x is None:
+                self.move_in_direction_and_keep_angle('reverse', 10)
+                camera_delta_x = camera_instance.find_cube_center()[0]
 
     def approach_cube(self, camera_instance):
         self.robot.gripper_controller.change_vertical_position(0)
