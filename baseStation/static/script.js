@@ -68,6 +68,7 @@
 	function setRobotPosition(data) {
         var x = robot.setPosition(data.left, data.top, data.angle);
         var y = robot.drawPath(data.path, data.top, data.angle);
+        var z = robot.drawOldPositions(data.last_known_positions);
 		planCanvas.calcOffset();
 		planCanvas.renderAll();
 	}
@@ -249,11 +250,23 @@
                 selectable: false
             });
         }
+        this.lastKnowPositions = new Array();
+        for (i = 0; i < 10; i++){
+            var cube = new fabric.Rect({
+                width: 15, height: 15, left: 150, top: 100, angle: 0,
+                fill: 'rgba(0,0,0,0.5)',
+                hasControls: false,
+            });
+            this.lastKnowPositions[i] = cube;
+        }
 
         this.addToCanvas = function(canvas){
             canvas.add(this.robotBody, this.purpleCorner, this.greenCorner, this.orange1Corner, this.orange2Corner);
             for(i=0; i<this.lines.length; i++){
                 canvas.add(this.lines[i]);
+            }
+            for(i=0; i<this.lastKnowPositions.length; i++){
+                canvas.add(this.lastKnowPositions[i]);
             }
         };
 
@@ -293,6 +306,18 @@
                     this.lines[i].set('x2', 0);
                     this.lines[i].set('y2', 0);
                     this.lines[i].setCoords();
+                }
+            }
+            return null;
+        }
+        this.drawOldPositions = function(positions){
+			for(i = 0; i < this.lastKnowPositions.length; i++) {
+                if(i < positions.length){
+                    this.lastKnowPositions[i].set('left', positions[i][0]);
+                    this.lastKnowPositions[i].set('top', positions[i][1]);
+                    this.lastKnowPositions[i].fill = 'rgba(0,0,0,0.5)';
+                }else{
+                    this.lastKnowPositions[i].fill = 'rgba(0,0,0,0)';
                 }
             }
             return null;

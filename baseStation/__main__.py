@@ -121,7 +121,7 @@ def fetch_flag():
 @app.route('/context')
 def get_context():
     app.refresh_since_last_kinect_update += 1
-    if app.refresh_since_last_kinect_update >= 3:
+    if app.refresh_since_last_kinect_update >= 4:
         refresh_kinect()
     context = app.context_provider.get_context(app.robot_ip_address)
     return jsonify(context)
@@ -177,6 +177,7 @@ def refresh_kinect():
     position = app.robot_locator.get_position(app.base_station.kinect)
     app.base_station.robot_position = position
     app.refresh_since_last_kinect_update = 0
+    app.context_provider.add_known_position(position.position)
     return position
 
 
