@@ -8,6 +8,7 @@ class ContextProvider:
     def __init__(self, base_station):
         self.base_station = base_station
         self.set_path([[0, 0], [438, 140]])
+        self.last_known_positions = []
 
     def _get_current_flag(self):
         if self.base_station.flag is not None:
@@ -52,7 +53,6 @@ class ContextProvider:
                 real_robot_position = self.base_station.robot_position
                 position = RobotPosition(real_robot_position.position[0], real_robot_position.position[1], real_robot_position.angle)
                 position.position = self.convert_position(position.position)
-                # print position.position
         return position
 
     def convert_x_position(self, x):
