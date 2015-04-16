@@ -7,7 +7,7 @@ from vision.robotLocator import RobotPosition
 class ContextProvider:
     def __init__(self, base_station):
         self.base_station = base_station
-        self.path = []
+        self.set_path([[0, 0], [438, 140]])
 
     def _get_current_flag(self):
         if self.base_station.flag is not None:
@@ -21,7 +21,7 @@ class ContextProvider:
                           'left': position.position[0],
                           'angle': 360 - position.get_angle_in_deg(),
                           'kinect_is_fake': self.is_fake_kinect(),
-                          'path': [[546, 248], [438, 140]],
+                          'path': self.path,
                           # 'chrono': strftime('%Mm%Ss', gmtime(tim)),
                           'chrono': '',
                           'robotIP': robot_ip,
@@ -49,23 +49,25 @@ class ContextProvider:
         if self.base_station.robot_position is not None:
             if self.base_station.robot_position.position is not None \
                     and self.base_station.robot_position.angle is not None:
-                position = self.base_station.robot_position
-        position.position = (100, 100)
+                real_robot_position = self.base_station.robot_position
+                position = RobotPosition(real_robot_position.position[0], real_robot_position.position[1], real_robot_position.angle)
+                position.position = self.convert_position(position.position)
+                # print position.position
         return position
 
     def convert_x_position(self, x):
-        return int(float(600)-float(x)*float(0.27))
+        return int(float(302)-float(x)*float(0.27))
 
     def convert_y_position(self, y):
-        return int(float(302)-float(y)*float(0.27))
+        return int(float(600)-float(y)*float(0.27))
 
     def convert_position(self, position):
         return [self.convert_x_position(position[0]), self.convert_y_position(position[1])]
 
     def set_path(self, path):
         new_path = []
+        new_path.append(self.get_position_data().position)
         for move in path:
             new_move = self.convert_position(move)
             new_path.append(new_move)
-        print new_path
         self.path = new_path

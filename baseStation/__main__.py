@@ -23,6 +23,8 @@ class BaseStationServer(Flask):
         self.base_station = BaseStation()
         self.context_provider = ContextProvider(self.base_station)
         self.robot_locator = RobotLocator()
+        self.refresh_since_last_kinect_update = 999
+
     def set_robot_ip_address(self, ip):
         print ip
         self.robot_ip_address = ip
@@ -39,9 +41,11 @@ app.set_robot_ip_address('192.168.0.36')
 def root_dir():
     return os.path.abspath(os.path.dirname(__file__))
 
+
 @app.route('/')
 def hello():
     return redirect(url_for('static', filename='index.html'))
+
 
 @app.route('/start')
 def start():
@@ -50,15 +54,17 @@ def start():
     else:
         data = {'ip': '192.168.0.32'}
         response = requests.post('http://' + app.robot_ip_address + ':8001' + '/basestationip', data=data)
+        if response.status_code == 200:
+            response2 = requests.get('http://' + app.robot_ip_address + ':8001' + '/')
     return 'ok'
 
 
 @app.route('/robotposition')
 def fetch_robot_position():
-    position = app.robot_locator.get_position(app.base_station.kinect)
-    app.base_station.robot_position = position
+    position = refresh_kinect()
     return jsonify(angle=position.get_angle_in_deg(),
                    position=(position.position[0], position.position[1]))
+
 
 @app.route('/cubeposition', methods=['POST'])
 def fetch_cube_position():
@@ -68,14 +74,15 @@ def fetch_cube_position():
         cube_position = app.base_station.cube_finder.get_cube_position_with_color(color)
     return jsonify(position_x=cube_position[0] , position_y=cube_position[1])
 
+
 @app.route('/path', methods=['POST'])
 def receive_path():
     if request.method == 'POST':
+        position = refresh_kinect()
         path = eval(request.data)
-        print len(path)
-    #     # tbl = json.loads(path)['path']
         app.context_provider.set_path(path)
     return "ok"
+
 
 @app.route('/flag')
 def fetch_flag():
@@ -109,11 +116,16 @@ def fetch_flag():
     # flag = Flag('Alma').get_matrix()
     return jsonify(flag=flag)
 
+
 # A javaScript fonction calls this method every 250 ms
 @app.route('/context')
 def get_context():
+    app.refresh_since_last_kinect_update += 1
+    if app.refresh_since_last_kinect_update >= 3:
+        refresh_kinect()
     context = app.context_provider.get_context(app.robot_ip_address)
     return jsonify(context)
+
 
 @app.route('/changerobotposition', methods=['POST'])
 def change():
@@ -123,6 +135,7 @@ def change():
         angle = request.form.get('angle', None)
         app.base_station.set_robot_position(position_x, position_y, angle)
     return 'ok'
+
 
 def fetch_question():
     json_question = ''
@@ -142,11 +155,13 @@ def fetch_question():
         fetch_question()
     return question
 
+
 def fetch_answer(question):
     print "question : " + question
     processor = QuestionProcessor()
     processor.answer_question(question)
     return processor.answer
+
 
 def is_right_answer(answer):
     print answer
@@ -156,6 +171,14 @@ def is_right_answer(answer):
     else:
         print 'Will retry...'
         return False
+
+
+def refresh_kinect():
+    position = app.robot_locator.get_position(app.base_station.kinect)
+    app.base_station.robot_position = position
+    app.refresh_since_last_kinect_update = 0
+    return position
+
 
 if __name__ == '__main__':  # pragma: no cover
     app.run(host='0.0.0.0', port=SERVER_PORT, use_reloader=False, threaded=False)

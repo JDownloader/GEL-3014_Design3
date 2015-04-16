@@ -94,6 +94,7 @@ class RobotAI:
 
 
     def move_robot_to_pickup_cube(self, cube_color):
+        self.base_station.send_pathfinding_itinerary([])
         camera = VisionRobot(cube_color)
         self.center_robot_on_cube(camera)
         self.approach_cube(camera)

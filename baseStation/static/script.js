@@ -205,7 +205,7 @@
 	//Classes
 
 	function RobotForm () {
-        this.body = new fabric.Rect({
+        this.robotBody = new fabric.Rect({
             width: 50, height: 50, left: 150, top: 100, angle: 45,
             stroke: '#eee',
             strokeWidth: 10,
@@ -241,30 +241,29 @@
             originX: 'right'
         });
         this.lines = new Array();
-        this.lines[0] = new fabric.Line([0,0,100,100], {
-            fill: 'red',
-            stroke: 'red',
-            strokeWidth: 5,
-            selectable: false
-        });
-        this.lines[1] = new fabric.Line([0,0,100,100], {
-            fill: 'red',
-            stroke: 'red',
-            strokeWidth: 5,
-            selectable: false
-        });
+        for(i=0; i<3; i++){
+            this.lines[i] = new fabric.Line([0,0,100,100], {
+                fill: 'red',
+                stroke: 'red',
+                strokeWidth: 5,
+                selectable: false
+            });
+        }
 
         this.addToCanvas = function(canvas){
-            canvas.add(this.body, this.purpleCorner, this.greenCorner, this.orange1Corner, this.orange2Corner, this.lines[0], this.lines[1]);
-        }
+            canvas.add(this.robotBody, this.purpleCorner, this.greenCorner, this.orange1Corner, this.orange2Corner);
+            for(i=0; i<this.lines.length; i++){
+                canvas.add(this.lines[i]);
+            }
+        };
 
         this.setPosition = function(x, y, angle){
             var x_pos = x;
             var y_pos = y;
             //console.log(x_pos);
-            this.body.set('left', x_pos);
-            this.body.set('top', y_pos);
-            this.body.set('angle', angle);
+            this.robotBody.set('left', x_pos);
+            this.robotBody.set('top', y_pos);
+            this.robotBody.set('angle', angle);
             this.purpleCorner.set('left', x_pos);
             this.purpleCorner.set('top', y_pos);
             this.purpleCorner.set('angle', angle);
@@ -278,20 +277,15 @@
             this.orange2Corner.set('top', y_pos);
             this.orange2Corner.set('angle', angle);
             return null;
-        }
+        };
         this.drawPath = function(path, x, y){
             //this.
-			for(i = 0; i < 2; i++) {
-                if(i < path.length){
-                    if(i==0){
-                        this.lines[i].set('x1', this.body.left);
-                        this.lines[i].set('y1', this.body.top);
-                    }else{
-                        this.lines[i].set('x1', this.lines[i-1].x1);
-                        this.lines[i].set('y1', this.lines[i-1].x2);
-                    }
-                    this.lines[i].set('x2', path[i][0]);
-                    this.lines[i].set('y2', path[i][1]);
+			for(i = 0; i < this.lines.length; i++) {
+                if(i < path.length-1){
+                    this.lines[i].set('x1', path[i][0]);
+                    this.lines[i].set('y1', path[i][1]);
+                    this.lines[i].set('x2', path[i+1][0]);
+                    this.lines[i].set('y2', path[i+1][1]);
                     this.lines[i].setCoords();
                 }else{
                     this.lines[i].set('x1', 0);

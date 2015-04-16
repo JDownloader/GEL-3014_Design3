@@ -16,7 +16,7 @@ PARAMETERS_FOR_FORM_FILTER = {'red': [2, 3, 3, 3],
                               'blue': [5, 8, 3, 3],
                               'yellow': [2, 4, 3, 3],
                               'orange': [2, 3, 3, 7],
-                              'purple': [2, 3, 3, 5],
+                              'purple': [2, 4, 3, 5],
                               'forest_green': [2, 3, 3, 5],
                               'black': [3, 1, 3, 3],
                               'white': [0, 3, 4, 4]}
@@ -229,7 +229,7 @@ class BlackCube(Cube):
             pixel_position = (x, table_back[1])
             position = kinect._apply_matrix_transformation(kinect._get_world_in_cloud(pixel_position))
             if Position(position[0], position[1]).is_valid():
-                if position[1]> 850 and position[1]<2000 and self.verify_color(img_hvg, pixel_position):
+                if position[1]> 1150 and position[1]<2000 and self.verify_color(img_hvg, pixel_position):
                     x_values.append(position[0])
                     y_values.append(position[1])
         if x_values.__len__() > 0:
