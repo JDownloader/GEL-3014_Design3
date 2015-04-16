@@ -98,6 +98,8 @@ class VisionRobot():
     def find_cube_center(self):
         cap = self.camera.getCapt()
         if cap.isOpened():
+            for x in range(0,3):
+                 _,image = cap.read()
             _,image = cap.read()
             # image = self.camera.remmaping_image(image)
             contour = self.find_contour_cube(image, self.cube)
@@ -121,17 +123,16 @@ if __name__ == "__main__":
 
     camera = Camera()
     cap = camera.getCapt()
-    color = 'black'
+    color = 'white'
     vision = VisionRobot(color, camera)
     cv2.namedWindow('BGR', cv2.WINDOW_AUTOSIZE)
     
     while cap.isOpened():
-
-
+        for x in range(0,3):
+            _,image = cap.read()
         _,image = cap.read()
-        img_hsv = cv2.cvtColor(image,  cv2.COLOR_BGR2HSV)
-        img_mask = vision.cube.apply_filters(img_hsv)
-        cv2.imwrite('img_noir.png', img_mask)
+        img_mask = vision.apply_mask_image(image, vision.cube)
+        contour = vision.find_contour_cube(image, vision.cube)
         #img_mask = vision.apply_gripper_mask(img_mask, color)
 
         #img_mask = cv2.bitwise_(img_mask, img_mask)
@@ -147,12 +148,13 @@ if __name__ == "__main__":
         #
         # except:
         #     print 'Problem with camera'
-        #cv2.drawContours(image,[contour],-1,(0,255,0),6)
+        cv2.drawContours(image,[contour],-1,(0,255,0),6)
+
         k = cv2.waitKey(5) & 0xFF
         if k == 27:
             break
         cv2.imshow('BGR', image)
-        #cv2.imshow('masque', img_mask)
+        cv2.imshow('masque', img_mask)
         # cv2.imshow('mask', mask)
 
         # cv2.destroyAllWindows()
