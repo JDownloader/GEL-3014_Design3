@@ -5,7 +5,7 @@ from robotIPFinder import RobotFinder
 from vision.robotLocator import RobotLocator
 import requests
 import json
-from sound import play_prometheus
+from sound import play_prometheus, play_acquired
 import constants as cte
 from questionanswering.question_processor import QuestionProcessor
 from baseStation import BaseStation
@@ -72,6 +72,9 @@ def fetch_cube_position():
     if request.method == 'POST':
         color = request.form.get('color', None)
         cube_position = app.base_station.cube_finder.get_cube_position_with_color(color)
+        if cube_position[0] is not None:
+            if cube_position[0]>0:
+                play_acquired()
     return jsonify(position_x=cube_position[0] , position_y=cube_position[1])
 
 

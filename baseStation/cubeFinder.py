@@ -4,7 +4,7 @@ from vision.robotLocator import Position
 import time
 import numpy as np
 
-TABLE_FLAG_STENCIL = {'1': None,
+TABLE_FLAG_STENCIL = {'1': [np.array([[0, 258], [366, 258], [366, 480], [0, 480]], np.int32)],  # not tested
                       '2': [np.array([[0, 258], [366, 258], [366, 480], [0, 480]], np.int32)],
                       '3': [np.array([[0, 258], [366, 258], [366, 480], [0, 480]], np.int32)],
                       '4': [np.array([[0, 266], [362, 266], [362, 480], [0, 480]], np.int32)],

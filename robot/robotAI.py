@@ -254,7 +254,7 @@ class RobotAI:
 
     def approach_cube(self, camera_instance):
         if camera_instance.cube == 'white' or camera_instance.cube == 'black':
-            y_value = -80
+            y_value = -50
         else:
             y_value = -140
         self.robot.gripper_controller.change_vertical_position(0)
