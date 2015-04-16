@@ -39,7 +39,7 @@ class RobotAI:
     def construct_flag(self, flag_matrix):
         self.display_flag_for_five_seconds(flag_matrix)
         for cube_index, cube in enumerate(flag_matrix):
-            if cube is not None or cube != 'white' or cube != 'black':
+            if cube is not None and cube != 'white' and cube != 'black':
                 self.grab_cube(str(cube), cube_index)
                 self.place_cube(cube_index)
                 self.rotate_robot_to_target(0)
