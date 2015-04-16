@@ -3,6 +3,8 @@ from vision.visiontools import VisionTools
 from vision.robotLocator import Position
 import time
 import numpy as np
+from vision.kinectCaptureHelper import KinectCaptureHelper
+from vision.kinect import Kinect
 
 TABLE_FLAG_STENCIL = {'1': [np.array([[0, 258], [366, 258], [366, 480], [0, 480]], np.int32)],  # not tested
                       '2': [np.array([[0, 258], [366, 258], [366, 480], [0, 480]], np.int32)],
@@ -28,18 +30,22 @@ class CubeFinder():
         if color == 'black':
             cube = BlackCube()
         elif color == 'white':
-            cube = WhiteCube()
+            # cube = WhiteCube()
             x_positions = []
             y_positions = []
-            for x in range(0, 20):
+            for x in range(0, 10):
                 image_hsv = self.get_hsv_with_stencil(color)
-                cube.find_position(image_hsv, self.kinect)
-                if cube.position is not None:
-                    if Position(cube.position[0], cube.position[1]).is_valid():
-                        x_positions.append(cube.position[0])
-                        y_positions.append(cube.position[1])
+                KinectCaptureHelper().save_kinect_capture(self.kinect, str(time.time()), image_hsv)
+                # new_kinect = Kinect('1')
+                # image_rgb = new_kinect.grab_new_image(bilateral_filter_activated=True)
+                # image_hsv = VisionTools().get_hsv_image(image_rgb)
+                new_position = WhiteCube().find_position(image_hsv, self.kinect)
+                if new_position is not None:
+                    if Position(new_position[0], new_position[1]).is_valid():
+                        x_positions.append(new_position[0])
+                        y_positions.append(new_position[1])
+            print x_positions.__len__()
             if x_positions.__len__() > 3:
-                print x_positions.__len__()
                 return (self.get_median(x_positions), self.get_median(y_positions))
             return (None, None)
         else:

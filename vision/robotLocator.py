@@ -162,7 +162,7 @@ class Position():
         if position[0] > self.NEGATIVE_POSITION_TOLERANCE_IN_MM \
                 and position[1] > self.NEGATIVE_POSITION_TOLERANCE_IN_MM \
                 and position[0] < 1220 \
-                and position[1] < 2450:
+                and position[1] < 2400:
             return True
         return False
 

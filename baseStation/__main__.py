@@ -106,7 +106,7 @@ def fetch_flag():
             flag_processor = flagProcessor.FlagProcessor(answer)
             flag = flag_processor.get_flag()
             break
-        else :
+        else:
             strikes += 1
             if strikes >= 2:
                 answer = 'Burkina Faso'
@@ -114,9 +114,6 @@ def fetch_flag():
                 flag_processor = flagProcessor.FlagProcessor(answer)
                 flag = flag_processor.get_flag()
                 break
-
-    app.base_station.set_question('From where is your favorite J-D?', 'Estonia')
-    flag = Flag('Estonia').get_matrix()
     return jsonify(flag=flag)
 
 
