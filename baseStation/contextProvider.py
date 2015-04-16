@@ -66,6 +66,7 @@ class ContextProvider:
 
     def set_path(self, path):
         new_path = []
+        new_path.append(self.get_position_data().position)
         for move in path:
             new_move = self.convert_position(move)
             new_path.append(new_move)
