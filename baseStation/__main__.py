@@ -54,8 +54,8 @@ def start():
     else:
         data = {'ip': '192.168.0.32'}
         response = requests.post('http://' + app.robot_ip_address + ':8001' + '/basestationip', data=data)
-        if response.status_code == 200:
-            response2 = requests.get('http://' + app.robot_ip_address + ':8001' + '/')
+        # if response.status_code == 200:
+        #     response2 = requests.get('http://' + app.robot_ip_address + ':8001' + '/')
     return 'ok'
 
 
