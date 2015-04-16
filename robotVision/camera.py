@@ -19,7 +19,7 @@ class NoCameraDetectedException(Exception):
 class Camera():
 
     def __init__(self):
-        self.capt_obj = cv2.VideoCapture(0)
+        self.capt_obj = cv2.VideoCapture(1)
         self.camera_matrix = np.array(CAMERA_MATRIX)
         self.distortion_matrix = np.array(DIST_COEFS)
         self.polyline = POLYLINE
@@ -49,12 +49,19 @@ class Camera():
         #img_binary = self.apply_polyline(img_binary)
         return img_binary
 
-    def apply_filter_black_cube(self, img_rgb):
-        img = cv2.GaussianBlur(img_rgb, (3, 3), 10)
-        img2gray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-        ret, mask = cv2.threshold(img2gray, 127, 255, 0)
-        #mask = self.apply_polyline(mask)
-        return mask
+    def apply_filter_black_cube(self, img_rgb, cube):
+        img_hsv = cv2.cvtColor(img_rgb, cv2.COLOR_BGR2HSV)
+        img_mask = cube.apply_filters(img_hsv)
+        polyline = np.array([[460, 354], [502, 478], [449, 480], [441, 402]], np.int32)
+        polyline_up = np.array([[0, 0], [640, 0], [640,130], [0, 130]], np.int32)
+        polyline_down = np.array([[259, 334], [281, 348], [283,480], [198, 480]], np.int32)
+        stencil = FormStencil([polyline])
+        img_mask = stencil.apply(img_mask)
+        stencil_up = FormStencil([polyline_up])
+        img_mask = stencil_up.apply(img_mask)
+        stencil_down = FormStencil([polyline_down])
+        img_mask = stencil_down.apply(img_mask)
+        return img_mask
 
     def apply_polyline(self, image):
         stencil = FormStencil([self.polyline])
