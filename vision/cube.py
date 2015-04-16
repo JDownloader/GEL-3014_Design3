@@ -21,8 +21,8 @@ PARAMETERS_FOR_FORM_FILTER = {'red': [2, 3, 3, 3],
                               'black': [3, 1, 3, 3],
                               'white': [0, 3, 4, 4]}
 
-TABLE_STENCIL = {'1': [np.array([[0, 0], [640, 0], [640, 289], [607, 273], [607, 210], [0, 210]], np.int32),  # Not set yet
-                      np.array([[0, 293], [640, 322], [640, 480], [0, 480]], np.int32)],
+TABLE_STENCIL = {'1': [np.array([[0, 0], [640, 0], [640, 286], [607, 270], [607, 207], [0, 207]], np.int32),  # Not set yet
+                      np.array([[0, 286], [640, 310], [640, 480], [0, 480]], np.int32)],
                  '2': [np.array([[0, 0], [640, 0], [640, 289], [607, 273], [607, 210], [77, 210], [77, 273], [0, 280]], np.int32),
                       np.array([[0, 293], [640, 322], [640, 480], [0, 480]], np.int32)],
                  '3': [np.array([[0, 0], [640, 0], [640, 301], [621, 291], [621, 220], [102, 220], [102, 273], [0, 280]], np.int32),
@@ -232,7 +232,7 @@ class BlackCube(Cube):
                 if position[1]> 1150 and position[1]<2000 and self.verify_color(img_hvg, pixel_position):
                     x_values.append(position[0])
                     y_values.append(position[1])
-        if x_values.__len__() > 0:
+        if x_values.__len__() > 4:
             self.position = (self.get_median(x_values), self.get_median(y_values))
         return self.position
 

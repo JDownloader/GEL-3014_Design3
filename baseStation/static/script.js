@@ -11,12 +11,12 @@
 	colors['yellow'] = 'rgba(255,255,0,1)';
 	colors['white'] = 'rgba(255,255,255,1)';
 	colors['green'] = 'rgba(0,255,0,1)';
-	colors['black_p'] = 'rgba(0,0,0,0.2)';
-	colors['blue_p'] = 'rgba(0,0,255,0.2)';
-	colors['red_p'] = 'rgba(255,0,0,0.2)';
-	colors['yellow_p'] = 'rgba(255,255,0,0.2)';
-	colors['white_p'] = 'rgba(255,255,255,0.2)';
-	colors['green_p'] = 'rgba(0,255,0,0.2)';
+	colors['black_p'] = 'rgba(0,0,0,0.5)';
+	colors['blue_p'] = 'rgba(0,0,255,0.5)';
+	colors['red_p'] = 'rgba(255,0,0,0.5)';
+	colors['yellow_p'] = 'rgba(255,255,0,0.5)';
+	colors['white_p'] = 'rgba(255,255,255,0.5)';
+	colors['green_p'] = 'rgba(0,255,0,0.5)';
 
 	fabric.Object.prototype.transparentCorners = false;
 

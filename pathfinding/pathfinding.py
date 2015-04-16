@@ -54,7 +54,7 @@ class Pathfinding:
                          'angle_before_second_move': 0}
         delta_x = cube[0] - robot_angle_and_position.position[0]
         delta_y = cube[1] - robot_angle_and_position.position[1]
-        if abs(delta_x) <= 400:
+        if abs(delta_x) <= 350:
             if delta_y >= 0:
                 movement_dict['first_direction'] = 'forward'
             else:

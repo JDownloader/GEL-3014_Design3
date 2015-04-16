@@ -29,6 +29,19 @@ class CubeFinder():
             cube = BlackCube()
         elif color == 'white':
             cube = WhiteCube()
+            x_positions = []
+            y_positions = []
+            for x in range(0, 20):
+                image_hsv = self.get_hsv_with_stencil(color)
+                cube.find_position(image_hsv, self.kinect)
+                if cube.position is not None:
+                    if Position(cube.position[0], cube.position[1]).is_valid():
+                        x_positions.append(cube.position[0])
+                        y_positions.append(cube.position[1])
+            if x_positions.__len__() > 3:
+                print x_positions.__len__()
+                return (self.get_median(x_positions), self.get_median(y_positions))
+            return (None, None)
         else:
             cube=Cube(color)
         for x in range(0, 20):
@@ -40,6 +53,9 @@ class CubeFinder():
             time.sleep(0.2)
         self.cubes.append(cube)
         return cube.position
+
+    def get_median(self, values):
+        return np.median(np.array(values))
 
     def get_hsv_with_stencil(self, color):
         image_rgb = self.kinect.grab_new_image(bilateral_filter_activated=True)

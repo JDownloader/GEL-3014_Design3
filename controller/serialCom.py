@@ -76,7 +76,7 @@ class GripperController:
         self.max_pliers = int(4*2344)
         self.pos_pliers_open_big = int(4*900)
         self.pos_pliers_open_small = int(4*1643)
-        self.pos_pliers_closed = int(4*2051)
+        self.pos_pliers_closed = int(4*2075)
         self.pliers_speed = 20
         # self.min_vertical = int(4*704.00)
         # self.max_vertical = int(4*2096.00)

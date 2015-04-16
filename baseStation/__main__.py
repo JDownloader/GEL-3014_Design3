@@ -115,8 +115,8 @@ def fetch_flag():
                 flag = flag_processor.get_flag()
                 break
 
-    # app.base_station.set_question('From where is your favorite J-D?', 'Alma')
-    # flag = Flag('Alma').get_matrix()
+    app.base_station.set_question('From where is your favorite J-D?', 'Estonia')
+    flag = Flag('Estonia').get_matrix()
     return jsonify(flag=flag)
 
 
