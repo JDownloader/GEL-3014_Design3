@@ -5,7 +5,7 @@ from robotIPFinder import RobotFinder
 from vision.robotLocator import RobotLocator
 import requests
 import json
-from vision.kinect import Kinect
+from sound import play_prometheus
 import constants as cte
 from questionanswering.question_processor import QuestionProcessor
 from baseStation import BaseStation
@@ -89,7 +89,7 @@ def fetch_flag():
     # flag = Flag('Canada').get_matrix()
     flag = ''
     strikes = 0
-
+    play_prometheus()
     for cycle in xrange(cte.NUMBER_OF_WRONG_ANSWER_ALLOWED):
         question = fetch_question()
 

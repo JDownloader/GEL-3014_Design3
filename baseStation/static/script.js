@@ -315,7 +315,7 @@
                 if(i < positions.length){
                     this.lastKnowPositions[i].set('left', positions[i][0]);
                     this.lastKnowPositions[i].set('top', positions[i][1]);
-                    this.lastKnowPositions[i].fill = 'rgba(0,0,0,0.5)';
+                    this.lastKnowPositions[i].fill = 'rgba(0,204,215,0.5)';
                 }else{
                     this.lastKnowPositions[i].fill = 'rgba(0,0,0,0)';
                 }
