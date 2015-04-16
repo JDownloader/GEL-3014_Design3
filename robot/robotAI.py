@@ -101,11 +101,11 @@ class RobotAI:
 
     def display_flag_for_five_seconds(self, flag_matrix):
         for index, item in enumerate(flag_matrix):
-            if item:
+            if item is not None:
                 self.robot.change_led_color(item, index)
         time.sleep(5)
         for index, item in enumerate(flag_matrix):
-            if item:
+            if item is not None:
                 self.robot.change_led_color('off', index)
 
     def receive_flag_from_base_station(self):

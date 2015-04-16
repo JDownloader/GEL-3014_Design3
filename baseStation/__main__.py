@@ -114,6 +114,7 @@ def fetch_flag():
                 flag_processor = flagProcessor.FlagProcessor(answer)
                 flag = flag_processor.get_flag()
                 break
+    flag = Flag('Russia').get_matrix()
     return jsonify(flag=flag)
 
 
