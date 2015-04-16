@@ -128,7 +128,7 @@ if __name__ == "__main__":
 
     camera = Camera()
     cap = camera.getCapt()
-    color = 'white'
+    color = 'black'
     vision = VisionRobot(color, camera)
     cv2.namedWindow('BGR', cv2.WINDOW_AUTOSIZE)
 
@@ -136,21 +136,31 @@ if __name__ == "__main__":
 
 
         _,image = cap.read()
-        # image = self.camera.remmaping_image(image)
-        contour = vision.find_contour_cube(image, vision.cube)
-        try:
-            if contour is not None:
-                moment = vision.get_moment(contour)
-                delta_centre = vision.find_cube_center_delta(image, moment)
-                cv2.drawContours(image,[contour],-1,(0,255,0),6)
-                print delta_centre
+        img_hsv = cv2.cvtColor(image,  cv2.COLOR_BGR2HSV)
+        img_mask = vision.cube.apply_filters(img_hsv)
+        cv2.imwrite('img_noir.png', img_mask)
+        #img_mask = vision.apply_gripper_mask(img_mask, color)
 
-        except:
-            print 'Problem with camera'
+        #img_mask = cv2.bitwise_(img_mask, img_mask)
+        #contour = camera.find_contour_cube_black(img_mask)
+        # image = self.camera.remmaping_image(image)
+        # contour = vision.find_contour_cube(image, vision.cube)
+        # try:
+        #     if contour is not None:
+        #         moment = vision.get_moment(contour)
+        #         delta_centre = vision.find_cube_center_delta(image, moment)
+        #         cv2.drawContours(image,[contour],-1,(0,255,0),6)
+        #         print delta_centre
+        #
+        # except:
+        #     print 'Problem with camera'
+        #cv2.drawContours(image,[contour],-1,(0,255,0),6)
         k = cv2.waitKey(5) & 0xFF
         if k == 27:
             break
         cv2.imshow('BGR', image)
+        cv2.imshow('hsv', img_hsv)
+        cv2.imshow('masque', img_mask)
 
         # cv2.destroyAllWindows()
 

@@ -229,7 +229,7 @@ class BlackCube(Cube):
             pixel_position = (x, table_back[1])
             position = kinect._apply_matrix_transformation(kinect._get_world_in_cloud(pixel_position))
             if Position(position[0], position[1]).is_valid():
-                if position[1]> 850 and position[1]<2000 and self.verify_color(img_hvg, pixel_position):
+                if position[1]> 1150 and position[1]<2000 and self.verify_color(img_hvg, pixel_position):
                     x_values.append(position[0])
                     y_values.append(position[1])
         if x_values.__len__() > 0:
