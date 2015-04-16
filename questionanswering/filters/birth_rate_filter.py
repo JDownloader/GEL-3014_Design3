@@ -9,7 +9,13 @@ def process(question, query_builder):
             numbers_in_range = process_between_rate(birth_rate)
             query_builder.with_nested_query('birth rate', ' '.join(numbers_in_range))
         else :
-            adjusted_rates = [rate + '.*' for rate in birth_rate]
+            adjusted_rates = []
+            for rate in birth_rate:
+                if (rate == '1000') | ('.' in rate):
+                    adjusted_rates.append(rate)
+                else:
+                    adjusted_rates.append(rate + '.*')
+            # adjusted_rates = [rate + '.*' for rate in birth_rate]
             query_builder.with_nested_query('birth rate', ' '.join(adjusted_rates))
     yield mapped_question
 
