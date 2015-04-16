@@ -88,6 +88,8 @@ def receive_path():
 def fetch_flag():
     # flag = Flag('Canada').get_matrix()
     flag = ''
+    strikes = 0
+
     for cycle in xrange(cte.NUMBER_OF_WRONG_ANSWER_ALLOWED):
         question = fetch_question()
 
@@ -100,10 +102,18 @@ def fetch_flag():
             app.base_station.set_question(question, answer)
             flag_processor = flagProcessor.FlagProcessor(answer)
             flag = flag_processor.get_flag()
-
             break
-    app.base_station.set_question('From where is your favorite J-D?', 'Alma')
-    flag = Flag('Alma').get_matrix()
+        else :
+            strikes += 1
+            if strikes >= 2:
+                answer = 'Burkina Faso'
+                app.base_station.set_question(question, answer)
+                flag_processor = flagProcessor.FlagProcessor(answer)
+                flag = flag_processor.get_flag()
+                break
+
+    # app.base_station.set_question('From where is your favorite J-D?', 'Alma')
+    # flag = Flag('Alma').get_matrix()
     return jsonify(flag=flag)
 
 

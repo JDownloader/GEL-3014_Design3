@@ -65,13 +65,7 @@ class VisionRobot():
             new_image = VisionTools().get_hsv_image(new_image)
             new_image = cube.get_img(new_image)
         elif cube.color is "black":
-            new_image = self.camera.apply_filter_black_cube(image)
-            # img_hsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
-            # img_hsv = cv2.medianBlur(img_hsv, 5)
-            # image_hsv1 = cv2.resize(img_hsv, (0,0), fx=0.3, fy=0.3)
-            # new_image = cube.apply_filters(img_hsv)
-        # elif cube.color is "black":
-        #     new_image = self.camera.apply_filter_black_cube(image)
+            new_image = self.camera.apply_filter_black_cube(image, cube)
         else:
             new_image = self.camera.apply_filter_color_cubes(image, cube)
         return new_image
@@ -103,7 +97,6 @@ class VisionRobot():
 
     def find_cube_center(self):
         cap = self.camera.getCapt()
-        # cv2.namedWindow('BGR', cv2.WINDOW_AUTOSIZE)
         if cap.isOpened():
             _,image = cap.read()
             # image = self.camera.remmaping_image(image)
@@ -112,7 +105,6 @@ class VisionRobot():
                 if contour is not None:
                     moment = self.get_moment(contour)
                     delta_centre = self.find_cube_center_delta(image, moment)
-                    # cv2.drawContours(image,[contour],-1,(0,255,0),6)
                     return delta_centre
 
             except:
@@ -124,6 +116,7 @@ class VisionRobot():
         return (None, None)
         # cv2.destroyAllWindows()
 
+
 if __name__ == "__main__":
 
     camera = Camera()
@@ -131,7 +124,7 @@ if __name__ == "__main__":
     color = 'black'
     vision = VisionRobot(color, camera)
     cv2.namedWindow('BGR', cv2.WINDOW_AUTOSIZE)
-
+    
     while cap.isOpened():
 
 
@@ -159,8 +152,8 @@ if __name__ == "__main__":
         if k == 27:
             break
         cv2.imshow('BGR', image)
-        cv2.imshow('hsv', img_hsv)
-        cv2.imshow('masque', img_mask)
+        #cv2.imshow('masque', img_mask)
+        # cv2.imshow('mask', mask)
 
         # cv2.destroyAllWindows()
 
