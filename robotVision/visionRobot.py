@@ -128,10 +128,10 @@ if __name__ == "__main__":
     cv2.namedWindow('BGR', cv2.WINDOW_AUTOSIZE)
     
     while cap.isOpened():
-        for x in range(0,3):
+        for x in range(0,10):
             _,image = cap.read()
         _,image = cap.read()
-        img_mask = vision.apply_mask_image(image, vision.cube)
+        # img_mask = vision.apply_mask_image(image, vision.cube)
         contour = vision.find_contour_cube(image, vision.cube)
         #img_mask = vision.apply_gripper_mask(img_mask, color)
 
@@ -154,7 +154,7 @@ if __name__ == "__main__":
         if k == 27:
             break
         cv2.imshow('BGR', image)
-        cv2.imshow('masque', img_mask)
+        # cv2.imshow('masque', img_mask)
         # cv2.imshow('mask', mask)
 
         # cv2.destroyAllWindows()
