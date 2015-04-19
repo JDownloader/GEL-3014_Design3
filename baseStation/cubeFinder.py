@@ -6,8 +6,8 @@ import numpy as np
 from vision.kinectCaptureHelper import KinectCaptureHelper
 from vision.kinect import Kinect
 
-TABLE_FLAG_STENCIL = {'1': [np.array([[0, 258], [366, 258], [366, 480], [0, 480]], np.int32)],  # not tested
-                      '2': [np.array([[0, 258], [366, 258], [366, 480], [0, 480]], np.int32)],
+TABLE_FLAG_STENCIL = {'1': [np.array([[0, 264], [366, 264], [366, 480], [0, 480]], np.int32)],  # not tested
+                      '2': [np.array([[0, 260], [366, 254], [366, 480], [0, 480]], np.int32)],
                       '3': [np.array([[0, 258], [366, 258], [366, 480], [0, 480]], np.int32)],
                       '4': [np.array([[0, 266], [362, 266], [362, 480], [0, 480]], np.int32)],
                       '5': None,
@@ -36,9 +36,6 @@ class CubeFinder():
             for x in range(0, 10):
                 image_hsv = self.get_hsv_with_stencil(color)
                 KinectCaptureHelper().save_kinect_capture(self.kinect, str(time.time()), image_hsv)
-                # new_kinect = Kinect('1')
-                # image_rgb = new_kinect.grab_new_image(bilateral_filter_activated=True)
-                # image_hsv = VisionTools().get_hsv_image(image_rgb)
                 new_position = WhiteCube().find_position(image_hsv, self.kinect)
                 if new_position is not None:
                     if Position(new_position[0], new_position[1]).is_valid():
@@ -82,34 +79,14 @@ class CubeFinder():
         image_hsv = VisionTools().get_hsv_image(image_rgb)
         for cube in self.cubes:
             cube.find_position(image_hsv, self.kinect)
-            # print(cube.color + str(cube.position))
-
-class CubeFinder2():
-    def __init__(self, kinect):
-        self.kinect = kinect
-        self.cubes = []
-
-    def get_all_cubes(self):
-        return self.cubes
-
-    def add_cube(self, cube):
-        if cube not in self.cubes:
-            self.cubes.append(cube)
-
-    def refresh_position(self):
-        image_rgb = self.kinect.grab_new_image(True)
-        image_hsv = VisionTools().get_hsv_image(image_rgb)
-        for cube in self.cubes:
-            cube.find_position(image_hsv, self.kinect)
-            # print(cube.color + str(cube.position))
 
 
 class DemoCubeFinder(CubeFinder):
     def __init__(self, kinect):
         CubeFinder.__init__(self, kinect)
         self.add_cube(Cube('red'))
-        # self.add_cube(Cube('green'))
-        # self.add_cube(Cube('blue'))
-        # self.add_cube(Cube('yellow'))
-        # self.add_cube(WhiteCube())
-        # self.add_cube(BlackCube())
+        self.add_cube(Cube('green'))
+        self.add_cube(Cube('blue'))
+        self.add_cube(Cube('yellow'))
+        self.add_cube(WhiteCube())
+        self.add_cube(BlackCube())

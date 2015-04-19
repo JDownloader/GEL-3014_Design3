@@ -309,17 +309,6 @@ class RobotAI:
         self.move_two_step_to_point(path_to_pre_cube_fetch_point)
         return cube_pos
 
-    def reverse_movement_dictionary(self, initial_movement_dictionary):
-        reversed_dict = initial_movement_dictionary
-        reversed_dict['first_direction'] = \
-            self.reverse_movement_direction(initial_movement_dictionary['second_direction'])
-        reversed_dict['second_direction'] = \
-            self.reverse_movement_direction(initial_movement_dictionary['first_direction'])
-        reversed_dict['first_distance'] = initial_movement_dictionary['second_distance']
-        reversed_dict['second_distance'] = initial_movement_dictionary['first_distance']
-        reversed_dict['angle_before_second_move'] = 0
-        return reversed_dict
-
     def send_path_to_base_station(self, path):
         if type(path) is tuple:
             final_angle = 4

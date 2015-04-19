@@ -5,13 +5,10 @@ from robotIPFinder import RobotFinder
 from vision.robotLocator import RobotLocator
 import requests
 import json
-from sound import play_prometheus, play_acquired
 import constants as cte
 from questionanswering.question_processor import QuestionProcessor
 from baseStation import BaseStation
 import flagProcessor
-from tests.test_vision_kinect import FakeKinect
-from flag import Flag
 SERVER_PORT = 8000
 
 
@@ -72,9 +69,6 @@ def fetch_cube_position():
     if request.method == 'POST':
         color = request.form.get('color', None)
         cube_position = app.base_station.cube_finder.get_cube_position_with_color(color)
-        if cube_position[0] is not None:
-            if cube_position[0]>0:
-                play_acquired()
     return jsonify(position_x=cube_position[0] , position_y=cube_position[1])
 
 
@@ -92,7 +86,6 @@ def fetch_flag():
     # flag = Flag('Canada').get_matrix()
     flag = ''
     strikes = 0
-    play_prometheus()
     for cycle in xrange(cte.NUMBER_OF_WRONG_ANSWER_ALLOWED):
         question = fetch_question()
 
@@ -114,7 +107,7 @@ def fetch_flag():
                 flag_processor = flagProcessor.FlagProcessor(answer)
                 flag = flag_processor.get_flag()
                 break
-    flag = Flag('Russia').get_matrix()
+    # flag = Flag('Russia').get_matrix()
     return jsonify(flag=flag)
 
 

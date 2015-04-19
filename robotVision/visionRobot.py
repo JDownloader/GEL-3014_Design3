@@ -32,17 +32,6 @@ class VisionRobot():
             contour = self.camera.find_largest_contour_color(new_image)
         return contour
 
-    def find_angle_cube(self, square):
-        corner = self.define_corner_number(square)
-        if corner == 1 and len(square)>=6:
-            angle = self.camera.get_angle_cube(square, corner)
-            right_angle = 90 - angle
-        elif corner != 1 and len(square) >= 6:
-            right_angle = self.camera.get_angle_cube(square, corner)
-        elif corner == 1 and len(square) == 4:
-            right_angle = self.camera.get_angle_cube(square, corner)
-        return right_angle
-
     def define_corner_number(self, square):
         size_square = len(square)
         if size_square == 6:
@@ -53,11 +42,6 @@ class VisionRobot():
         elif size_square == 4:
             corner = 1
         return corner
-
-    def get_marker_cube(self, image, cube):
-        mask_image = self.apply_mask_image(image, cube)
-        moment, marker = self.camera.find_cube_marker(mask_image, cube)
-        return marker
 
     def apply_mask_image(self, image, cube):
         new_image = self.apply_gripper_mask(image, cube.color)
@@ -86,7 +70,6 @@ class VisionRobot():
         return moment
 
     def find_cube_center_delta(self, image, moment):
-        is_centre = False
         height, width, depth = image.shape
         centerX = int(moment['m10']/moment['m00'])
         centerY = int(moment['m01']/moment['m00'])
