@@ -7,6 +7,7 @@ import pathfinding.constants as tableConsts
 import numpy
 import math
 
+
 class RobotAI:
     def __init__(self, base_station_client):
         self.pathfinder = Pathfinding()
@@ -59,7 +60,6 @@ class RobotAI:
     def grab_cube(self, cube, cube_index):
         self.robot.change_led_color(cube, cube_index)
         cube_position = self.kinect_cube_find_sequence(cube)
-        print 'cube pos = ' + str(cube_position)
         path_to_cube = self.pathfinder.find_two_step_path_to_cube(self.robot_angle_and_position, cube_position)
         self.move_two_step_to_point(path_to_cube)
         self.move_robot_to_pickup_cube(cube)
@@ -92,7 +92,6 @@ class RobotAI:
             self.robot.move(self.reverse_movement_direction(cube_movement_dictionary.get('direction')),
                             cube_movement_dictionary.get('width_distance'))
 
-
     def move_robot_to_pickup_cube(self, cube_color):
         self.base_station.send_pathfinding_itinerary([])
         camera = VisionRobot(cube_color)
@@ -118,7 +117,6 @@ class RobotAI:
         while angle_and_position_from_kinect[0] is None:
             angle_and_position_from_kinect = self.base_station.fetch_robot_position()
             self.robot.rotate(True, 1)
-            print 'kinect pos is love'
         self.robot_angle_and_position.angle = angle_and_position_from_kinect[0] + \
                                               tableConsts.TABLE_ANGLE_ADJUSTMENT[self.table_number]
         self.robot_angle_and_position.position = angle_and_position_from_kinect[1]
@@ -127,12 +125,8 @@ class RobotAI:
         cube_pos = self.base_station.fetch_cube_position(cube_color)
         return cube_pos
 
-    def move_robot_to(self, target_position, stop_at_buffer=False, movement_direction='forward'):
-        if stop_at_buffer:
-            pathfinding_result = self.pathfinder.find_path_to_cube_buffer_zone(self.robot_angle_and_position,
-                                                                               target_position)
-        else:
-            pathfinding_result = self.pathfinder.find_path_to_point(self.robot_angle_and_position, target_position)
+    def move_robot_to(self, target_position, movement_direction='forward'):
+        pathfinding_result = self.pathfinder.find_path_to_point(self.robot_angle_and_position, target_position)
         self.send_path_to_base_station(pathfinding_result)
 
         self._send_move_commands(pathfinding_result, movement_direction)
@@ -153,11 +147,9 @@ class RobotAI:
         self.robot_angle_and_position.update_with_pathfinding_tuple(tuple_result_from_pathfinding)
 
     def tranpose_flag_matrix(self, flag_matrix):
-        print flag_matrix
         if len(flag_matrix) > 9:
             flag_matrix.pop()
         flag_array = numpy.array(flag_matrix)
-        print flag_array
         flag_array_reshaped = flag_array.reshape((3, 3))
         transposed_array = flag_array_reshaped.transpose()
         transposed_array[[0, 2],:] = transposed_array[[2, 0],:]
@@ -272,7 +264,6 @@ class RobotAI:
 
     def move_in_direction_and_keep_angle(self, direction, distance):
         self.robot.move(direction, distance)
-        print 'moving' + direction
         self.robot_angle_and_position.update_with_movement_direction_and_distance(direction, distance)
 
     def pickup_cube(self):
@@ -299,8 +290,6 @@ class RobotAI:
                                                                         tableConsts.SAFE_POINT)
         self.move_two_step_to_point(path_to_safe_zone)
         cube_pos = (-500, -500)
-        print str(cube_color)
-        print type(cube_color)
         while not Position(cube_pos[0], cube_pos[1]).is_valid():
             cube_pos = self.receive_cube_position_from_kinect(cube_color)
             self.move_in_direction_and_keep_angle('reverse', 20)
@@ -316,7 +305,6 @@ class RobotAI:
                              math.sin(math.radians(final_angle)) * path[1], self.robot_angle_and_position.position[1]
                              + math.cos(math.radians(final_angle)) * path[1])
             self.base_station.send_pathfinding_itinerary([arrival_point])
-            print arrival_point
         elif type(path) is dict:
             arrival_point = (0, 0)
             intermediate_point = (0, 0)
@@ -364,4 +352,3 @@ class RobotAI:
                            math.cos(math.radians(intermediate_angle - 90)))
 
             self.base_station.send_pathfinding_itinerary([intermediate_point, arrival_point])
-            print (intermediate_point, arrival_point)
