@@ -5,7 +5,7 @@ from robotIPFinder import RobotFinder
 from vision.robotLocator import RobotLocator
 import requests
 import json
-from vision.kinect import Kinect
+from sound import play_prometheus, play_acquired
 import constants as cte
 from questionanswering.question_processor import QuestionProcessor
 from baseStation import BaseStation
@@ -54,8 +54,8 @@ def start():
     else:
         data = {'ip': '192.168.0.32'}
         response = requests.post('http://' + app.robot_ip_address + ':8001' + '/basestationip', data=data)
-        if response.status_code == 200:
-            response2 = requests.get('http://' + app.robot_ip_address + ':8001' + '/')
+        # if response.status_code == 200:
+        #     response2 = requests.get('http://' + app.robot_ip_address + ':8001' + '/')
     return 'ok'
 
 
@@ -72,6 +72,9 @@ def fetch_cube_position():
     if request.method == 'POST':
         color = request.form.get('color', None)
         cube_position = app.base_station.cube_finder.get_cube_position_with_color(color)
+        if cube_position[0] is not None:
+            if cube_position[0]>0:
+                play_acquired()
     return jsonify(position_x=cube_position[0] , position_y=cube_position[1])
 
 
@@ -89,7 +92,7 @@ def fetch_flag():
     # flag = Flag('Canada').get_matrix()
     flag = ''
     strikes = 0
-
+    play_prometheus()
     for cycle in xrange(cte.NUMBER_OF_WRONG_ANSWER_ALLOWED):
         question = fetch_question()
 
@@ -103,7 +106,7 @@ def fetch_flag():
             flag_processor = flagProcessor.FlagProcessor(answer)
             flag = flag_processor.get_flag()
             break
-        else :
+        else:
             strikes += 1
             if strikes >= 2:
                 answer = 'Burkina Faso'
@@ -111,9 +114,7 @@ def fetch_flag():
                 flag_processor = flagProcessor.FlagProcessor(answer)
                 flag = flag_processor.get_flag()
                 break
-
-    # app.base_station.set_question('From where is your favorite J-D?', 'Alma')
-    # flag = Flag('Alma').get_matrix()
+    flag = Flag('Russia').get_matrix()
     return jsonify(flag=flag)
 
 
@@ -121,7 +122,7 @@ def fetch_flag():
 @app.route('/context')
 def get_context():
     app.refresh_since_last_kinect_update += 1
-    if app.refresh_since_last_kinect_update >= 3:
+    if app.refresh_since_last_kinect_update >= 4:
         refresh_kinect()
     context = app.context_provider.get_context(app.robot_ip_address)
     return jsonify(context)
@@ -177,6 +178,7 @@ def refresh_kinect():
     position = app.robot_locator.get_position(app.base_station.kinect)
     app.base_station.robot_position = position
     app.refresh_since_last_kinect_update = 0
+    app.context_provider.add_known_position(position.position)
     return position
 
 

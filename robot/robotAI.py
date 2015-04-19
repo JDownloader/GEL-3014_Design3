@@ -39,7 +39,7 @@ class RobotAI:
     def construct_flag(self, flag_matrix):
         self.display_flag_for_five_seconds(flag_matrix)
         for cube_index, cube in enumerate(flag_matrix):
-            if cube is not None:
+            if cube is not None and cube != 'white' and cube != 'black':
                 self.grab_cube(str(cube), cube_index)
                 self.place_cube(cube_index)
                 self.rotate_robot_to_target(0)
@@ -101,11 +101,11 @@ class RobotAI:
 
     def display_flag_for_five_seconds(self, flag_matrix):
         for index, item in enumerate(flag_matrix):
-            if item:
+            if item is not None:
                 self.robot.change_led_color(item, index)
         time.sleep(5)
         for index, item in enumerate(flag_matrix):
-            if item:
+            if item is not None:
                 self.robot.change_led_color('off', index)
 
     def receive_flag_from_base_station(self):
@@ -254,7 +254,7 @@ class RobotAI:
 
     def approach_cube(self, camera_instance):
         if camera_instance.cube == 'white' or camera_instance.cube == 'black':
-            y_value = -80
+            y_value = -50
         else:
             y_value = -140
         self.robot.gripper_controller.change_vertical_position(0)
